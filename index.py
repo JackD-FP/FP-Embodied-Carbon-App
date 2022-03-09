@@ -2,82 +2,54 @@ from importlib.resources import path
 import dash
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
-from dash import Input, Output, dcc, html
-from server import app
-
-
+from dash import Input, Output, dcc, html, callback
+import json
+# from server import app
 
 from pages import analysis, dashboard, reference, total_embodied_carbon
 import os
 
+#server BS (¬_¬")
+external_stylesheets = [dbc.themes.BOOTSTRAP] #dbc theme
+app = dash.Dash(
+    __name__, 
+    external_stylesheets=external_stylesheets, 
+    suppress_callback_exceptions=True,
+    meta_tags=[{ #for mobile bs 
+        'name': 'viewport',
+        'content': 'width=device-width, intial-scale=1.0' #initial-scale don't work why? idk!
+    }]
+)
+# #server = app.server
+app._favicon = ("assets/favicon.ico")
+#--------------------------------------------------------------------------------------------
+
 if not os.path.exists("image"):
     os.mkdir("image")
 
-# the style arguments for the sidebar. We use position:fixed and a fixed width
-SIDEBAR_STYLE = {
-    "position": "fixed",
-    "top": 0,
-    "left": 0,
-    "bottom": 0,
-    "width": "32rem",
-    "padding": "4rem 2rem",
-    "backgroundColor": "#f8f9fa",
-}
-
-# the styles for the main content position it to the right of the sidebar and
-# add some padding.
 CONTENT_STYLE = {
     "marginLeft": "34rem",
     "marginRight": "2rem",
     "padding": "4rem 2rem",
 }
 
-sidebar = html.Div(
-    [
-        html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
-        html.H5("Embodied Carbon", className="my-5 display-6", style={"font": "2rem"}),
-        html.Hr(),
-        html.P(
-            "Analyse design using this Embodied Carbon Calculator. More information in the reference page below.", className="lead"
-        ),
-        dbc.Nav(
-            [
-                dbc.NavLink("Dashboard", href="/pages/dashboard", active="exact", id="dashboard_click"),
-                dbc.NavLink("Analysis", href="/pages/analysis", active="exact"),
-                dbc.NavLink("Total Embodied Carbon", href="/pages/total_embodied_carbon", active="exact"),
-                dbc.NavLink("Reference", href="/pages/reference", active="exact")
-            ],
-            vertical=True,
-            pills=True,
-            style={
-                "marginTop": "3rem",
-                "fontSize": "1.5rem"
-            },
-            className="display-6",
-        ),
-    ],
-    style=SIDEBAR_STYLE,
-)
-
-
-content = html.Div(id="content-id", style=CONTENT_STYLE)
 
 app.layout = html.Div([
     dcc.Store(id="main-store", storage_type="session"), #stores all the BS here (⊙_⊙;) add other stores if needed
     dcc.Location(id="url", refresh=False), 
-    sidebar, 
-    content
+    html.Div(id="content-id", style=CONTENT_STYLE)
     ])
 
+#routing bs
 @app.callback(
     Output("content-id", "children"), 
     [Input("url", "pathname")]
     )
 def render_page_content(pathname):
     if pathname == "/":
-        return dcc.Location(pathname="/pages/dashboard", id="Iamauselessid") #redirect from /
+        return dcc.Location(pathname="/pages/dashboard", id="doesntmatter")
     elif pathname == "/pages/dashboard":
-        return dashboard.dashboard
+        return dashboard.layout
     elif pathname == "/pages/analysis":
         return analysis.layout
     elif pathname == "/pages/total_embodied_carbon":

@@ -1,6 +1,6 @@
 from dash import Input, Output, dcc, html
 import dash_bootstrap_components as dbc
-from server import app
+#from server import app
 
 
 layout = html.Div([
