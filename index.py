@@ -1,3 +1,4 @@
+from importlib.resources import path
 import dash
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
@@ -20,14 +21,14 @@ SIDEBAR_STYLE = {
     "bottom": 0,
     "width": "32rem",
     "padding": "4rem 2rem",
-    "background-color": "#f8f9fa",
+    "backgroundColor": "#f8f9fa",
 }
 
 # the styles for the main content position it to the right of the sidebar and
 # add some padding.
 CONTENT_STYLE = {
-    "margin-left": "34rem",
-    "margin-right": "2rem",
+    "marginLeft": "34rem",
+    "marginRight": "2rem",
     "padding": "4rem 2rem",
 }
 
@@ -41,7 +42,7 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Dashboard", href="/pages/dashboard", active="exact", id="dashboard_click",),
+                dbc.NavLink("Dashboard", href="/pages/dashboard", active="exact", id="dashboard_click"),
                 dbc.NavLink("Analysis", href="/pages/analysis", active="exact"),
                 dbc.NavLink("Total Embodied Carbon", href="/pages/total_embodied_carbon", active="exact"),
                 dbc.NavLink("Reference", href="/pages/reference", active="exact")
@@ -58,37 +59,31 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-#place important app wide saves/stores here.
-#passes all the stores to here
-index = html.Div([
-    dcc.Store(id="main-schedule-store", storage_type="session"),
-], id="storage-div")
 
-#HACKY WAY OF REDIRECTING... SHOULD USE FLASK BUT DASH INSIST THIS. ¯\(°_o)/¯
-@app.callback(Output("storage-div", "children"), Input("url", "pathname"))
-def redirect_2_dashboard(pathname):
-    if pathname == "/":
-        return dcc.Location(pathname="/pages/dashboard")
-    else: PreventUpdate
+content = html.Div(id="content-id", style=CONTENT_STYLE)
 
+app.layout = html.Div([
+    dcc.Store(id="main-store", storage_type="session"), #stores all the BS here (⊙_⊙;) add other stores if needed
+    dcc.Location(id="url", refresh=False), 
+    sidebar, 
+    content
+    ])
 
-content = html.Div(id="page-content", style=CONTENT_STYLE)
-
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
-
-
-@app.callback(Output("page-content", "children"), [Input("url", "pathname")])
+@app.callback(
+    Output("content-id", "children"), 
+    [Input("url", "pathname")]
+    )
 def render_page_content(pathname):
-    if pathname == "/": #this page is mainly for DCC store and saving shit 
-        return index    #hacky wayu of doing it but wtv! it also redirects to dashboard
+    if pathname == "/":
+        return dcc.Location(pathname="/pages/dashboard", id="Iamauselessid") #redirect from /
     elif pathname == "/pages/dashboard":
-        return dashboard.layout
+        return dashboard.dashboard
     elif pathname == "/pages/analysis":
-        return html.P("This is the content of page 1. Yay!")
+        return analysis.layout
     elif pathname == "/pages/total_embodied_carbon":
-        return html.P("Oh cool, this is page 2!")
+        return total_embodied_carbon.layout
     elif pathname == "/pages/reference":
-        return html.P("somethjing")
+        return reference.layout
     # If the user tries to reach a different page, return a 404 message
     return dbc.Container(
         [
