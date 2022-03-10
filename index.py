@@ -2,12 +2,25 @@ from importlib.resources import path
 import dash
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
-from dash import Input, Output, dcc, html, callback
+from dash import Input, Output, State, dcc, html, callback
 import json
 # from server import app
 
 from pages import analysis, dashboard, reference, total_embodied_carbon
 import os
+
+config = { #just tells plotly to save as svg rather than jpeg
+    'toImageButtonOptions': {
+        'format': 'svg', # one of png, svg, jpeg, webp
+        'filename': 'custom_image',
+        'height': 500,
+        'width': 700,
+        'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
+    }
+}
+
+if not os.path.exists("image"):  #why do i have this?
+    os.mkdir("image")            #was I suppose to do something with this?＼（〇_ｏ）／
 
 #server BS (¬_¬")
 external_stylesheets = [dbc.themes.BOOTSTRAP] #dbc theme
@@ -24,8 +37,6 @@ app = dash.Dash(
 app._favicon = ("assets/favicon.ico")
 #--------------------------------------------------------------------------------------------
 
-if not os.path.exists("image"):
-    os.mkdir("image")
 
 CONTENT_STYLE = {
     "marginLeft": "34rem",
@@ -33,10 +44,56 @@ CONTENT_STYLE = {
     "padding": "4rem 2rem",
 }
 
+SIDEBAR_STYLE = {
+    "position": "fixed",
+    "top": 0,
+    "left": 0,
+    "bottom": 0,
+    "width": "32rem",
+    "padding": "4rem 2rem",
+    "backgroundColor": "#f8f9fa",
+}
+
+sidebar = html.Div(
+    [
+        html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
+        html.H5("Embodied Carbon", className="my-5 display-6", style={"font": "2rem"}),
+        html.Hr(),
+        html.P(
+            "Analyse design using this Embodied Carbon Calculator. More information in the reference page below.", className="lead"
+        ),
+        dbc.Nav(
+            [
+                dbc.NavLink("Dashboard", href="/pages/dashboard",  id="dashboard", active="exact"),
+                dbc.NavLink("Analysis", href="/pages/analysis", id="analysis", active="exact"),
+                dbc.NavLink("Total Embodied Carbon", href="/pages/total_embodied_carbon", id="tec", active="exact"),
+                dbc.NavLink("Reference", href="/pages/reference", id="reference", active="exact")
+            ],
+            vertical=True,
+            pills=True,
+            style={
+                "marginTop": "3rem",
+                "fontSize": "1.5rem"
+            },
+            className="display-6",
+        ),
+    ],
+    style=SIDEBAR_STYLE,
+)
+
+# passes store to main_store
+# @app.callback(
+# Output('main_store', 'data'),
+# Input('temp-df-store', 'data'))
+# def definition(data):
+#     if data is not None:
+#         return data
+#     else: PreventUpdate
 
 app.layout = html.Div([
-    dcc.Store(id="main-store", storage_type="session"), #stores all the BS here (⊙_⊙;) add other stores if needed
+    dcc.Store(id="main_store", storage_type="session"), #stores all the BS here (⊙_⊙;) add other stores if needed
     dcc.Location(id="url", refresh=False), 
+    sidebar,
     html.Div(id="content-id", style=CONTENT_STYLE)
     ])
 
@@ -66,5 +123,5 @@ def render_page_content(pathname):
     )
 
 if __name__ == "__main__":
-    app.run_server(port=8888, debug=True)
-    # app.run_server(host="0.0.0.0", port=8888, debug=True)
+    #app.run_server(port=8888, debug=True)
+    app.run_server(host="0.0.0.0", port=8888, debug=True)
