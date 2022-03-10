@@ -1,18 +1,18 @@
-from __future__ import annotations
-from pydoc import classname
 import dash
 from dash import Input, Output, State, dcc, html, callback, dash_table
 import plotly.express as px
 from plotly.subplots import make_subplots
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
+
 import base64
 import datetime
 import io
 import pandas as pd
 import openpyxl #just so excel upload works 
 from index import app, config
-import json
+
+from src import db_loader
 
 layout = html.Div([
     html.H1("Dashboard", className="display-2 mb-5 "),
@@ -150,7 +150,7 @@ State('dashboard_store', 'data'))
 def make_graphs(n_dashb, n_upload, data):
     if n_dashb or n_upload is None:
         raise PreventUpdate
-    else:
+    elif data is not None:
         df = pd.read_json(data, orient="split")
         df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         material_pie_archicad = px.pie(
@@ -161,16 +161,21 @@ def make_graphs(n_dashb, n_upload, data):
             hole=0.5
         )
         material_pie_archicad.update_layout(
-            annotations=[dict(text='Archicad', x=0.5, y=0.5, font_size=20, showarrow=False)]
+            annotations=[dict(text='ArchiCAD', x=0.5, y=0.5, font_size=20, showarrow=False)] # probs change archicad to "BIM" in production build
         )
 
         # ADD CALCULATION OF DIFFERENT EMBODIED CARBON MATERIALS q(≧▽≦q)
         # MAYBE ADD A RERENDER BUTTON? GRAPH DISSAPEAR WHEN GOING TO OTHER PAGES
+        
+        return html.Div([ # consolidated table..
+            dash_table.DataTable(
+                df.to_dict('records'),
+                [{'name': i, 'id': i} for i in df.columns],
+                page_size= 15,
+            ),
+            dcc.Graph(figure=material_pie_archicad ,style={'height': '75vh'}, className='mt-3',config=config),
+            html.H1("material '{}' has embodied carbon of {}".format(str(df["Building Materials (All)"][0]), str(df["Embodied Carbon"][0])))
+        ])
+        
 
-        # return dash_table.DataTable(
-        #     df.to_dict('records'),
-        #     [{'name': i, 'id': i} for i in df.columns],
-        #     page_size= 15,
-        # )
-        return dcc.Graph(figure=material_pie_archicad ,style={'height': '75vh'}, className='mt-3',config=config)
 

@@ -4,7 +4,14 @@ import dash_bootstrap_components as dbc
 layout = html.Div([
     html.H1("Reference", className="display-2 mb-5 "),
     html.Hr(),
-    html.P("opsies usually occur with 2 things wrong file input the table format does not have the right headers"),
-    dbc.Button("Test")
+    html.Div([
+        html.Img(
+            src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
+            alt="under construction icon"),
+        html.H1("UNDER CONSTRUCTION! SOMETHING COOL WILL COME OUT SOON", className="text-center"),
+        html.Img(
+            src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
+            alt="under construction icon")
+    ], className="hstack gap-3")
 ])
 
