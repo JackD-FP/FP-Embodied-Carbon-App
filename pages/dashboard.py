@@ -1,6 +1,7 @@
 import dash
 from dash import Input, Output, State, dcc, html, callback, dash_table
 import plotly.express as px
+import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
@@ -13,6 +14,10 @@ import openpyxl #just so excel upload works
 from index import app, config
 
 from src import db_loader
+
+gb_df = pd.read_csv("src/Greenbook _reduced.csv")
+epic_df = pd.read_csv("src/epic _reduced.csv")
+ice_df = pd.read_csv("src/ice _reduced.csv")
 
 layout = html.Div([
     html.H1("Dashboard", className="display-2 mb-5 "),
@@ -84,6 +89,7 @@ def parse_contents(contents, filename, date):
     df = df.rename(columns=df.iloc[0], )
     df = df.drop([0,0])
     df['Structure'] = df['Home Story Name'].str.contains('basement',case=False,regex=True)
+    df = df.replace("---", 0)
     return html.Div([
         html.H5(filename),
         html.H6(datetime.datetime.fromtimestamp(date)),
@@ -151,18 +157,61 @@ def make_graphs(n_dashb, n_upload, data):
     if n_dashb or n_upload is None:
         raise PreventUpdate
     elif data is not None:
+        labels = ["US", "China", "European Union", "Russian Federation", "Brazil", "India",
+          "Rest of World"]
         df = pd.read_json(data, orient="split")
         df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-        material_pie_archicad = px.pie(
-            data_frame=df,
-            values="Embodied Carbon",
-            names="Building Materials (All)",
-            title="Structure Embodied Carbon per Material",
-            hole=0.5
-        )
-        material_pie_archicad.update_layout(
-            annotations=[dict(text='ArchiCAD', x=0.5, y=0.5, font_size=20, showarrow=False)] # probs change archicad to "BIM" in production build
-        )
+        df_mat = df["Building Materials (All)"].tolist()
+        df_ec = df["Embodied Carbon"].tolist()
+        gb = gb_calc(df) # makes df for greenbook db
+        gb_mat = gb["Materials"].tolist()
+        gb_ec = gb["Embodied Carbon"].tolist()
+        #fig = make_subplots(rows=1, cols=2)
+        # fig.add_trace(row=1, col=1,
+        #     trace = go.Pie(labels = df_mat, values = df_ec))
+        fig = make_subplots(rows=1, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}]])
+        fig.add_trace(go.Pie(labels=df_mat, values=df_ec, name="Archicad", hole=0.5),
+              1, 1)
+        fig.add_trace(go.Pie(labels=gb_mat, values=gb_ec, name="Green Book DB",hole=0.5),
+              1, 2)
+        #fig.add_trace(row=1, col=2,
+            #trace = go.Pie(Labels = gb["Materials"], values=df["Embodied Carbon"], name="Green Book DB"))
+        # Use `hole` to create a donut-like pie chart
+        #fig.update_traces(hole=.4, hoverinfo="label+percent+name")
+        fig.update_layout(
+            title_text="Global Emissions 1990-2011",
+            # Add annotations in the center of the donut pies.
+            annotations=[dict(text='Archicad', x=0.18, y=0.5, font_size=20, showarrow=False ),
+                        dict(text='Greenbook', x=0.82, y=0.5, font_size=20, showarrow=False)])
+
+        # material_pie_archicad = px.pie(
+        #     data_frame=df,
+        #     values="Embodied Carbon",
+        #     names="Building Materials (All)",
+        #     title="Structure Embodied Carbon per Material",
+        #     hole=0.5
+        # )
+        # material_pie_archicad.update_layout(
+        #     annotations=[dict(text='ArchiCAD', x=0.5, y=0.5, font_size=20, showarrow=False)] # probs change archicad to "BIM" in production build
+        # )
+        
+        #for calculations
+        # materials = df["Building Materials (All)"].tolist()
+        # volumes = df["Volume (Net)"].tolist()
+        # mass = df["Mass"].tolist()
+        # length = df["3D Length"].tolist()
+        # gb = []
+        # epic = []
+        # ice = []
+
+        # gb_mat = []
+        # epic_mat = []
+        # ice_mat = []
+
+        # #greenbook:
+        # df_greenbook = pd.DataFrame({"materials": gb_mat, "Embodied Carbon": gb})
+        # df_epic = pd.DataFrame({"materials": epic_mat, "Embodied Carbon": epic})
+        # df_ice = pd.DataFrame({"materials": ice_mat, "Embodied Carbon": ice})
 
         # ADD CALCULATION OF DIFFERENT EMBODIED CARBON MATERIALS q(≧▽≦q)
         # MAYBE ADD A RERENDER BUTTON? GRAPH DISSAPEAR WHEN GOING TO OTHER PAGES
@@ -173,9 +222,43 @@ def make_graphs(n_dashb, n_upload, data):
                 [{'name': i, 'id': i} for i in df.columns],
                 page_size= 15,
             ),
-            dcc.Graph(figure=material_pie_archicad ,style={'height': '75vh'}, className='mt-3',config=config),
-            html.H1("material '{}' has embodied carbon of {}".format(str(df["Building Materials (All)"][0]), str(df["Embodied Carbon"][0])))
+            dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
+            # dcc.Graph(figure=material_pie_archicad ,style={'height': '75vh'}, className='mt-3',config=config),
+            #html.H1('{}'.format(str(gb_calc(df, gb_df))))
         ])
         
 
 
+# def gb_calc(df):
+#     for i in range(len(df)):
+#         if "concrete" not in df["Building Materials (All)"][i]:
+#             return df["Volume (Net)"][i]*db_loader.gb_df.loc[db_loader["Sub-Category"] == "Concrete 50 MPa", "Embodied Carbon"]
+
+def gb_calc(df):
+    df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() # create consolidated df
+    materials = []
+    volumes = df["Volume (Net)"].tolist()
+    mass = df["Mass"].tolist()
+    embodied_carbon = []
+
+    for i, mat in enumerate(materials):
+        if mat == "CONCRETE - IN-SITU":
+            embodied_carbon.append(volumes[i]*643) #Concrete 50 MPa 
+            materials.append("Concrete 50 MPa ")
+        elif mat == "STEEL - STRUCTURAL":
+            embodied_carbon.append(mass[i]*2900) #Steel Universal Section
+            materials.append("Steel Universal Section")
+        if mat == "TIMBER - STRUCTURAL":
+            embodied_carbon.append(volumes[i]*718) #Glue-Laminated Timber (Glu-lam)
+            materials.append("Glue-Laminated Timber (Glu-lam)")
+        else: embodied_carbon.append(0) # add other materials like aluminium and brick
+        
+    return pd.DataFrame({'Materials': materials, 'Embodied Carbon': embodied_carbon})
+
+    # for i in range(len(df)):
+
+    #     volume.append(df.loc[df[materials[i]] == "CONCRETE - IN-SITU", "Volume (Net)"].values[0])
+    
+    
+    
+    #volume = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].values[0]
