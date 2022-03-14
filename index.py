@@ -1,7 +1,9 @@
+from http import server
 import dash
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 from dash import Input, Output, State, dcc, html, callback
+from flask import Flask
 import json
 # from server import app
 
@@ -21,10 +23,12 @@ config = { #just tells plotly to save as svg rather than jpeg
 if not os.path.exists("image"):  #why do i have this?
     os.mkdir("image")            #was I suppose to do something with this?＼（〇_ｏ）／
 
-#server BS (¬_¬")
+#server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP] #dbc theme
+server = Flask(__name__)
 app = dash.Dash(
     __name__, 
+    server=server,
     external_stylesheets=external_stylesheets, 
     suppress_callback_exceptions=True,
     meta_tags=[{ #for mobile bs 
@@ -32,6 +36,10 @@ app = dash.Dash(
         'content': 'width=device-width, intial-scale=1.0' #initial-scale don't work why? idk!
     }]
 )
+@server.route("/pages/<path>")                  #to change tab name to "Ebodied Carbon: dashboard" 
+def dash_app(path):                             #but for some reason the page name doesn't work
+    app.title = "Ebodied Carbon: %s"%(path)     #just shows dashboard ¯\_(ツ)_/¯
+    return app.index()
 # #server = app.server
 app._favicon = ("assets/favicon.ico")
 #--------------------------------------------------------------------------------------------
@@ -80,14 +88,14 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-# passes store to main_store
-# @app.callback(
-# Output('main_store', 'data'),
-# Input('temp-df-store', 'data'))
-# def definition(data):
-#     if data is not None:
-#         return data
-#     else: PreventUpdate
+#passes store to main_store
+@app.callback(
+Output('main_store', 'data'),
+Input('temp-df-store', 'data'))
+def definition(data):
+    if data is not None:
+        return data
+    else: PreventUpdate
 
 app.layout = html.Div([
     dcc.Store(id="main_store", storage_type="session"), #stores all the BS here (⊙_⊙;) add other stores if needed
