@@ -175,7 +175,7 @@ def em_calc(df):
             epic_embodied_carbon.append(volumes[i]*1718) #Glued laminated timber (glulam) || Epic 
             ice_embodied_carbon.append(volumes[i]*0.51) # Timber Gluelam || Ice
 
-        #ADD OTHER MATERIALS LIKE ALUMINIUM AND BRICK!!! (ง •_•)ง
+        #ADD OTHER MATERIALS LIKE ALUMINIUM AND BRICK!!! (╯‵□′)╯︵┻━┻
         # Also i think it's better if we have the number as a dataframe.loc
         #like look for the right material type or something.
         
