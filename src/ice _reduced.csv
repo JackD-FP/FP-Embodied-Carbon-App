@@ -1,0 +1,53 @@
+﻿Material,Sub Category,Embodied Carbon,Declared Units,db
+Concrete,Concrete 20 Mpa,290.2277023,m3,ICE
+Concrete,Concrete 20 Mpa - fly ash 15%,265.314751,m3,ICE
+Concrete,Concrete 20 Mpa - fly ash 30%,235.3277993,m3,ICE
+Concrete,Concrete 20 Mpa - fly ash 40%,208.874795,m3,ICE
+Concrete,Concrete 20 Mpa - GGBS 25%,225.5685765,m3,ICE
+Concrete,Concrete 20 Mpa - GGBS 50%,162.1621738,m3,ICE
+Concrete,Concrete 20 Mpa - GGBS 70%,125.9870334,m3,ICE
+Concrete,Concrete 25 MPa,308.5726,m3,ICE
+Concrete,Concrete 25 MPa - fly ash 15%,282.0245102,m3,ICE
+Concrete,Concrete 25 MPa - fly ash 30%,249.9928011,m3,ICE
+Concrete,Concrete 25 MPa - fly ash 40%,221.4646791,m3,ICE
+Concrete,Concrete 25 MPa - GGBFS 15%,239.7397575,m3,ICE
+Concrete,Concrete 25 MPa - GGBFS 50%,172.0060315,m3,ICE
+Concrete,Concrete 25 MPa - GGBFS 70%,132.8073788,m3,ICE
+Concrete,Concrete 28 MPa,326.8441,m3,ICE
+Concrete,Concrete 28 MPa - fly ash 15%,301.4218973,m3,ICE
+Concrete,Concrete 28 MPa - fly ash 30%,269.1463401,m3,ICE
+Concrete,Concrete 28 MPa - fly ash 40%,234.7558401,m3,ICE
+Concrete,Concrete 28 MPa - GGBFS 25%,257.0847602,m3,ICE
+Concrete,Concrete 28 MPa - GGBFS 50%,186.2267305,m3,ICE
+Concrete,Concrete 28 MPa - GGBFS 75%,139.65553,m3,ICE
+Concrete,Concrete 32 MPa,386.098,m3,ICE
+Concrete,Concrete 32 Mpa - fly ash 15%,332.3990626,m3,ICE
+Concrete,Concrete 32 Mpa - fly ash 30%,297.8154561,m3,ICE
+Concrete,Concrete 32 Mpa - fly ash 40%,259.2980961,m3,ICE
+Concrete,Concrete 32 Mpa - GGBS 25%,288.2423084,m3,ICE
+Concrete,Concrete 32 Mpa - GGBS 50%,212.2368195,m3,ICE
+Concrete,Concrete 32 Mpa - GGBS 75%,151.5612633,m3,ICE
+Concrete,Concrete 40 MPa,413.4943,m3,ICE
+Concrete,Concrete 40 Mpa - fly ash 25%,379.95,m3,ICE
+Concrete,Concrete 40 Mpa - fly ash 30%,337.752,m3,ICE
+Concrete,Concrete 40 Mpa - fly ash 40%,293.457,m3,ICE
+Concrete,Concrete 40 Mpa - GGBS 25%,331.325,m3,ICE
+Concrete,Concrete 40 Mpa - GGBS 50%,242.699,m3,ICE
+Concrete,Concrete 40 Mpa - GGBS 70%,171.819,m3,ICE
+Aluminium,Aluminium sheet,9.7685,kg,ICE
+Aluminium,Aluminium profile,10,kg,ICE
+Aluminium,Aluminium General,9.951,kg,ICE
+Steel,Steel Engineering steel,1.27,kg,ICE
+Steel,Steel Section,1.55,kg,ICE
+Steel,Steel Pipe,2.643,kg,ICE
+Steel,Steel Plate,2.64,kg,ICE
+Brick,Clay brick,0.213,kg,ICE
+Brick,Concrete block,0.28,kg,ICE
+Timber,Timber CLT,0.44,kg,ICE
+Timber,Timber Glulam,0.51,kg,ICE
+Timber,Timber Hardwood,0.31,kg,ICE
+Timber,Timber LVL,0.39,kg,ICE
+Timber,Timber LSL laminated Strand Lumber,0.5,kg,ICE
+Timber,Wood I Beam,0.48,kg,ICE
+Timber,Wood-plastic composite,1.44,kg,ICE
+Timber,Plywood,0.68,kg,ICE

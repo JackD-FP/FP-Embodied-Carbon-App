@@ -1,0 +1,587 @@
+﻿Category,Sub-Category,Material Section,material name,material variant name,GWP,units,locations,density
+Basic Materials,Other,Other,Paper,Paper/ cellulose,1.57,T,Australia,300
+Basic Materials,Other,Other,Paper,Paper/ cellulose,0.449,T,Europe,300
+Basic Materials,Other,Other,Paper,Paper/ cellulose,4.9,T,United Kingdom,300
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,Autoclaved Aerated Concrete block (AAC),0.326,T,Europe,640
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,Autoclaved Aerated Concrete block (AAC),0.307,T,United Kingdom,640
+Basic Materials,Other,Other,Cardboard,Virgin,2.7,T,Australia,689
+Basic Materials,Plastic,Plastic,Plastic Foam,Polyurethane Rigid Foam,0.005,kg,Australia,961
+Basic Materials,Plastic,Plastic,Plastic Foam,Polyurethane Flexible Foam,0.006,kg,Australia,961
+Basic Materials,Plastic,Plastic,Plastic,Acrylonitrile butadiene styrene (ABS),16,T,Australia,1050
+Basic Materials,Plastic,Plastic,Plastic,Acrylonitrile butadiene styrene (ABS),3.13,T,Europe,1050
+Basic Materials,Plastic,Plastic,Plastic,Acrylonitrile butadiene styrene (ABS),3.79,T,United Kingdom,1050
+Basic Materials,Plastic,Plastic,Plastic,Polycarbonate,14,T,Australia,1220
+Basic Materials,Plastic,Plastic,Plastic,Polycarbonate,3.427,T,Europe,1220
+Basic Materials,Plastic,Plastic,Plastic,Polycarbonate,7.62,T,United Kingdom,1220
+Basic Materials,Plastic,Plastic,Plastic,Polypropylene,7.4,T,Australia,1220
+Basic Materials,Plastic,Plastic,Plastic,Polypropylene,2.027,T,Europe,1220
+Basic Materials,Plastic,Plastic,Plastic,Polypropylene,4.52,T,United Kingdom,1220
+Basic Materials,Plastic,Plastic,Plastic,Polyvinyl Chloride (PVC),11.2,T,Australia,1380
+Basic Materials,Plastic,Plastic,Plastic,Polyvinyl Chloride (PVC),5.79,T,Europe,1380
+Basic Materials,Plastic,Plastic,Plastic,Poly-ethyleneterephthalate (PET),6.4,T,Australia,1380
+Basic Materials,Plastic,Plastic,Plastic,Poly-ethyleneterephthalate (PET),3.52,T,Europe,1380
+Basic Materials,Plastic,Plastic,Plastic,Poly-ethyleneterephthalate (PET),2.57,T,United Kingdom,1380
+Basic Materials,Plastic,Plastic,Plastic,Polyvinyl Chloride (PVC),3.13,T,United Kingdom,1380
+Basic Materials,Cement,Cement Alternatives,Cement Blends,GGBS 50%,0.599,T,Australia,1440
+Basic Materials,Cement,Cement Alternatives,Cement Blends,GGBS 50%,0.475,T,United Kingdom,1440
+Basic Materials,Cement,Portland Cement (OPC),Cement Blends,Ordinary Portland Cement (OPC/CEM I),1.15,T,Australia,1440
+Basic Materials,Cement,Portland Cement (OPC),Cement Blends,Ordinary Portland Cement (OPC/CEM I),0.835,T,Europe,1440
+Basic Materials,Cement,Portland Cement (OPC),Cement Blends,Ordinary Portland Cement (OPC/CEM I),0.939,T,United Kingdom,1440
+Basic Materials,Cement,Portland Cement (OPC),Cement Blends,Ordinary Portland Cement (OPC/CEM I),1.086,T,United States or  Canada,1440
+Basic Materials,Cement,Geopolymer Cement (GPC),Cement Blends,Geopolymer Cement Blend (GPC),0.118,T,Australia,1440
+Basic Materials,Cement,Geopolymer Cement (GPC),Cement Blends,Geopolymer Cement Blend (GPC),0.118,T,Europe,1440
+Basic Materials,Cement,Geopolymer Cement (GPC),Cement Blends,Geopolymer Cement Blend (GPC),0.118,T,United Kingdom,1440
+Basic Materials,Cement,Geopolymer Cement (GPC),Cement Blends,Geopolymer Cement Blend (GPC),0.118,T,United States or  Canada,1440
+Basic Materials,Cement,Cement Alternatives,Cement Replacement ,Ground Granulated Blast Furnace Slag (GGBFS/ GGBS),0.088,T,United Kingdom,1440
+Basic Materials,Cement,Cement Alternatives,Cement Replacement ,Ground Granulated Blast Furnace Slag (GGBFS/ GGBS),0.152,T,United States or  Canada,1440
+Basic Materials,Cement,Cement Alternatives,Cement Replacement ,Ground Granulated Blast Furnace Slag (GGBFS/ GGBS),0.092,T,Australia,1440
+Basic Materials,Cement,Cement Alternatives,Cement Replacement ,Reclaimed Fly Ash (FAR),0.013,T,United Kingdom,1440
+Basic Materials,Cement,Cement Alternatives,Cement Replacement ,Reclaimed Fly Ash (FAR),0.005,T,Europe,1440
+Basic Materials,Cement,Cement Alternatives,Cement Replacement ,Reclaimed Fly Ash (FAR),0.009,T,Australia,1440
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Reclaimed 100%,0.046,T,United States or  Canada,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Reclaimed 100%,0.033,T,Europe,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Reclaimed 100%,0.033,T,United Kingdom,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Reclaimed 100%,0.043,T,Australia,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Virgin,0.036,T,Australia,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Virgin,0.035,T,Europe,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Virgin,0.035,T,United Kingdom,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Coarse Aggregate - Virgin,0.048,T,United States or  Canada,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Sand - Virgin,0.024,T,Australia,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Sand - Virgin,0.035,T,Europe,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Sand - Virgin,0.035,T,United Kingdom,1600
+Basic Materials,Aggregate,Aggregate,Aggregates,Sand - Virgin,0.048,T,United States or  Canada,1600
+Basic Materials,Brick & Blockwork,Other,Brick,Calcium Silicate (Sand-Lime),0.401,T,Australia,1920
+Basic Materials,Brick & Blockwork,Other,Brick,Calcium Silicate (Sand-Lime),0.15,T,Europe,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.305,T,United States or  Canada,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.32,T,Australia,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.277,T,Europe,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.24,T,United Kingdom,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.305,T,United States or  Canada,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.32,T,Australia,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.277,T,Europe,1920
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.24,T,United Kingdom,1920
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.24,T,Australia,1950
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,Autoclaved Aerated Concrete block (AAC),0.71,T,Australia,1950
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.209,T,United States or  Canada,1950
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.114,T,Europe,1950
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.12,T,United Kingdom,1950
+Basic Materials,Cement,Portland Cement (OPC),Cement Mortar,OPC (5:1 sand cement ratio),0.35,T,Australia,2100
+Basic Materials,Cement,Portland Cement (OPC),Cement Mortar,OPC (5:1 sand cement ratio),0.265,T,Europe,2100
+Basic Materials,Cement,Portland Cement (OPC),Cement Mortar,OPC (5:1 sand cement ratio),0.294,T,United Kingdom,2100
+Basic Materials,Cement,Portland Cement (OPC),Cement Mortar,OPC (5:1 sand cement ratio),0.344,T,United States or  Canada,2100
+Basic Materials,Glass,Glass,Glass sheet,Laminated,0.003,kg,Australia,2500
+Basic Materials,Glass,Glass,Glass sheet,Laminated,0.002,kg,Europe,2500
+Basic Materials,Glass,Glass,Glass sheet,Laminated,0.002,kg,United Kingdom,2500
+Basic Materials,Glass,Glass,Glass sheet,Toughened,0.002,kg,Australia,2500
+Basic Materials,Glass,Glass,Glass sheet,Toughened,0.0017,kg,United Kingdom,2500
+Basic Materials,Glass,Glass,Glass sheet,Toughened,0.0023,kg,United States or  Canada,2500
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, 100% recycled",1.5,T,Australia,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, 100% recycled",0.7,T,Europe,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, 100% recycled",0.8,T,United Kingdom,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, 100% recycled",0.5,T,United States or  Canada,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, virgin",15,T,Australia,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, virgin",7,T,Europe,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, virgin",8,T,United Kingdom,2750
+Basic Materials,Metals,Aluminium,Aluminium,"Per tonne, virgin",5,T,United States or  Canada,2750
+Basic Materials,Metals,Steel,Bar Reinforcement,Standard,2.9,T,Australia,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Standard,1.168,T,Europe,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Standard,2.34,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Standard,2.293,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Carbon Neutral Bar Reinforcement,0,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,"Fabricated Reinforcement, CLF 2021 (A1-A3)",0.98,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Carbon Neutral Bar Reinforcement,0,T,Australia,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Over 65% Recycled Content,1.733,T,Australia,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Over 65% Recycled Content,0.699,T,Europe,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Over 65% Recycled Content,1.399,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Over 65% Recycled Content,1.371,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Up to 65% Recycled Content,2.34,T,Australia,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Up to 65% Recycled Content,0.943,T,Europe,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Up to 65% Recycled Content,1.889,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Up to 65% Recycled Content,1.85,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Carbon Neutral Bar Reinforcement,0,T,Europe,7850
+Basic Materials,Metals,Steel,Bar Reinforcement,Carbon Neutral Bar Reinforcement,0,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, 100% recycled",1.65,T,Australia,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, 100% recycled",1.3,T,Europe,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, 100% recycled",1.74,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, 100% recycled",0.85,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, virgin",3.3,T,Australia,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, virgin",2.59,T,Europe,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, virgin",3.485,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Galvanised Steel,"Per tonne, virgin",1.702,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Mesh Reinforcement,Per Tonne,3.042,T,Australia,7850
+Basic Materials,Metals,Steel,Mesh Reinforcement,Per Tonne,1.226,T,Europe,7850
+Basic Materials,Metals,Steel,Mesh Reinforcement,Per Tonne,2.457,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Mesh Reinforcement,Per Tonne,2.408,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, 100% recycled",1.5,T,Australia,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, 100% recycled",0.5,T,Europe,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, 100% recycled",1,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, 100% recycled",0.5,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, virgin",3,T,Australia,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, virgin",1,T,Europe,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, virgin",2,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Mild Steel,"Per tonne, virgin",1,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,"Cold Formed Studs and Track, CLF 2021 (A1-A3)",2.28,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Generic,1.814,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Generic,1.357,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Up to 20% recycled content,2.61,T,Australia,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Carbon Neutral,0,T,Australia,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Up to 20% recycled content,0.966,T,Europe,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Up to 20% recycled content,1.63,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Up to 20% recycled content,1.22,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Carbon Neutral,0,T,Europe,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel,3.3,T,Australia,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel,2.59,T,Europe,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Structural Hollow Sections,1.659,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Structural Hollow Sections,2.557,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Carbon Neutral,0,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Carbon Neutral,0,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Structural Hollow Sections,4.6,T,Australia,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Structural Hollow Sections,2.675,T,Europe,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Generic,2.9,T,Australia,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Generic,1.073,T,Europe,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel,3.485,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel,1.702,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel With up to 20% recycled content,2.97,T,Australia,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel With up to 20% recycled content,2.331,T,Europe,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel With up to 20% recycled content,3.136,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,Galvanised Steel With up to 20% recycled content,1.531,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,"Structural Hollow Sections, CLF 2021 (A1-A3)",2.39,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Primary/Universal Steel Sections,"Structural Hot-Rolled Sections, CLF 2021 (A1-A3)",1.16,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, virgin",9,T,Australia,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, virgin",5,T,Europe,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, virgin",6,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, 100% recycled",4.5,T,Australia,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, virgin",5,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, 100% recycled",2.5,T,Europe,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, 100% recycled",3,T,United Kingdom,7850
+Basic Materials,Metals,Steel,Stainless Steel,"Per tonne, 100% recycled",2.5,T,United States or  Canada,7850
+Basic Materials,Metals,Steel,Steel Extruded Hollow Sections,"Per tonne, 100% recycled",2.3,T,Australia,7850
+Basic Materials,Metals,Steel,Steel Extruded Hollow Sections,"Per tonne, virgin",4.6,T,Australia,7850
+Basic Materials,Concrete,Concrete,10 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.266,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,10 Mpa Concrete,Typical OPC,0.165,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Envirocrete 30% EPD,0.237,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Envirocrete 40% EPD,0.219,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Envirocrete Plus EPD,0.214,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral ENVISIA EPD,0.204,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Normal GP/GGBFS blend EPD,0.22,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Normal GP/GGBFS/FA blend EPD,0.187,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Holcim ECOPact EPD,0.168,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Holcim ECOPact Zero EPD,0.028,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Holcim FlyAsh Blend EPD,0.248,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Holcim Slag Blend EPD,0.199,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Holcim Triple Blend EPD,0.18,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.291,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Normal GP Blend EPD,0.299,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Boral Normal GP/FA blend EPD,0.237,m3,Australia,0
+Basic Materials,Concrete,Concrete,20 Mpa Concrete,Holcim General Blend EPD,0.301,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,100% Geopolymer,0.094,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,100% Geopolymer,0.102,m3,Europe,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,100% Geopolymer,0.102,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,100% Geopolymer,0.125,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Generic OPC,0.406,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Generic OPC,0.319,m3,Europe,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Generic OPC,0.35,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Generic OPC,0.417,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Holcim ECOPact EPD,0.181,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Holcim ECOPact Zero EPD,0.028,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Holcim Triple Blend EPD,0.182,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.343,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral ENVISIA EPD,0.212,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Envriocrete 30% EPD,0.258,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Envriocrete 40% EPD,0.237,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Envriocrete Plus EPD,0.23,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Normal GP Blend EPD,0.316,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Normal GP/FA Blend EPD,0.258,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Normal GP/GGBFS Blend EPD,0.232,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Boral Normal GP/GGBFS/FA Blend EPD,0.203,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Holcim FlyAsh Blend EPD,0.269,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Holcim General Blend EPD,0.325,m3,Australia,0
+Basic Materials,Concrete,Concrete,25 Mpa Concrete,Holcim Slag Blend EPD,0.213,m3,Australia,0
+Basic Materials,Formwork,Plastic,3 Micron Plastic Roll Membrane or Similar,Recycled 60%,0.024,m2,Australia,0
+Basic Materials,Formwork,Plastic,3 Micron Plastic Roll Membrane or Similar,Virgin,0.04,m2,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Generic OPC,0.373,m3,Europe,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Holcim ECOPact EPD,0.198,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Holcim ECOPact Zero EPD,0.028,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Holcim FlyAsh Blend EPD,0.301,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Holcim General Blend EPD,0.371,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Holcim Slag Blend EPD,0.224,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Holcim Triple Blend EPD,0.204,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.406,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 50% Fly Ash,0.221,m3,Europe,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 50% Fly Ash,0.242,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Generic OPC,0.481,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Generic OPC,0.411,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 0-20% Fly Ash,0.397,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 0-20% Fly Ash,0.343,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 50% Fly Ash,0.273,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With up to 20% GGBFS,0.404,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With up to 20% GGBFS,0.349,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With up to 20% GGBFS,0.42,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Generic OPC,0.488,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 0-20% Fly Ash,0.312,m3,Europe,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Envirocrete 30% EPD,0.288,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Envirocrete 40% EPD,0.266,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Envirocrete Plus EPD,0.257,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral ENVISIA EPD,0.226,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Normal GP Blend EPD,0.342,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Normal GP/FA Blend EPD,0.288,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Normal GP/GGBFS Blend EPD,0.249,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Boral Normal GP/GGBFS/FA Blend EPD,0.235,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,Wagner EPD Earth Friendly Concrete (GPC),0.1196,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 100% Geopolymer Replacement,0.12,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 100% Geopolymer Replacement,0.115,m3,Europe,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 100% Geopolymer Replacement,0.115,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With 100% Geopolymer Replacement,0.119,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With up to 50% GGBFS,0.288,m3,Australia,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With up to 50% GGBFS,0.256,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,32 Mpa Concrete,With up to 50% GGBFS,0.318,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Envirocrete 30% EPD,0.34,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Envirocrete 40% EPD,0.31,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Envirocrete Plus EPD,0.3,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral ENVISIA EPD,0.277,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Normal GP Blend EPD,0.385,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Normal GP/FA Blend EPD,0.361,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Normal GP/GGBFS Blend EPD,0.278,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Boral Normal GP/GGBFS/FA Blend EPD,0.274,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Generic OPC,0.555,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Generic OPC,0.427,m3,Europe,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Generic OPC,0.471,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Generic OPC,0.558,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Holcim Flyash Blend EPD,0.356,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Holcim General Blend EPD,0.433,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Holcim Slag Blend EPD,0.271,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With 0-20% Fly Ash,0.457,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With 0-20% Fly Ash,0.355,m3,Europe,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With 0-20% Fly Ash,0.424,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With 50% Fly Ash,0.31,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With 50% Fly Ash,0.248,m3,Europe,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With 50% Fly Ash,0.272,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With up to 20% GGBFS,0.464,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With up to 20% GGBFS,0.398,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With up to 20% GGBFS,0.478,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With up to 50% GGBFS,0.328,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With up to 50% GGBFS,0.288,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,With up to 50% GGBFS,0.357,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Holcim ECOPact EPD,0.239,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Holcim ECOPact Zero EPD,0.028,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,Holcim Triple Blend EPD,0.247,m3,Australia,0
+Basic Materials,Concrete,Concrete,40 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.429,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Normal GP Blend EPD,0.482,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Normal GP/FA Blend EPD,0.449,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Generic OPC,0.643,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Generic OPC,0.5,m3,Europe,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Generic OPC,0.551,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Generic OPC,0.655,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With 0-20% Fly Ash,0.531,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With 0-20% Fly Ash,0.418,m3,Europe,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With 0-20% Fly Ash,0.46,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With 50% Fly Ash,0.363,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With 50% Fly Ash,0.297,m3,Europe,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With 50% Fly Ash,0.324,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With up to 20% GGBFS,0.539,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With up to 20% GGBFS,0.468,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With up to 20% GGBFS,0.563,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With up to 50% GGBFS,0.26,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With up to 50% GGBFS,0.342,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,With up to 50% GGBFS,0.426,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Holcim ECOPact EPD,0.276,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Holcim ECOPact Zero EPD,0.028,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Holcim Triple Blend EPD,0.312,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Envirocrete 30% EPD,0.421,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Envirocrete 40% EPD,0.376,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Envirocrete Plus EPD,0.365,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral ENVISIA EPD,0.352,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Normal GP/GGBFS Blend EPD,0.344,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Boral Normal GP/GGBFS/FA Blend EPD,0.406,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Holcim General Blend EPD,0.542,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Holcim FlyAsh Blend EPD,0.442,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,Holcim Slag Blend EPD,0.331,m3,Australia,0
+Basic Materials,Concrete,Concrete,50 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.498,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,"Ready Mix Concrete, CLF 2021 (A1-A3)",0.535,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 100% Geopolymer Replacement,0.124,m3,Australia,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 100% Geopolymer Replacement,0.125,m3,Europe,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 100% Geopolymer Replacement,0.125,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 100% Geopolymer Replacement,0.147,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With up to 50% GGBFS,0.427,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 50% Fly Ash,0.378,m3,Australia,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 50% Fly Ash,0.295,m3,Europe,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 50% Fly Ash,0.326,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With up to 20% GGBFS,0.575,m3,Australia,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With up to 20% GGBFS,0.487,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With up to 20% GGBFS,0.581,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With up to 50% GGBFS,0.363,m3,Australia,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With up to 50% GGBFS,0.346,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,Generic OPC,0.692,m3,Australia,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,Generic OPC,0.524,m3,Europe,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,Generic OPC,0.581,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,Generic OPC,0.684,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 0-20% Fly Ash,0.566,m3,Australia,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 0-20% Fly Ash,0.432,m3,Europe,0
+Basic Materials,Concrete,Concrete,60 Mpa Concrete,With 0-20% Fly Ash,0.479,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With 50% Fly Ash,0.408,m3,Australia,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With 50% Fly Ash,0.318,m3,Europe,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With 50% Fly Ash,0.351,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With up to 20% GGBFS,0.526,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With up to 20% GGBFS,0.627,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With up to 50% GGBFS,0.433,m3,Australia,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With up to 50% GGBFS,0.373,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With up to 50% GGBFS,0.428,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,Generic OPC,0.75,m3,Australia,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,Generic OPC,0.566,m3,Europe,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,Generic OPC,0.629,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,Generic OPC,0.739,m3,United States or  Canada,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With 0-20% Fly Ash,0.613,m3,Australia,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With 0-20% Fly Ash,0.467,m3,Europe,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With 0-20% Fly Ash,0.517,m3,United Kingdom,0
+Basic Materials,Concrete,Concrete,80 Mpa Concrete,With up to 20% GGBFS,0.623,m3,Australia,0
+Basic Materials,Insulation,Insulation,Aluminium Faced Foil Sarking,Recycled 100%,0.001,m2,Australia,0
+Basic Materials,Insulation,Insulation,Aluminium Faced Foil Sarking,Recycled 100%,0.0004,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Aluminium Faced Foil Sarking,Virgin,0.005,m2,Australia,0
+Basic Materials,Insulation,Insulation,Aluminium Faced Foil Sarking,Virgin,0.002,m2,United Kingdom,0
+Basic Materials,Brick & Blockwork,Other,Brick,Calcium Silicate (Sand-Lime),0.74,m3,Australia,0
+Basic Materials,Brick & Blockwork,Other,Brick,Calcium Silicate (Sand-Lime),0.27,m3,Europe,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.608,m3,Australia,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.526,m3,Europe,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.456,m3,United Kingdom,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Extruded,0.579,m3,United States or  Canada,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.768,m3,Australia,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.665,m3,Europe,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.576,m3,United Kingdom,0
+Basic Materials,Brick & Blockwork,Clay Brick,Brick,Clay Pressed,0.732,m3,United States or  Canada,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,Autoclaved Aerated Concrete block (AAC),0.391,m3,Australia,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,Autoclaved Aerated Concrete block (AAC),0.18,m3,Europe,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,Autoclaved Aerated Concrete block (AAC),0.184,m3,United Kingdom,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.168,m3,United Kingdom,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.292,m3,United States or  Canada,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.336,m3,Australia,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete block,"Hollow, block only",0.16,m3,Europe,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete blockwork core fill,15 Mpa,0.285,m3,United Kingdom,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete blockwork core fill,15 Mpa,0.321,m3,United States or  Canada,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete blockwork core fill,15 Mpa,0.396,m3,Australia,0
+Basic Materials,Brick & Blockwork,Blockwork,Concrete blockwork core fill,15 Mpa,0.249,m3,Europe,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3,0.087,m3,Australia,0
+Basic Materials,Plastic,Plastic,Fibermesh reinforcement,Polypropylene fiber mesh reinforcement 0.9kg/m3,0.0074,m3,Australia,0
+Basic Materials,Plastic,Plastic,Fibermesh reinforcement,Polypropylene fiber mesh reinforcement 0.9kg/m3,0.002,m3,Europe,0
+Basic Materials,Plastic,Plastic,Fibermesh reinforcement,Polypropylene fiber mesh reinforcement 0.9kg/m3,0.005,m3,United Kingdom,0
+Basic Materials,Plastic,Plastic,Fibermesh reinforcement,Polypropylene fiber mesh reinforcement 0.9kg/m3 100% recycled,0.002,m3,Australia,0
+Basic Materials,Plastic,Plastic,Fibermesh reinforcement,Polypropylene fiber mesh reinforcement 0.9kg/m3 100% recycled,0.0005,m3,Europe,0
+Basic Materials,Plastic,Plastic,Fibermesh reinforcement,Polypropylene fiber mesh reinforcement 0.9kg/m3 100% recycled,0.001,m3,United Kingdom,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3,0.035,m3,Europe,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3,0.07,m3,United Kingdom,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3,0.069,m3,United States or  Canada,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3 100% recycled,0.044,m3,Australia,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3 100% recycled,0.018,m3,Europe,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3 100% recycled,0.027,m3,United Kingdom,0
+Basic Materials,Metals,Steel,Fibermesh reinforcement,Steel wire fiber mesh 25-35kg /m3 100% recycled,0.035,m3,United States or  Canada,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),6mm,0.022,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),6mm,0.026,m2,United States or  Canada,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),8mm,0.04,m2,Australia,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),8mm,0.03,m2,Europe,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),8mm,0.03,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),8mm,0.033,m2,United States or  Canada,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),4mm,0.021,m2,Australia,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),4mm,0.017,m2,Europe,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),4mm,0.018,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),4mm,0.017,m2,United States or  Canada,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),6mm,0.031,m2,Australia,0
+Basic Materials,Glass,Glass,Flat glass low iron generic (PA),6mm,0.023,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.0 (90mm)",65% Recycled Content,0.009,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.0 (90mm)",65% Recycled Content,0.005,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.0 (90mm)",Virgin,0.011,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.0 (90mm)",Virgin,0.004,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.0 (90mm)",65% Recycled Content,0.003,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.0 (90mm)",Virgin,0.007,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.5 (100mm)",Virgin,0.012,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.5 (100mm)",Virgin,0.007,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.5 (100mm)",Virgin,0.004,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.5 (100mm)",65% Recycled Content,0.01,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.5 (100mm)",65% Recycled Content,0.006,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R2.5 (100mm)",65% Recycled Content,0.003,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R3.0 (130mm)",65% Recycled Content,0.012,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R3.0 (130mm)",65% Recycled Content,0.008,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R3.0 (130mm)",65% Recycled Content,0.004,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R3.0 (130mm)",Virgin,0.015,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R3.0 (130mm)",Virgin,0.01,m2,Europe,0
+Basic Materials,Insulation,Insulation,"Glasswool Blanket or Batt, Foil-Faced R3.0 (130mm)",Virgin,0.005,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,"Glasswool Rigid Board, Foil-Faced 25mm",65% Recycled Content,0.007,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Rigid Board, Foil-Faced 25mm",Virgin,0.008,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Rigid Board, Foil-Faced 50mm",65% Recycled Content,0.012,m2,Australia,0
+Basic Materials,Insulation,Insulation,"Glasswool Rigid Board, Foil-Faced 50mm",Virgin,0.015,m2,Australia,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),8.4mm,0.05,m2,Europe,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),8.4mm,0.031,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),8.4mm,0.152,m2,China,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),10.4mm,0.076,m2,Australia,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),8.4mm,0.13,m2,India,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),10.4mm,0.042,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),10.4mm,0.174,m2,India,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),12.4mm,0.091,m2,Australia,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),12.4mm,0.047,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),6.4mm,0.047,m2,Australia,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),6.4mm,0.032,m2,Europe,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),6.4mm,0.024,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),6.4mm,0.097,m2,China,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),6.4mm,0.098,m2,India,0
+Basic Materials,Glass,Glass,Laminated glass generic (PA),8.4mm,0.061,m2,Australia,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108,0.025,m2,Australia,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108,0.01,m2,Europe,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108,0.02,m2,United Kingdom,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108,0.02,m2,United States or  Canada,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108 - Up to 65% Recycled Content,0.017,m2,Australia,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108 - Up to 65% Recycled Content,0.007,m2,Europe,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108 - Up to 65% Recycled Content,0.014,m2,United Kingdom,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,RL108 - Up to 65% Recycled Content,0.014,m2,United States or  Canada,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102 - Up to 65% Recycled Content,0.01,m2,United States or  Canada,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102,0.019,m2,Australia,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102,0.008,m2,Europe,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102,0.016,m2,United Kingdom,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102,0.015,m2,United States or  Canada,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102 - Up to 65% Recycled Content,0.013,m2,Australia,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102 - Up to 65% Recycled Content,0.005,m2,Europe,0
+Basic Materials,Metals,Steel,Mesh Reinforcement,SL102 - Up to 65% Recycled Content,0.011,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,100mm,0.026,m2,Australia,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,100mm,0.007,m2,Europe,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,100mm,0.008,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,135mm,0.036,m2,Australia,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,135mm,0.009,m2,Europe,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,135mm,0.011,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,150mm,0.054,m2,Australia,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,150mm,0.011,m2,Europe,0
+Basic Materials,Insulation,Insulation,Mineral Wool Blanket or Batt,150mm,0.017,m2,United Kingdom,0
+Basic Materials,Other,Other,Paper,Paper/ cellulose,1.884,m3,Australia,0
+Basic Materials,Other,Other,Paper,Paper/ cellulose,0.539,m3,Europe,0
+Basic Materials,Other,Other,Paper,Paper/ cellulose,5.88,m3,United Kingdom,0
+Basic Materials,Formwork,Plastic,Plastic Spiral Column Formwork 3mm,Up to 60% Recycled Content,0.0122,m2,Australia,0
+Basic Materials,Formwork,Plastic,Plastic Spiral Column Formwork 3mm,Up to 60% Recycled Content,0.0033,m2,Europe,0
+Basic Materials,Formwork,Plastic,Plastic Spiral Column Formwork 3mm,Up to 60% Recycled Content,0.0075,m2,United Kingdom,0
+Basic Materials,Formwork,Plastic,Plastic Spiral Column Formwork 3mm,Virgin,0.02,m2,Australia,0
+Basic Materials,Formwork,Plastic,Plastic Spiral Column Formwork 3mm,Virgin,0.0055,m2,Europe,0
+Basic Materials,Formwork,Plastic,Plastic Spiral Column Formwork 3mm,Virgin,0.0123,m2,United Kingdom,0
+Basic Materials,Timber,Timber,Plywood Board,12mm,0.021,m2,Australia,0
+Basic Materials,Timber,Timber,Plywood Board,12mm,0.01,m2,Europe,0
+Basic Materials,Timber,Timber,Plywood Board,12mm,0.005,m2,United Kingdom,0
+Basic Materials,Timber,Timber,Plywood Board,12mm,0.003,m2,United States or  Canada,0
+Basic Materials,Timber,Timber,Plywood Board,18mm,0.032,m2,Australia,0
+Basic Materials,Timber,Timber,Plywood Board,18mm,0.014,m2,Europe,0
+Basic Materials,Timber,Timber,Plywood Board,18mm,0.008,m2,United Kingdom,0
+Basic Materials,Timber,Timber,Plywood Board,18mm,0.004,m2,United States or  Canada,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Beam Edges up to 250mm deep, Class 2 (2 Uses)",0.02,Lm,Australia,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Beam Edges up to 250mm deep, Class 2 (2 Uses)",0.01,Lm,Europe,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Beam Edges up to 250mm deep, Class 2 (2 Uses)",0.007,Lm,United Kingdom,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Beam Edges up to 250mm deep, Class 2 (2 Uses)",0.005,Lm,United States or  Canada,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Columns, Class 2 (2 Uses)",0.029,m2,Australia,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Columns, Class 2 (2 Uses)",0.013,m2,Europe,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Soffits, Class 2 (2 Uses)",0.007,m2,United Kingdom,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Soffits, Class 2 (2 Uses)",0.005,m2,United States or  Canada,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Walls, Both Sides, Class 2 (2 Uses)",0.01,m2,United States or  Canada,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"24mm to Soffits, Class 2 (2 Uses)",0.036,m2,Australia,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Columns, Class 2 (2 Uses)",0.013,m2,United Kingdom,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Columns, Class 2 (2 Uses)",0.009,m2,United States or  Canada,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Walls, Both Sides, Class 2 (2 Uses)",0.041,m2,Australia,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Walls, Both Sides, Class 2 (2 Uses)",0.02,m2,Europe,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Walls, Both Sides, Class 2 (2 Uses)",0.014,m2,United Kingdom,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"24mm to Soffits, Class 2 (2 Uses)",0.017,m2,Europe,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"24mm to Soffits, Class 2 (2 Uses)",0.011,m2,United Kingdom,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"24mm to Soffits, Class 2 (2 Uses)",0.007,m2,United States or  Canada,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Soffits, Class 2 (2 Uses)",0.019,m2,Australia,0
+Basic Materials,Formwork,Timber,Plywood formwork including propping/ bracing,"18mm to Soffits, Class 2 (2 Uses)",0.009,m2,Europe,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R2.0 (90mm),80% Recycled Content,0.0036,m2,Australia,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R2.0 (90mm),80% Recycled Content,0.002,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R2.0 (90mm),Virgin,0.006,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R2.5 (100mm),80% Recycled Content,0.004,m2,Australia,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R2.5 (100mm),80% Recycled Content,0.0026,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R2.5 (100mm),Virgin,0.007,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R3.0 (130mm),80% Recycled Content,0.005,m2,Australia,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R3.0 (130mm),80% Recycled Content,0.0034,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Polyester Blanket or Batt (PET) R3.0 (130mm),Virgin,0.009,m2,United Kingdom,0
+Basic Materials,Metals,Steel,Powdercoating,Steel Powdercoat,0.006,m2,Australia,0
+Basic Materials,Formwork,Plastic,Reusable ABS Plastic Formwork,One Side,0.065,m2,Australia,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 100mm,Without Facing,0.007,m2,Europe,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 100mm,Without Facing,0.01,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 100mm,Without Facing,0.007,m2,United States or  Canada,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 100mm,Without Facing,0.018,m2,Australia,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 100mm,With Foil Facing,0.019,m2,Australia,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 100mm,With Foil Facing,0.011,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 50mm,With Plastic Membrane,0.011,m2,Australia,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 50mm,With Plastic Membrane,0.006,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 50mm,Without Facing,0.009,m2,Australia,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 50mm,Without Facing,0.004,m2,Europe,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 50mm,Without Facing,0.005,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 50mm,Without Facing,0.003,m2,United States or  Canada,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 75mm,Without Facing,0.014,m2,Australia,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 75mm,Without Facing,0.006,m2,Europe,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 75mm,Without Facing,0.008,m2,United Kingdom,0
+Basic Materials,Insulation,Insulation,Rigid Expanded Polystyrene (EPS) 75mm,Without Facing,0.006,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Up to 50% Recycled Content",0.035,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Virgin",0.019,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Over 50% Recycled Content",0.022,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Over 50% Recycled Content",0.008,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Over 50% Recycled Content",0.013,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Over 50% Recycled Content",0.01,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Up to 50% Recycled Content",0.024,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Up to 50% Recycled Content",0.009,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Up to 50% Recycled Content",0.015,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Up to 50% Recycled Content",0.011,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Virgin",0.027,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Virgin",0.01,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Virgin",0.017,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.6mm Galvanised, Virgin",0.013,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.75mm Galvanised, Virgin",0.032,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.75mm Galvanised, Virgin",0.012,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.75mm Galvanised, Virgin",0.02,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"0.75mm Galvanised, Virgin",0.015,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Up to 50% Recycled Content",0.013,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Up to 50% Recycled Content",0.022,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Up to 50% Recycled Content",0.016,m2,United States or  Canada,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Virgin",0.041,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Virgin",0.015,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Virgin",0.025,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Over 50% Recycled Content",0.031,m2,Australia,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Over 50% Recycled Content",0.012,m2,Europe,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Over 50% Recycled Content",0.02,m2,United Kingdom,0
+Basic Materials,Formwork,Steel,Steel Formwork,"1.0mm Galvanised, Over 50% Recycled Content",0.015,m2,United States or  Canada,0
+Basic Materials,Timber,Timber,Structural Timber,Cross Laminated Timber (CLT),0.645,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,Cross Laminated Timber (CLT),0.108,m3,Europe,0
+Basic Materials,Timber,Timber,Structural Timber,Cross Laminated Timber (CLT),0.176,m3,United States or  Canada,0
+Basic Materials,Timber,Timber,Structural Timber,Cross Laminated Timber (CLT),0.32,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,Glue-Laminated Timber (Glu-lam),0.718,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,Glue-Laminated Timber (Glu-lam),0.398,m3,Europe,0
+Basic Materials,Timber,Timber,Structural Timber,Glue-Laminated Timber (Glu-lam),0.4,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,Glue-Laminated Timber (Glu-lam),0.59,m3,United States or  Canada,0
+Basic Materials,Timber,Timber,Structural Timber,"Hardwood, dressed and treated",0.347,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,"Hardwood, dressed and treated",0.24,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,Laminated Veneer Lumber (LVL),1.059,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,Laminated Veneer Lumber (LVL),0.681,m3,Europe,0
+Basic Materials,Timber,Timber,Structural Timber,Laminated Veneer Lumber (LVL),0.593,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,Laminated Veneer Lumber (LVL),0.365,m3,United States or  Canada,0
+Basic Materials,Timber,Timber,Structural Timber,Medium Density Fibreboard (MDF),0.899,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,Medium Density Fibreboard (MDF),0.858,m3,Europe,0
+Basic Materials,Timber,Timber,Structural Timber,Medium Density Fibreboard (MDF),0.877,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,Medium Density Fibreboard (MDF),0.795,m3,United States or  Canada,0
+Basic Materials,Timber,Timber,Structural Timber,Plywood,1.777,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,Plywood,0.801,m3,Europe,0
+Basic Materials,Timber,Timber,Structural Timber,Plywood,0.443,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,Plywood,0.236,m3,United States or  Canada,0
+Basic Materials,Timber,Timber,Structural Timber,"Softwood, dressed and treated",0.198,m3,Australia,0
+Basic Materials,Timber,Timber,Structural Timber,"Softwood, dressed and treated",0.052,m3,Europe,0
+Basic Materials,Timber,Timber,Structural Timber,"Softwood, dressed and treated",0.16,m3,United Kingdom,0
+Basic Materials,Timber,Timber,Structural Timber,"Softwood, dressed and treated",0.088,m3,United States or  Canada,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),10mm,0.057,m2,Australia,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),10mm,0.034,m2,Europe,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),10mm,0.045,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),10mm,0.041,m2,United States or  Canada,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),12mm,0.068,m2,Australia,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),12mm,0.054,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),4mm,0.023,m2,Australia,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),4mm,0.019,m2,Europe,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),4mm,0.018,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),4mm,0.023,m2,United States or  Canada,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),6mm,0.034,m2,Australia,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),6mm,0.025,m2,Europe,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),6mm,0.027,m2,United Kingdom,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),6mm,0.031,m2,United States or  Canada,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),8mm,0.046,m2,Australia,0
+Basic Materials,Glass,Glass,Toughened glass clear generic (PA),8mm,0.036,m2,United Kingdom,0
+Basic Materials,Aggregate,Aggregate,Water,Grid Potable,0.001,m2,United States or  Canada,0
+Basic Materials,Aggregate,Aggregate,Water,Grid Potable,0.001,m2,Australia,0
+Basic Materials,Aggregate,Aggregate,Water,Grid Potable,0.001,m2,United Kingdom,0
+Basic Materials,Aggregate,Aggregate,Water,Grid Potable,0.001,m2,Europe,0

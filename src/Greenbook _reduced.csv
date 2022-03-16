@@ -1,0 +1,34 @@
+﻿Material,Sub Category,Embodied Carbon,Declared Units,db
+Brick,Concrete Hollow,240,kg,Green Book
+Brick,Concrete Autoclaved Aerated Concrete block (AAC),710,kg,Green Book
+Concrete,Concrete 25 MPa ,406,m3,Green Book
+Concrete,Concrete 32 MPa ,481,m3,Green Book
+Concrete,Concrete 32 MPa - fly ash 20%,397,m3,Green Book
+Concrete,Concrete 32 MPa - fly ash 50%,273,m3,Green Book
+Concrete,Concrete 32 MPa - GGBS 20%,404,m3,Green Book
+Concrete,Concrete 32 MPa - GGBS 50%,288,m3,Green Book
+Concrete,Concrete 40 MPa ,555,m3,Green Book
+Concrete,Concrete 40 MPa - fly ash 20%,457,m3,Green Book
+Concrete,Concrete 40 MPa - fly ash 50%,310,m3,Green Book
+Concrete,Concrete 40 MPa - GGBS 20%,464,m3,Green Book
+Concrete,Concrete 40 MPa - GGBS 50%,328,m3,Green Book
+Concrete,Concrete 50 MPa ,643,m3,Green Book
+Concrete,Concrete 50 MPa - fly ash 20%,531,m3,Green Book
+Concrete,Concrete 50 MPa - fly ash 50% ,363,m3,Green Book
+Concrete,Concrete 50 MPa - GGBS  20%,539,m3,Green Book
+Concrete,Concrete 50 MPa - GGBS  50%,260,m3,Green Book
+Aluminium,Aliminium recycled,1.5,kg,Green Book
+Aluminium,Aluminium virgin,15,kg,Green Book
+Steel,Steel Universal Section,2.9,kg,Green Book
+Steel,Steel Universal Section Recycled,2.61,kg,Green Book
+Steel,Steel Hollow Seciton,4.6,kg,Green Book
+Steel,Steel Galvanised Recycled,1.65,kg,Green Book
+Steel,Steel Galvanised Virgin,3.3,kg,Green Book
+Clay ,Clay Brick,320,kg,Green Book
+Timber,Cross Laminated Timber (CLT),645,m3,Green Book
+Timber,Glue-Laminated Timber (Glu-lam),718,m3,Green Book
+Timber,"Hardwood, dressed and treated",347,m3,Green Book
+Timber,Laminated Veneer Lumber (LVL),1059,m3,Green Book
+Timber,Medium Density Fibreboard (MDF),899,m3,Green Book
+Timber,Plywood,1777,m3,Green Book
+Timber,"Softwood, dressed and treated",198,m3,Green Book
