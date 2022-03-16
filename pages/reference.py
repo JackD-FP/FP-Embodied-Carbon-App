@@ -4,14 +4,19 @@ import dash_bootstrap_components as dbc
 layout = html.Div([
     html.H1("Reference", className="display-2 mb-5 "),
     html.Hr(),
-    html.Div([
-        html.Img(
-            src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
-            alt="under construction icon"),
-        html.H1("UNDER CONSTRUCTION! SOMETHING COOL WILL COME OUT SOON", className="text-center"),
-        html.Img(
-            src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
-            alt="under construction icon")
-    ], className="hstack gap-3")
+    html.H3("Schedule Requirements")
+
 ])
 
+
+
+# underconstruction 
+    # html.Div([
+    #     html.Img(
+    #         src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
+    #         alt="under construction icon"),
+    #     html.H1("UNDER CONSTRUCTION! SOMETHING COOL WILL COME OUT SOON", className="text-center"),
+    #     html.Img(
+    #         src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
+    #         alt="under construction icon")
+    # ], className="hstack gap-3")

@@ -46,7 +46,7 @@ app._favicon = ("assets/favicon.ico")
 
 
 CONTENT_STYLE = {
-    "marginLeft": "34rem",
+    "marginLeft": "26rem",
     "marginRight": "2rem",
     "padding": "4rem 2rem",
 }
@@ -56,7 +56,7 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "32rem",
+    "width": "24rem",
     "padding": "4rem 2rem",
     "backgroundColor": "#f8f9fa",
 }

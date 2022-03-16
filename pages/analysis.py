@@ -35,6 +35,7 @@ def definition(data):
             dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
             analysis_cards.greenbook_card,
             analysis_cards.epic_card,
+            analysis_cards.ice_card
         ])
 
     elif data is None: dbc.Alert( #not sure why this is not working
