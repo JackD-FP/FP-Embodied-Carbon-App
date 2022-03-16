@@ -4,8 +4,8 @@ import dash_bootstrap_components as dbc
 layout = html.Div([
     html.H1("Reference", className="display-2 mb-5 "),
     html.Hr(),
-    html.H3("Schedule Requirements")
-
+    html.H3("About Embodied Carbon Calculator"),
+    html.P("The ")
 ])
 
 
@@ -19,4 +19,4 @@ layout = html.Div([
     #     html.Img(
     #         src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
     #         alt="under construction icon")
-    # ], className="hstack gap-3")
+    # ], className="hstack gap-3") 
