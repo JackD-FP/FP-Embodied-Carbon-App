@@ -13,9 +13,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
-from src import greenbook_options
-from src import epic_options
-from src import ice_options
+from src import greenbook_options, epic_options, ice_options, analysis_more_info
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -66,13 +64,19 @@ greenbook_card = dbc.Card([
             hover=True,
             style = {"width": "75%"}
             ),
-        dcc.Graph(id="gb_pie", config=config)
+        dcc.Graph(id="gb_pie", config=config),
+
     ], className="hstack"),
+    dbc.Accordion([
+        dbc.AccordionItem(
+            children=analysis_more_info.gb_more_info, 
+            title="More Information and Analysis")
+    ], flush=True, start_collapsed=True)
 ],
 class_name="my-5 p-4 shadow"
 )
 
-# for the next 40 lines (next 3 callbacks)  
+# for the next 3 callbacks  
 # I think it would be better if we used pattern matching... ¯\_( ͡° ͜ʖ ͡°)_/¯
 @callback(
 Output('row_concrete_value', 'children'),

@@ -56,10 +56,10 @@ layout = html.Div([
         # Allow multiple files to be uploaded
         multiple=True
     ),
-    dcc.Store(id="dashboard_store"),# i wish there a better way
-    html.Div(id="display-table"),     #reload_table is only there cause display-table only loads once
-    html.Div(id='reload_table'),      #this is triggered by the dashboard click in the side menu
-    html.Div(id="dashboard_graph"),     #i think better way is to use if main_store is not None then instantiate ( ͠° ͟ʖ ͡°)
+    dcc.Store(id="dashboard_store"),
+    html.Div(id="display-table"),    
+    html.Div(id='reload_table'),        # There is a bug where this loads whilst dashboard_graph is still active
+    html.Div(id="dashboard_graph"),     # could just check but idk ceebs not elegant(?)...no thing is elegant (╯▔皿▔)╯
 ])
 
 
@@ -171,22 +171,17 @@ def em_calc(df):
             gb_embodied_carbon.append(mass[i]*2.9) #Steel Universal Section || Green Book
             epic_embodied_carbon.append(mass[i]*2.9) #Steel structural steel section || Epic  
             ice_embodied_carbon.append(mass[i]*1.55) # steel Section|| Ice
-            #materials.append("Steel Universal Section")
         elif mat == "TIMBER - STRUCTURAL":
             gb_embodied_carbon.append(volumes[i]*718) #Glue-Laminated Timber (Glu-lam) || Green Book
             epic_embodied_carbon.append(volumes[i]*1718) #Glued laminated timber (glulam) || Epic 
             ice_embodied_carbon.append(mass[i]*0.51) # Timber Gluelam || Ice
 
         #ADD OTHER MATERIALS LIKE ALUMINIUM AND BRICK!!! (╯‵□′)╯︵┻━┻
-        # Also i think it's better if we have the number as a dataframe.loc
-        #like look for the right material type or something.
+        # Also i think it's better if we access dataframe.loc instead of a const
+        # like look for the right material type or something.
         
     return np.around(gb_embodied_carbon,2), np.around(epic_embodied_carbon, 2), np.around(ice_embodied_carbon, 2)
 
-# @callback(
-# Output('dashboard_graph', 'children'),
-# [Input('dashboard', 'n_clicks'),Input('upload_btn', 'n_clicks')],
-# State('dashboard_store', 'data'))
 @callback(
 Output('dashboard_graph', 'children'),
 [Input('main_store', 'data')],)
@@ -199,35 +194,52 @@ def make_graphs(data):
 
         df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
-        df_ec = df["Embodied Carbon"].tolist()
+        df_ec = df["Embodied Carbon"].tolist() 
 
         embodied_carbon_dict = { 
-            "Materials" : df_mat, 
-            "Archicad" : df_ec,
-            "Green Book EC" : gb_ec, 
-            "EPiC EC": epic_ec, 
-            "ICE EC": ice_ec}
+            "Materials" : df_mat , 
+            "Archicad (kgCO2e)" : df_ec,
+            "Green Book (kgCO2e)" : gb_ec, 
+            "EPiC EC (kgCO2e)": epic_ec, 
+            "ICE EC (kgCO2e)": ice_ec
+            }
+        total_dict = { #lol u a total dict
+            "Materials" : "Total", 
+            "Archicad (kgCO2e)" : sum(df_ec),
+            "Green Book (kgCO2e)" : sum(gb_ec), 
+            "EPiC EC (kgCO2e)": sum(epic_ec), 
+            "ICE EC (kgCO2e)": sum(ice_ec)
+        }
         ec_df = pd.DataFrame(embodied_carbon_dict)
+        ec_df = ec_df.append(total_dict, ignore_index=True)
+        ec_df.loc[:,"Archicad (kgCO2e)"] = ec_df["Archicad (kgCO2e)"].map('{:,.2f}'.format)
+        ec_df.loc[:,"Green Book (kgCO2e)"] = ec_df["Green Book (kgCO2e)"].map('{:,.2f}'.format)
+        ec_df.loc[:,"EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map('{:,.2f}'.format)
+        ec_df.loc[:,"ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map('{:,.2f}'.format)
+
+
+        #ec_df = ec_df["Green Book EC"].str.cat(["kgCO2e", "kgCO2e", "kgCO2e"], sep=" ")
 
         fig = make_subplots(rows=2, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}],[{'type':'domain'}, {'type':'domain'}]])
         #subplot for archicad
-        fig.add_trace(go.Pie(labels=df_mat, values=df_ec, name="Archicad", hole=0.5),
+        fig.add_trace(go.Pie(labels=df_mat, values=df_ec, name="Archicad", hole=0.5, scalegroup="dashboard_pie"),
               1, 1)
         #subplot for greenbook
-        fig.add_trace(go.Pie(labels=df_mat, values=gb_ec, name="Green Book DB", hole=0.5),
+        fig.add_trace(go.Pie(labels=df_mat, values=gb_ec, name="Green Book DB", hole=0.5, scalegroup="dashboard_pie"),
               1, 2)
-        fig.add_trace(go.Pie(labels=df_mat, values=epic_ec, name="EPiC DB", hole=0.5),
+        fig.add_trace(go.Pie(labels=df_mat, values=epic_ec, name="EPiC DB", hole=0.5, scalegroup="dashboard_pie"),
               2, 1)
         #subplot for greenbook
-        fig.add_trace(go.Pie(labels=df_mat, values=ice_ec, name="ICE DB", hole=0.5),
+        fig.add_trace(go.Pie(labels=df_mat, values=ice_ec, name="ICE DB", hole=0.5, scalegroup="dashboard_pie"),
               2, 2)
         fig.update_layout(
             title_text="Structure Embodied Carbon",
             # Add annotations in the center of the donut pies.
-            annotations=[dict(text='Archicad', x=0.20, y=0.80, font_size=20, showarrow=False),
-                       dict(text='Greenbook', x=0.82, y=0.80, font_size=20, showarrow=False),
-                       dict(text='EPiC', x=0.20, y=0.20, font_size=20, showarrow=False),
-                       dict(text='ICE', x=0.78, y=0.20, font_size=20, showarrow=False)],)
+            annotations=[dict(text='Archicad', x=0.205, y=0.80, font_size=16, showarrow=False),
+                       dict(text='Greenbook', x=0.80, y=0.80, font_size=16, showarrow=False),
+                       dict(text='EPiC', x=0.21, y=0.20, font_size=16, showarrow=False),
+                       dict(text='ICE', x=0.78, y=0.20, font_size=16, showarrow=False)],
+                      )
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         
         df = df.drop(["Complex Profile", "Structure"], axis=1)

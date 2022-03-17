@@ -7,7 +7,7 @@ from flask import Flask
 import json
 # from server import app
 
-from pages import analysis, dashboard, reference, total_embodied_carbon
+from pages import analysis, dashboard, total_embodied_carbon, documentation
 import os
 
 config = { #just tells plotly to save as svg rather than jpeg
@@ -25,6 +25,7 @@ if not os.path.exists("image"):  #why do i have this?
 
 #server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP] #dbc theme
+
 server = Flask(__name__)
 app = dash.Dash(
     __name__, 
@@ -64,7 +65,8 @@ SIDEBAR_STYLE = {
 sidebar = html.Div(
     [
         html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
-        html.H5("Embodied Carbon", className="my-5 display-6", style={"font": "2rem"}),
+        html.H5("Embodied Carbon", className="mt-5 display-6", style={"font": "2rem"}),
+        html.H5("Structure", className="mb-5 display-6 fs-3"),
         html.Hr(),
         html.P(
             "Analyse design using this Embodied Carbon Calculator. More information in the reference page below.", className="lead"
@@ -74,7 +76,7 @@ sidebar = html.Div(
                 dbc.NavLink("Dashboard", href="/pages/dashboard",  id="dashboard", active="exact"),
                 dbc.NavLink("Analysis", href="/pages/analysis", id="analysis", active="exact"),
                 dbc.NavLink("Total Embodied Carbon", href="/pages/total_embodied_carbon", id="tec", active="exact"),
-                dbc.NavLink("Reference", href="/pages/reference", id="reference", active="exact")
+                dbc.NavLink("Documentation", href="/pages/documentation", id="documentation", active="exact")
             ],
             vertical=True,
             pills=True,
@@ -118,8 +120,8 @@ def render_page_content(pathname):
         return analysis.layout
     elif pathname == "/pages/total_embodied_carbon":
         return total_embodied_carbon.layout
-    elif pathname == "/pages/reference":
-        return reference.layout
+    elif pathname == "/pages/documentation":
+        return documentation.layout
     # If the user tries to reach a different page, return a 404 message
     return dbc.Container(
         [
