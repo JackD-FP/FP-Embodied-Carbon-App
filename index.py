@@ -39,7 +39,7 @@ app = dash.Dash(
 )
 @server.route("/pages/<path>")                  #to change tab name to "Ebodied Carbon: dashboard" 
 def dash_app(path):                             #but for some reason the page name doesn't work
-    app.title = "Ebodied Carbon: %s"%(path)     #just shows dashboard ¯\_(ツ)_/¯
+    app.title = "Embodied Carbon: %s"%(path)     #just shows dashboard ¯\_(ツ)_/¯
     return app.index()
 # #server = app.server
 app._favicon = ("assets/favicon.ico")
@@ -86,6 +86,14 @@ sidebar = html.Div(
             },
             className="display-6",
         ),
+        html.Hr(className="my-5"),
+        html.H5("Files", className="mb-3 display-6 fs-3"),
+        html.Div([
+            dbc.Button("Primary", color="primary", className="m-auto"),
+            dbc.Button("Primary", outline=True, color="primary", className="m-auto"),
+        ], className="vstack"),
+
+
     ],
     style=SIDEBAR_STYLE,
 )

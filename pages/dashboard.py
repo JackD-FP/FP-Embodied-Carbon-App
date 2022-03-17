@@ -204,7 +204,7 @@ def make_graphs(data):
             "ICE EC (kgCO2e)": ice_ec
             }
         total_dict = { #lol u a total dict
-            "Materials" : "Total", 
+            "Materials" : "TOTALS", 
             "Archicad (kgCO2e)" : sum(df_ec),
             "Green Book (kgCO2e)" : sum(gb_ec), 
             "EPiC EC (kgCO2e)": sum(epic_ec), 
@@ -212,13 +212,11 @@ def make_graphs(data):
         }
         ec_df = pd.DataFrame(embodied_carbon_dict)
         ec_df = ec_df.append(total_dict, ignore_index=True)
+
         ec_df.loc[:,"Archicad (kgCO2e)"] = ec_df["Archicad (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"Green Book (kgCO2e)"] = ec_df["Green Book (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map('{:,.2f}'.format)
-
-
-        #ec_df = ec_df["Green Book EC"].str.cat(["kgCO2e", "kgCO2e", "kgCO2e"], sep=" ")
 
         fig = make_subplots(rows=2, cols=2, specs=[[{'type':'domain'}, {'type':'domain'}],[{'type':'domain'}, {'type':'domain'}]])
         #subplot for archicad
@@ -229,7 +227,7 @@ def make_graphs(data):
               1, 2)
         fig.add_trace(go.Pie(labels=df_mat, values=epic_ec, name="EPiC DB", hole=0.5, scalegroup="dashboard_pie"),
               2, 1)
-        #subplot for greenbook
+        #subplot for greenbookW
         fig.add_trace(go.Pie(labels=df_mat, values=ice_ec, name="ICE DB", hole=0.5, scalegroup="dashboard_pie"),
               2, 2)
         fig.update_layout(
