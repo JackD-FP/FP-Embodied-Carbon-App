@@ -1,3 +1,4 @@
+from pydoc import classname
 import dash
 from dash import Input, Output, State, dcc, html, callback, dash_table
 import plotly.express as px
@@ -5,6 +6,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
+import dash_mantine_components as dmc
 
 import base64
 import datetime
@@ -37,8 +39,12 @@ layout = html.Div([
     dcc.Upload(
         id='upload-data',
         children=html.Div([
-            dbc.Button("Drag and Drop or Schedule File", 
-            className = "fs-3 align-center position-absolute top-50 start-50 translate-middle text-light w-100 h-100",
+            dbc.Button([
+                html.I(className="bi bi-upload", style={"width":"2rem"}),
+                html.P("Drag and Drop or Schedule File")
+                ], 
+            color="light",
+            className = "align-center position-absolute top-50 start-50 translate-middle w-100 h-100",
             id="upload_btn"),
         ], 
         id='uploader_ui',
@@ -52,7 +58,7 @@ layout = html.Div([
             'margin': 'auto',
             'marginTop': '2rem',
         },
-        className = 'text-center mb-5 border border-1 rounded-3 shadow bg-primary',
+        className = 'text-center mb-5 border border-2 rounded-3 shadow-sm bg-light',
         # Allow multiple files to be uploaded
         multiple=True
     ),
@@ -205,11 +211,12 @@ def make_graphs(data):
             }
         total_dict = { #lol u a total dict
             "Materials" : "TOTALS", 
-            "Archicad (kgCO2e)" : sum(df_ec),
-            "Green Book (kgCO2e)" : sum(gb_ec), 
-            "EPiC EC (kgCO2e)": sum(epic_ec), 
-            "ICE EC (kgCO2e)": sum(ice_ec)
+            "Archicad (kgCO2e)" : (archicad_sum := sum(df_ec)),
+            "Green Book (kgCO2e)" :(gb_sum := sum(gb_ec)), 
+            "EPiC EC (kgCO2e)": (epic_sum := sum(epic_ec)), 
+            "ICE EC (kgCO2e)": (ice_sum := sum(ice_ec))
         }
+
         ec_df = pd.DataFrame(embodied_carbon_dict)
         ec_df = ec_df.append(total_dict, ignore_index=True)
 
@@ -241,11 +248,90 @@ def make_graphs(data):
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         
         df = df.drop(["Complex Profile", "Structure"], axis=1)
+
+        #calc for them progress ring
+        db_total = sum([archicad_sum, gb_sum, epic_sum, ice_sum])
+        
+
         return html.Div([ # consolidated table..
-            html.H3("Structure Summery"),
-            dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
-            html.H3("Embodied Carbon(EC) calculation", className="mt-5"),
-            dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
-            dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
+            dbc.Card([
+                html.H3("Structure Summery"),
+                dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
+                
+
+
+            ], class_name="my-5 p-4 shadow"),
+            dbc.Card([
+                html.H3("Embodied Carbon(EC) calculation"),
+                dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
+                html.H5("Structure Benchmark"),
+                dbc.Input(
+                    placeholder="What's the gross floor area?",
+                    className="w-25",
+                    type="number"
+                ),
+                dbc.Container([
+                    dbc.Row([
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(archicad := (int((archicad_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": archicad, "color": "blue"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(archicad_sum), className="text-center"),
+                            html.H6("Archicad Total EC", className="text-center") 
+                        ],className=""),
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(green_book := (int((gb_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": green_book, "color": "green"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(gb_sum), className="text-center"),
+                            html.H6("Green Book Total EC", className="text-center") 
+                        ]),
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(epic := (int((epic_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": epic, "color": "red"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(epic_sum), className="text-center"),
+                            html.H6("EPiC Total EC", className="text-center") 
+                        ]),
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": ice, "color": "yellow"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
+                            html.H6("ICE Total EC", className="text-center") 
+                        ]), 
+                    ],className="d-flex justify-content-between")
+
+                ], fluid=True),
+                dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
+            ], class_name="my-5 p-4 shadow"),
         ])
 

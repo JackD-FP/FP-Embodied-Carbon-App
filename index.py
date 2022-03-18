@@ -5,9 +5,11 @@ from dash.exceptions import PreventUpdate
 from dash import Input, Output, State, dcc, html, callback
 from flask import Flask
 import json
+from src import save_modal
+import dash_mantine_components as dmc
 # from server import app
 
-from pages import analysis, dashboard, total_embodied_carbon, documentation
+from pages import analysis, dashboard, documentation, comparison
 import os
 
 config = { #just tells plotly to save as svg rather than jpeg
@@ -24,7 +26,7 @@ if not os.path.exists("image"):  #why do i have this?
     os.mkdir("image")            #was I suppose to do something with this?＼（〇_ｏ）／
 
 #server shit
-external_stylesheets = [dbc.themes.BOOTSTRAP] #dbc theme
+external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP] #dbc theme
 
 server = Flask(__name__)
 app = dash.Dash(
@@ -75,7 +77,7 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Dashboard", href="/pages/dashboard",  id="dashboard", active="exact"),
                 dbc.NavLink("Analysis", href="/pages/analysis", id="analysis", active="exact"),
-                dbc.NavLink("Total Embodied Carbon", href="/pages/total_embodied_carbon", id="tec", active="exact"),
+                dbc.NavLink("Comparison", href="/pages/comparison", id="tec", active="exact"),
                 dbc.NavLink("Documentation", href="/pages/documentation", id="documentation", active="exact")
             ],
             vertical=True,
@@ -86,17 +88,41 @@ sidebar = html.Div(
             },
             className="display-6",
         ),
-        html.Hr(className="my-5"),
+        html.Hr(className="mt-5"),
         html.H5("Files", className="mb-3 display-6 fs-3"),
-        html.Div([
-            dbc.Button("Primary", color="primary", className="m-auto"),
-            dbc.Button("Primary", outline=True, color="primary", className="m-auto"),
-        ], className="vstack"),
-
-
+        dbc.Nav([
+            dbc.NavItem(
+                dbc.NavLink(
+                    "Save Session", 
+                    href="#",  
+                    id="save_session", 
+                    active=True,
+                    className="border border-1 rounded-3 border-primary mb-3",
+                    ),
+            ),
+            dbc.DropdownMenu(
+                label="Load Session",
+                children=[
+                dbc.DropdownMenuItem("test 1"),
+                dbc.DropdownMenuItem("test 2"),
+                dbc.DropdownMenuItem("test 3"),
+                ], nav=True, className="flex-grow-1"
+            ),
+        ], vertical=True),
+        save_modal.save_modal
     ],
     style=SIDEBAR_STYLE,
 )
+
+@app.callback(
+Output('save', 'is_open'),
+Input('save_session', 'n_clicks'), 
+Input('cancel_btn', 'n_clicks'),
+State('save', 'is_open'))
+def definition(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
 
 #passes store to main_store
 @app.callback(
@@ -126,8 +152,8 @@ def render_page_content(pathname):
         return dashboard.layout
     elif pathname == "/pages/analysis":
         return analysis.layout
-    elif pathname == "/pages/total_embodied_carbon":
-        return total_embodied_carbon.layout
+    elif pathname == "/pages/comparison":
+        return comparison.layout
     elif pathname == "/pages/documentation":
         return documentation.layout
     # If the user tries to reach a different page, return a 404 message
