@@ -1,4 +1,3 @@
-from pydoc import classname
 import dash
 from dash import Input, Output, State, dcc, html, callback, dash_table
 import plotly.express as px
@@ -113,7 +112,7 @@ def parse_contents(contents, filename, date):
             [
                 html.H1("Upload is SUCCESSFUL!"),
                 html.Hr(),
-                html.P("{} has been uploaded succesfully".format(filename), className="h4"),
+                html.P("{} has been uploaded succesfully".format(filename), className="fs-5"),
                 html.P("Happy designing! 😁")
             ], 
             is_open=True, 
@@ -264,9 +263,10 @@ def make_graphs(data):
             dbc.Card([
                 html.H3("Embodied Carbon(EC) calculation"),
                 dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
-                html.H5("Structure Benchmark"),
+                html.H5("Embodied Carbon per square meter"),
                 dbc.Input(
-                    placeholder="What's the gross floor area?",
+                    id="gfa_input",
+                    placeholder="What's the gross floor area (gfa)?",
                     className="w-25",
                     type="number"
                 ),
@@ -328,10 +328,90 @@ def make_graphs(data):
                             html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
                             html.H6("ICE Total EC", className="text-center") 
                         ]), 
+                    ],className="d-flex justify-content-between"),
+
+                    dbc.Row([
+                        dbc.Col([
+                            dmc.RingProgress(
+                                id="archicad_ring",
+                                # label="+{}%".format(590),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": 1, "color": "blue"}
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(archicad_sum), id="archicad_h3", className="text-center"),
+                            html.H6("Archicad EC per meter square", className="text-center") 
+                        ],className=""),
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(green_book := (int((gb_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": green_book, "color": "green"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(gb_sum), className="text-center"),
+                            html.H6("Green Book Total EC", className="text-center") 
+                        ]),
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(epic := (int((epic_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": epic, "color": "red"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(epic_sum), className="text-center"),
+                            html.H6("EPiC Total EC", className="text-center") 
+                        ]),
+                        dbc.Col([
+                            dmc.RingProgress(
+                                label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
+                                size=130,
+                                thickness=20,
+                                roundCaps=True,
+                                sections=[
+                                    {"value": ice, "color": "yellow"},
+                                ],
+                                style={'margin': 'auto'}
+                            ),
+                            html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
+                            html.H6("ICE Total EC", className="text-center") 
+                        ]), 
                     ],className="d-flex justify-content-between")
+
 
                 ], fluid=True),
                 dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
             ], class_name="my-5 p-4 shadow"),
         ])
 
+@callback(
+[Output('archicad_ring', 'sections')],
+Input('gfa_input', 'value')
+)
+def archicad_gfa(value):
+    # df = pd.read_json(data, orient="split")
+    # df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
+    # archicad_sum = sum(df["Embodied Carbon"].tolist())
+    if value is not None:
+        value = value + 1
+        sections = [{"value": value, "color": "blue"}]
+        return sections
+    else: PreventUpdate
+
+    # if value is None or 0:
+    #     value = 1
+    # gfa = archicad_sum/value
+    #(archicad := (int((archicad_sum*100)/db_total)))
+    
