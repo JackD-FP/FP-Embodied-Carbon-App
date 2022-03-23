@@ -268,7 +268,9 @@ def make_graphs(data):
                     id="gfa_input",
                     placeholder="What's the gross floor area (gfa)?",
                     className="w-25",
-                    type="number"
+                    type="number",
+                    value=1,
+                    debounce=True,
                 ),
                 dbc.Container([
                     dbc.Row([
@@ -328,8 +330,8 @@ def make_graphs(data):
                             html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
                             html.H6("ICE Total EC", className="text-center") 
                         ]), 
-                    ],className="d-flex justify-content-between"),
-
+                    ],className="my-5"),
+#className="d-flex justify-content-between my-5"
                     dbc.Row([
                         dbc.Col([
                             dmc.RingProgress(
@@ -348,12 +350,13 @@ def make_graphs(data):
                         ],className=""),
                         dbc.Col([
                             dmc.RingProgress(
-                                label="+{}%".format(green_book := (int((gb_sum*100)/db_total))),
+                                id="gb_ring",
+                                #label="+{}%".format(green_book := (int((gb_sum*100)/db_total))),
                                 size=130,
                                 thickness=20,
                                 roundCaps=True,
                                 sections=[
-                                    {"value": green_book, "color": "green"},
+                                    {"value": 1, "color": "green"},
                                 ],
                                 style={'margin': 'auto'}
                             ),
@@ -362,12 +365,13 @@ def make_graphs(data):
                         ]),
                         dbc.Col([
                             dmc.RingProgress(
-                                label="+{}%".format(epic := (int((epic_sum*100)/db_total))),
+                                id="epic_ring",
+                                #label="+{}%".format(epic := (int((epic_sum*100)/db_total))),
                                 size=130,
                                 thickness=20,
                                 roundCaps=True,
                                 sections=[
-                                    {"value": epic, "color": "red"},
+                                    {"value": 1, "color": "red"},
                                 ],
                                 style={'margin': 'auto'}
                             ),
@@ -376,42 +380,51 @@ def make_graphs(data):
                         ]),
                         dbc.Col([
                             dmc.RingProgress(
-                                label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
+                                id="ice_ring",
+                                #label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
                                 size=130,
                                 thickness=20,
                                 roundCaps=True,
                                 sections=[
-                                    {"value": ice, "color": "yellow"},
+                                    {"value": 1, "color": "yellow"},
                                 ],
                                 style={'margin': 'auto'}
                             ),
                             html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
                             html.H6("ICE Total EC", className="text-center") 
                         ]), 
-                    ],className="d-flex justify-content-between")
+                    ],id='test', className="my-5"),
 
-
-                ], fluid=True),
+                ], fluid=True, className="gap-5"),
                 dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
             ], class_name="my-5 p-4 shadow"),
         ])
 
-@callback(
-[Output('archicad_ring', 'sections')],
-Input('gfa_input', 'value')
-)
-def archicad_gfa(value):
-    # df = pd.read_json(data, orient="split")
-    # df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-    # archicad_sum = sum(df["Embodied Carbon"].tolist())
-    if value is not None:
-        value = value + 1
-        sections = [{"value": value, "color": "blue"}]
-        return sections
-    else: PreventUpdate
 
-    # if value is None or 0:
-    #     value = 1
-    # gfa = archicad_sum/value
-    #(archicad := (int((archicad_sum*100)/db_total)))
-    
+@callback(
+[Output('archicad_ring', 'sections'),
+Output('gb_ring', 'sections'),
+Output('ice_ring', 'sections'),
+Output('epic_ring', 'sections')],
+Input('gfa_input', 'value'),
+State("main_store", 'data')
+)
+def archicad_gfa(value, data):
+    df = pd.read_json(data, orient="split")
+    df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
+    archicad_ec = sum(df["Embodied Carbon"].tolist())
+    gb_ec, epic_ec, ice_ec = em_calc(df)
+
+    if value is not None:
+        archicad_ecgfa = archicad_ec/value
+        gb_ecgfa = gb_ec[0]/value
+        epic_ecgfa = epic_ec[0]/value
+        ice_ecgfa = ice_ec[0]/value
+        tot_ecgfa = archicad_ecgfa + gb_ecgfa + epic_ecgfa + ice_ecgfa
+
+        archicad_sections = [{"value": archicad_ecgfa*100/tot_ecgfa, "color": "blue"}]
+        gb_sections = [{"value": gb_ecgfa*100/tot_ecgfa, "color": "green"}]
+        epic_sections = [{"value": epic_ecgfa*100/tot_ecgfa, "color": "red"}]
+        ice_sections = [{"value": ice_ecgfa*100/tot_ecgfa, "color": "yellow"}]
+        return archicad_sections, gb_sections, epic_sections, ice_sections
+    else: raise PreventUpdate

@@ -3,5 +3,5 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
 gb_more_info = [
-    html.H1("test")
+    html.H1("UNDER CONSTRUCTION!")
 ]
