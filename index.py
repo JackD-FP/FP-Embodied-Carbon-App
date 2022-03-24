@@ -87,7 +87,7 @@ sidebar = html.Div(
                 "fontSize": "1.5rem"
             },
             className="display-6",
-        ),
+        ), 
         html.Hr(className="mt-5"),
         html.H5("Files", className="mb-3 display-6 fs-3"),
         dbc.Nav([

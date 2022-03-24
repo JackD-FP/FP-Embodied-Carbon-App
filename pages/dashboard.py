@@ -12,6 +12,7 @@ import datetime
 import io
 import pandas as pd
 import numpy as np
+import math
 import openpyxl #just so excel upload works 
 from index import app, config
 
@@ -249,16 +250,14 @@ def make_graphs(data):
         df = df.drop(["Complex Profile", "Structure"], axis=1)
 
         #calc for them progress ring
-        db_total = sum([archicad_sum, gb_sum, epic_sum, ice_sum])
+        db_total = sum((ec_list := [archicad_sum, gb_sum, epic_sum, ice_sum]))
+        lowest_ec = min(ec_list)
         
 
         return html.Div([ # consolidated table..
             dbc.Card([
                 html.H3("Structure Summery"),
                 dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
-                
-
-
             ], class_name="my-5 p-4 shadow"),
             dbc.Card([
                 html.H3("Embodied Carbon(EC) calculation"),
@@ -275,36 +274,73 @@ def make_graphs(data):
                 dbc.Container([
                     dbc.Row([
                         dbc.Col([
-                            dmc.RingProgress(
-                                label="+{}%".format(archicad := (int((archicad_sum*100)/db_total))),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": archicad, "color": "blue"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(archicad_sum), className="text-center"),
-                            html.H6("Archicad Total EC", className="text-center") 
-                        ],className=""),
+                            #ArchiCAD Column
+                            html.H3("Archicad", className="mt-3 mb-4"),                            
+                            html.Div([
+                                html.H5("{:,} kgCO2e".format(np.around(archicad_sum,2)), className="mt-3 text-center"),
+                                html.P("Archicad Total EC", className="text-center"), 
+                            ], className="my-5"),
+                            html.Div([
+                                dmc.RingProgress(
+                                    id="archicad_ec_ring",
+                                    label="+{:,}%".format(archicad := percent_calc(lowest_ec, archicad_sum)),
+                                    size=130,
+                                    thickness=20,
+                                    roundCaps=True,
+                                    sections=[
+                                        {"value": archicad, "color": "blue"},
+                                    ],
+                                    style={
+                                        'width':'50%', 
+                                        'display':'flex', 
+                                        'flexDirection': 'row',
+                                        'flex-wrap': 'wrap',
+                                        'justify-content': 'center',
+                                        'textAlign': 'center'}
+                                ),
+                                html.Div([
+                                    html.H6(percent_check_return(lowest_ec, archicad_sum)),
+                                    html.P('asdasdasdasd')
+                                ],id="archicad_ec_check")
+                            ], className="hstack"),
+                        ], className="py-5 px-3"),
                         dbc.Col([
-                            dmc.RingProgress(
-                                label="+{}%".format(green_book := (int((gb_sum*100)/db_total))),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": green_book, "color": "green"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(gb_sum), className="text-center"),
-                            html.H6("Green Book Total EC", className="text-center") 
-                        ]),
+                            #Green Book Column
+                            html.H3("Green Book DB", className="mt-3 mb-4"),
+                            html.Div([
+                                html.H5("{:,} kgCO2e".format(gb_sum), className="mt-3 text-center"),
+                                html.P("Green Book Total EC", className="text-center") 
+                            ],className="my-5"),
+                            html.Div([
+                                dmc.RingProgress(
+                                    id="gb_ec_ring",
+                                    label="+{}%".format(green_book := percent_calc(lowest_ec, gb_sum)),
+                                    size=130,
+                                    thickness=20,
+                                    roundCaps=True,
+                                    sections=[
+                                        {"value": green_book, "color": "green"},
+                                    ],
+                                    style={
+                                        'width':'50%', 
+                                        'display':'flex', 
+                                        'flexDirection': 'row',
+                                        'flex-wrap': 'wrap',
+                                        'justify-content': 'center',
+                                        'textAlign': 'center'}
+                                ),
+                                html.Div([
+                                    html.H6(percent_check_return(lowest_ec, gb_sum)),
+                                    html.P('asdasdasdasd')
+                                ], id="gb_ec_check", className="w-50 ")
+                            ], className="hstack"),
+                        ], className="bg-light py-5 px-3"),
                         dbc.Col([
+                            #EPiC Column
+                            html.H3("EPIC DB", className="my-3"),
                             dmc.RingProgress(
-                                label="+{}%".format(epic := (int((epic_sum*100)/db_total))),
+                                id="epic_ec_ring",
+                                label="+{}%".format(epic := percent_calc(lowest_ec, epic_sum)),
                                 size=130,
                                 thickness=20,
                                 roundCaps=True,
@@ -315,9 +351,12 @@ def make_graphs(data):
                             ),
                             html.H3("{:,} kgCO2e".format(epic_sum), className="text-center"),
                             html.H6("EPiC Total EC", className="text-center") 
-                        ]),
+                        ], className="py-5 px-3"),
                         dbc.Col([
+                            #ICE column
+                            html.H3("ICE DB", className="my-3"),
                             dmc.RingProgress(
+                                id="ice_ec_ring",
                                 label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
                                 size=130,
                                 thickness=20,
@@ -329,80 +368,33 @@ def make_graphs(data):
                             ),
                             html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
                             html.H6("ICE Total EC", className="text-center") 
-                        ]), 
+                        ], className="bg-light py-5 px-3"), 
                     ],className="my-5"),
-#className="d-flex justify-content-between my-5"
-                    dbc.Row([
-                        dbc.Col([
-                            dmc.RingProgress(
-                                id="archicad_ring",
-                                # label="+{}%".format(590),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": 1, "color": "blue"}
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(archicad_sum), id="archicad_h3", className="text-center"),
-                            html.H6("Archicad EC per meter square", className="text-center") 
-                        ],className=""),
-                        dbc.Col([
-                            dmc.RingProgress(
-                                id="gb_ring",
-                                #label="+{}%".format(green_book := (int((gb_sum*100)/db_total))),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": 1, "color": "green"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(gb_sum), className="text-center"),
-                            html.H6("Green Book Total EC", className="text-center") 
-                        ]),
-                        dbc.Col([
-                            dmc.RingProgress(
-                                id="epic_ring",
-                                #label="+{}%".format(epic := (int((epic_sum*100)/db_total))),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": 1, "color": "red"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(epic_sum), className="text-center"),
-                            html.H6("EPiC Total EC", className="text-center") 
-                        ]),
-                        dbc.Col([
-                            dmc.RingProgress(
-                                id="ice_ring",
-                                #label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": 1, "color": "yellow"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
-                            html.H6("ICE Total EC", className="text-center") 
-                        ]), 
-                    ],id='test', className="my-5"),
-
                 ], fluid=True, className="gap-5"),
                 dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
             ], class_name="my-5 p-4 shadow"),
         ])
 
+def percent_calc(lo, hi):
+    return int(hi-lo/hi)
+
+def percent_check_return(lo, hi):
+    if hi == lo:
+        return "Lowest EC total"
+    else: 
+        return "+{:,}% than lowest".format(np.around(percent_calc(lo, hi)))
+
+# @callback(
+# Output('id_1', 'children'),
+# Input('id_2', 'id_2_prop'), 
+# State('id_1', 'id_1_prop'))
+# def definition(input):
+#     return
+
 
 @callback(
 [Output('archicad_ring', 'sections'),
+Output('archicad_h3', 'children'),
 Output('gb_ring', 'sections'),
 Output('ice_ring', 'sections'),
 Output('epic_ring', 'sections')],
@@ -423,8 +415,8 @@ def archicad_gfa(value, data):
         tot_ecgfa = archicad_ecgfa + gb_ecgfa + epic_ecgfa + ice_ecgfa
 
         archicad_sections = [{"value": archicad_ecgfa*100/tot_ecgfa, "color": "blue"}]
+        archicad_h3 = "{:,}".format(archicad_ecgfa)
         gb_sections = [{"value": gb_ecgfa*100/tot_ecgfa, "color": "green"}]
         epic_sections = [{"value": epic_ecgfa*100/tot_ecgfa, "color": "red"}]
-        ice_sections = [{"value": ice_ecgfa*100/tot_ecgfa, "color": "yellow"}]
-        return archicad_sections, gb_sections, epic_sections, ice_sections
+        return archicad_sections, archicad_h3, gb_sections, epic_sections, ice_sections
     else: raise PreventUpdate
