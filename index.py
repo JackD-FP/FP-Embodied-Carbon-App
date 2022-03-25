@@ -167,4 +167,4 @@ def render_page_content(pathname):
 
 if __name__ == "__main__":
     #app.run_server(port=8888, debug=True)
-    app.run_server(host="0.0.0.0", port=8888, debug=True)
+    app.run_server(port=5555, debug=True)

@@ -188,6 +188,18 @@ def em_calc(df):
         
     return np.around(gb_embodied_carbon,2), np.around(epic_embodied_carbon, 2), np.around(ice_embodied_carbon, 2)
 
+def percent_check_return(lo, hi):
+    if hi == lo:
+        return "Lowest total EC"
+    else: 
+        sub = (hi-lo)*100
+        return "+{}% more than lowest".format(np.around(sub/hi, 2))
+
+def percent_calc(lo, hi):
+    sub = (hi-lo)*100
+    return int(sub/hi)
+
+
 @callback(
 Output('dashboard_graph', 'children'),
 [Input('main_store', 'data')],)
@@ -262,64 +274,106 @@ def make_graphs(data):
             dbc.Card([
                 html.H3("Embodied Carbon(EC) calculation"),
                 dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
-                html.H5("Embodied Carbon per square meter"),
+                html.H5("GFA of Design:"),
                 dbc.Input(
                     id="gfa_input",
                     placeholder="What's the gross floor area (gfa)?",
                     className="w-25",
                     type="number",
-                    value=1,
                     debounce=True,
+                    persistence= True,
+                    persistence_type="session",
+                    required=True
+                    
                 ),
                 dbc.Container([
                     dbc.Row([
                         dbc.Col([
                             #ArchiCAD Column
-                            html.H3("Archicad", className="mt-3 mb-4"),                            
+                            html.H5("Archicad", className="mt-3 mb-4"),   
+                            html.Div([                         
+                                dbc.Row([
+                                    dbc.Col(html.H3("{:,}".format(np.around(archicad_sum,2)), className="text-end")),
+                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),    
+                                ]),
+                                html.P(percent_check_return(lowest_ec, archicad_sum), className="text-center"),
+                            ],id="archicad_ec_check", style={"marginTop":"3rem","marginBottom":"3rem"} ),
+
+                            html.Hr(style={
+                                "marginLeft": "2rem",
+                                "marginRight": "2rem",
+                                "color": "d6d3d1"}),
+
+                            #GFA calc for archicad
                             html.Div([
-                                html.H5("{:,} kgCO2e".format(np.around(archicad_sum,2)), className="mt-3 text-center"),
-                                html.P("Archicad Total EC", className="text-center"), 
-                            ], className="my-5"),
-                            html.Div([
-                                dmc.RingProgress(
-                                    id="archicad_ec_ring",
-                                    label="+{:,}%".format(archicad := percent_calc(lowest_ec, archicad_sum)),
-                                    size=130,
-                                    thickness=20,
-                                    roundCaps=True,
-                                    sections=[
-                                        {"value": archicad, "color": "blue"},
-                                    ],
-                                    style={
-                                        'width':'50%', 
-                                        'display':'flex', 
-                                        'flexDirection': 'row',
-                                        'flex-wrap': 'wrap',
-                                        'justify-content': 'center',
-                                        'textAlign': 'center'}
-                                ),
-                                html.Div([
-                                    html.H6(percent_check_return(lowest_ec, archicad_sum)),
-                                    html.P('asdasdasdasd')
-                                ],id="archicad_ec_check")
-                            ], className="hstack"),
+                                dbc.Row([
+                                    dbc.Col([
+                                        html.H3(id="archicad_gfa",
+                                        className="text-end"),
+                                    ]),
+                                    dbc.Col([
+                                        html.P(id="archicad_p",
+                                        className="text-start"),
+                                    ])
+                                ]),
+                                dbc.Row([
+                                    html.P("Design's Benchmark", className="text-center")
+                                ])
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
+
                         ], className="py-5 px-3"),
+
                         dbc.Col([
                             #Green Book Column
-                            html.H3("Green Book DB", className="mt-3 mb-4"),
+                            html.H5("Green Book DB", className="mt-3 mb-4"),
                             html.Div([
-                                html.H5("{:,} kgCO2e".format(gb_sum), className="mt-3 text-center"),
-                                html.P("Green Book Total EC", className="text-center") 
-                            ],className="my-5"),
+                                dbc.Row([
+                                    dbc.Col(html.H3("{:,}".format(np.around(gb_sum,2)), className="text-end")),
+                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),
+                                ]),
+                                html.P(percent_check_return(lowest_ec, gb_sum), className="text-center"),
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
+
+                            html.Hr(style={
+                                "marginLeft": "2rem",
+                                "marginRight": "2rem",
+                                "color": "d6d3d1"}),
+
+                            #GFA calc for archicad
+                            html.Div([
+                                dbc.Row([
+                                    dbc.Col([
+                                        html.H3(id="gb_gfa",
+                                        className="text-end"),
+                                    ]),
+                                    dbc.Col([
+                                        html.P(id="gb_p",
+                                        className="text-start"),
+                                    ])
+                                ]),
+                                dbc.Row([
+                                    html.P("Design's Benchmark", className="text-center")
+                                ])
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
+
+                        ], className="bg-light py-5 px-3"),
+                        
+                        dbc.Col([
+                            #EPiC Column
+                            html.H5("EPIC DB", className="my-3"),
+                            html.Div([
+                                html.H3("{:,}".format(epic_sum), className="text-center"),
+                                html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"], className="text-center"), 
+                            ]),
                             html.Div([
                                 dmc.RingProgress(
-                                    id="gb_ec_ring",
-                                    label="+{}%".format(green_book := percent_calc(lowest_ec, gb_sum)),
+                                    id="epic_ec_ring",
+                                    label="+{}%".format(epic := percent_calc(lowest_ec, epic_sum)),
                                     size=130,
                                     thickness=20,
                                     roundCaps=True,
                                     sections=[
-                                        {"value": green_book, "color": "green"},
+                                        {"value": epic, "color": "red"},
                                     ],
                                     style={
                                         'width':'50%', 
@@ -330,44 +384,42 @@ def make_graphs(data):
                                         'textAlign': 'center'}
                                 ),
                                 html.Div([
-                                    html.H6(percent_check_return(lowest_ec, gb_sum)),
-                                    html.P('asdasdasdasd')
-                                ], id="gb_ec_check", className="w-50 ")
+                                    html.H6(percent_check_return(lowest_ec, epic_sum))    
+                                ], className="w-50 ")
                             ], className="hstack"),
-                        ], className="bg-light py-5 px-3"),
-                        dbc.Col([
-                            #EPiC Column
-                            html.H3("EPIC DB", className="my-3"),
-                            dmc.RingProgress(
-                                id="epic_ec_ring",
-                                label="+{}%".format(epic := percent_calc(lowest_ec, epic_sum)),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": epic, "color": "red"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(epic_sum), className="text-center"),
-                            html.H6("EPiC Total EC", className="text-center") 
+
                         ], className="py-5 px-3"),
                         dbc.Col([
                             #ICE column
-                            html.H3("ICE DB", className="my-3"),
-                            dmc.RingProgress(
-                                id="ice_ec_ring",
-                                label="+{}%".format(ice := (int((ice_sum*100)/db_total))),
-                                size=130,
-                                thickness=20,
-                                roundCaps=True,
-                                sections=[
-                                    {"value": ice, "color": "yellow"},
-                                ],
-                                style={'margin': 'auto'}
-                            ),
-                            html.H3("{:,} kgCO2e".format(ice_sum), className="text-center"),
-                            html.H6("ICE Total EC", className="text-center") 
+                            html.H5("ICE DB", className="my-3"),
+                            html.Div([
+                                html.H3("{:,}".format(ice_sum), className="text-center"),
+                                html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"], className="text-center"), 
+                            ]),
+                            html.Div([
+                                dmc.RingProgress(
+                                    id="ice_ec_ring",
+                                    label="+{}%".format(ice := percent_calc(lowest_ec, ice_sum)),
+                                    size=130,
+                                    thickness=20,
+                                    roundCaps=True,
+                                    sections=[
+                                        {"value": ice, "color": "yellow"},
+                                    ],
+                                    style={
+                                        'width':'50%', 
+                                        'display':'flex', 
+                                        'flexDirection': 'row',
+                                        'flex-wrap': 'wrap',
+                                        'justify-content': 'center',
+                                        'textAlign': 'center'}
+                                    ), 
+                                html.Div([
+                                    html.H6(percent_check_return(lowest_ec, ice_sum))
+                                ], className="w-50")  
+                            ], className="hstack"),
+
+                         
                         ], className="bg-light py-5 px-3"), 
                     ],className="my-5"),
                 ], fluid=True, className="gap-5"),
@@ -375,48 +427,28 @@ def make_graphs(data):
             ], class_name="my-5 p-4 shadow"),
         ])
 
-def percent_calc(lo, hi):
-    return int(hi-lo/hi)
-
-def percent_check_return(lo, hi):
-    if hi == lo:
-        return "Lowest EC total"
-    else: 
-        return "+{:,}% than lowest".format(np.around(percent_calc(lo, hi)))
-
-# @callback(
-# Output('id_1', 'children'),
-# Input('id_2', 'id_2_prop'), 
-# State('id_1', 'id_1_prop'))
-# def definition(input):
-#     return
-
 
 @callback(
-[Output('archicad_ring', 'sections'),
-Output('archicad_h3', 'children'),
-Output('gb_ring', 'sections'),
-Output('ice_ring', 'sections'),
-Output('epic_ring', 'sections')],
-Input('gfa_input', 'value'),
-State("main_store", 'data')
+Output('archicad_gfa', 'children'),
+Output('archicad_p', 'children'),
+Output('gb_gfa', 'children'),
+Output('gb_p', 'children'),
+Input('gfa_input', 'value'), 
+State('main_store', 'data')
 )
-def archicad_gfa(value, data):
+def gfa_calc(val, data):
     df = pd.read_json(data, orient="split")
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
     archicad_ec = sum(df["Embodied Carbon"].tolist())
     gb_ec, epic_ec, ice_ec = em_calc(df)
 
-    if value is not None:
-        archicad_ecgfa = archicad_ec/value
-        gb_ecgfa = gb_ec[0]/value
-        epic_ecgfa = epic_ec[0]/value
-        ice_ecgfa = ice_ec[0]/value
-        tot_ecgfa = archicad_ecgfa + gb_ecgfa + epic_ecgfa + ice_ecgfa
+    if val is not None:
+        gfa_val = [archicad_ec/val, gb_ec[0]/val, epic_ec[0]/val, ice_ec[0]/val]
+        archicad_gfa_out = "{:,}".format(np.around(gfa_val[0],2))
+        gb_gfa_out = "{:,}".format(np.around(gfa_val[1],2))
+        default_str = [html.Span(["kgCO",html.Sup(2),html.Sub('e'),'/m',html.Sup(2)], className="fs-4")]
 
-        archicad_sections = [{"value": archicad_ecgfa*100/tot_ecgfa, "color": "blue"}]
-        archicad_h3 = "{:,}".format(archicad_ecgfa)
-        gb_sections = [{"value": gb_ecgfa*100/tot_ecgfa, "color": "green"}]
-        epic_sections = [{"value": epic_ecgfa*100/tot_ecgfa, "color": "red"}]
-        return archicad_sections, archicad_h3, gb_sections, epic_sections, ice_sections
-    else: raise PreventUpdate
+
+        return archicad_gfa_out, default_str, gb_gfa_out, default_str
+
+    else: return "Unknown", "Input GFA above", "Unknown", "Input GFA above"  
