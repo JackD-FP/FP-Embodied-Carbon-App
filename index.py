@@ -5,6 +5,7 @@ from dash.exceptions import PreventUpdate
 from dash import Input, Output, State, dcc, html, callback
 from flask import Flask
 import json
+
 from src import save_modal
 import dash_mantine_components as dmc
 # from server import app
@@ -159,9 +160,30 @@ def render_page_content(pathname):
     # If the user tries to reach a different page, return a 404 message
     return dbc.Container(
         [
-            html.H1("404: Not found", className="text-danger display-3"),
+            html.H1(f"404: {pathname} Not found", className="text-danger display-5"),
             html.Hr(),
-            html.P(f"The pathname {pathname} was not recognised...", className="lead"),
+            html.Img(src="https://media0.giphy.com/media/Ta3v3I4GI1gH7Rqek6/giphy.gif?cid=790b76112944eebcc185f3eb1d07e97f8a5ec3bc078fd858&rid=giphy.gif&ct=g",
+            alt="the weeknd lost gif", 
+            style={
+                "margin": "auto",
+                'display': 'block'
+            }),
+            html.H3("Are you lost? No worries, click the button below", 
+            className="text-center display-6",
+            style={'marginTop': '2rem', 'marginBottom': '2rem'}),
+            dbc.Button(
+                "Show me the way out!", 
+                href="/pages/dashboard",
+                size="lg",
+                class_name="m-auto ",
+                style={
+                    'width': '25%',
+                    'display': 'block',
+                    'margin': 'auto'
+                    },
+                outline=True,
+                color='primary'
+                ),
         ]
     )
 

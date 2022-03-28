@@ -22,7 +22,12 @@ save_modal = dbc.Modal([
             ),
             html.Div([
                 dbc.Button("Save", id="save_btn"),
-                dbc.Button("Cancel", id="cancel_btn", outline=True, color="primary")
+                dbc.Button("Cancel", id="cancel_btn", outline=True, color="primary"),
+                html.P([
+                    html.I(className="bi bi-cone-striped"),
+                    "save session is still under construction",
+                    html.I(className="bi bi-cone-striped")],
+                    className="text-center text-secondary fs-6")
             ], className="vstack m-auto gap-2")
         ], 
         id="save_main",

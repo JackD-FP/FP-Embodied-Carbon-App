@@ -28,7 +28,7 @@ def definition(data):
     if data is not None:
         df = pd.read_json(data, orient="split")
         df = df.groupby(by=['Building Materials (All)'], as_index=False).sum()
-        df = df.drop(columns=["Complex Profile", "Structure"])
+        df = df.drop(columns=["Complex Profile"])
 
         return html.Div([
             html.H3("Structure Schedule"),

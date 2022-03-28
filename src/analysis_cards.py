@@ -9,6 +9,7 @@
 from dash import Input, Output, State, dcc, html, dash_table, callback
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import plotly.graph_objects as go 
 import pandas as pd
 import numpy as np
@@ -67,12 +68,14 @@ greenbook_card = dbc.Card([
         dcc.Graph(id="gb_pie", config=config),
 
     ], className="hstack"),
-    dbc.Accordion([
-        dbc.AccordionItem(
+    dmc.Accordion([
+        dmc.AccordionItem(
             children=analysis_more_info.gb_more_info, 
-            title="More Information and Analysis")
-    ], flush=True, start_collapsed=True)
-],
+            label="More Information and Analysis")
+    ], 
+    id="gb_accordion",
+    state={"0": False})
+    ],
 class_name="my-5 p-4 shadow"
 )
 
@@ -193,8 +196,15 @@ epic_card = dbc.Card([
             hover=True,
             style = {"width": "75%"}
             ),
-        dcc.Graph(id="epic_pie", config=config)
+        dcc.Graph(id="epic_pie", config=config),
     ], className="hstack"),
+    dmc.Accordion([
+        dmc.AccordionItem(
+            children=analysis_more_info.epic_more_info, 
+            label="More Information and Analysis")
+    ], 
+    id="gb_accordion",
+    state={"0": False})
 ],
 class_name="my-5 p-4 shadow"
 )
@@ -318,8 +328,15 @@ ice_card = dbc.Card([
             hover=True,
             style = {"width": "75%"}
             ),
-        dcc.Graph(id="ice_pie", config=config)
+        dcc.Graph(id="ice_pie", config=config),
     ], className="hstack"),
+    dmc.Accordion([
+        dmc.AccordionItem(
+            children=analysis_more_info.ice_more_info, 
+            label="More Information and Analysis")
+    ], 
+    id="gb_accordion",
+    state={"0": False})
 ],
 class_name="my-5 p-4 shadow"
 )

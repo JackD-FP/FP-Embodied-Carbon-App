@@ -1,3 +1,4 @@
+from pydoc import classname
 import dash
 from dash import Input, Output, State, dcc, html, callback, dash_table
 import plotly.express as px
@@ -97,7 +98,7 @@ def parse_contents(contents, filename, date):
             })
     df = df.rename(columns=df.iloc[0], )
     df = df.drop([0,0])
-    df['Structure'] = df['Home Story Name'].str.contains('basement',case=False,regex=True)
+    #df['Structure'] = df['Home Story Name'].str.contains('basement',case=False,regex=True)
     df = df.replace("---", 0)
     return html.Div([
         html.H5(filename),
@@ -230,7 +231,7 @@ def make_graphs(data):
         }
 
         ec_df = pd.DataFrame(embodied_carbon_dict)
-        ec_df = ec_df.append(total_dict, ignore_index=True)
+        #ec_df = ec_df.append(total_dict, ignore_index=True)
 
         ec_df.loc[:,"Archicad (kgCO2e)"] = ec_df["Archicad (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"Green Book (kgCO2e)"] = ec_df["Green Book (kgCO2e)"].map('{:,.2f}'.format)
@@ -259,7 +260,8 @@ def make_graphs(data):
                       )
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         
-        df = df.drop(["Complex Profile", "Structure"], axis=1)
+        #df = df.drop(["Complex Profile", "Structure"], axis=1)
+        df = df.drop(["Complex Profile"], axis=1)
 
         #calc for them progress ring
         db_total = sum((ec_list := [archicad_sum, gb_sum, epic_sum, ice_sum]))
@@ -316,9 +318,20 @@ def make_graphs(data):
                                         className="text-start"),
                                     ])
                                 ]),
-                                dbc.Row([
-                                    html.P("Design's Benchmark", className="text-center")
-                                ])
+                                html.P("Design's Benchmark", className="text-center"),
+                                html.Div([
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    ], className="mt-5 text-center"),
+                                html.P("Benchmark Score", className="text-center"),
+                                html.P([
+                                    html.I(className="bi bi-cone-striped"),
+                                    "Benchmark Scores are still under construction",
+                                    html.I(className="bi bi-cone-striped")], 
+                                    className="text-center text-secondary")
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
 
                         ], className="py-5 px-3"),
@@ -339,7 +352,7 @@ def make_graphs(data):
                                 "marginRight": "2rem",
                                 "color": "d6d3d1"}),
 
-                            #GFA calc for archicad
+                            #GFA calc for green book
                             html.Div([
                                 dbc.Row([
                                     dbc.Col([
@@ -351,9 +364,20 @@ def make_graphs(data):
                                         className="text-start"),
                                     ])
                                 ]),
-                                dbc.Row([
-                                    html.P("Design's Benchmark", className="text-center")
-                                ])
+                                html.P("Design's Benchmark", className="text-center"),
+                                html.Div([
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    ], className="mt-5 text-center"),
+                                html.P("Benchmark Score", className="text-center"),
+                                html.P([
+                                    html.I(className="bi bi-cone-striped"),
+                                    "Benchmark Scores are still under construction",
+                                    html.I(className="bi bi-cone-striped")], 
+                                    className="text-center text-secondary")
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
 
                         ], className="bg-light py-5 px-3"),
@@ -362,64 +386,93 @@ def make_graphs(data):
                             #EPiC Column
                             html.H5("EPIC DB", className="my-3"),
                             html.Div([
-                                html.H3("{:,}".format(epic_sum), className="text-center"),
-                                html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"], className="text-center"), 
-                            ]),
+                                dbc.Row([
+                                    dbc.Col(html.H3("{:,}".format(np.around(epic_sum,2)), className="text-end")),
+                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),
+                                ]),
+                                html.P(percent_check_return(lowest_ec, epic_sum), className="text-center"),
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
+
+                            html.Hr(style={
+                                "marginLeft": "2rem",
+                                "marginRight": "2rem",
+                                "color": "d6d3d1"}),
+
+                            #GFA calc for epic
                             html.Div([
-                                dmc.RingProgress(
-                                    id="epic_ec_ring",
-                                    label="+{}%".format(epic := percent_calc(lowest_ec, epic_sum)),
-                                    size=130,
-                                    thickness=20,
-                                    roundCaps=True,
-                                    sections=[
-                                        {"value": epic, "color": "red"},
-                                    ],
-                                    style={
-                                        'width':'50%', 
-                                        'display':'flex', 
-                                        'flexDirection': 'row',
-                                        'flex-wrap': 'wrap',
-                                        'justify-content': 'center',
-                                        'textAlign': 'center'}
-                                ),
+                                dbc.Row([
+                                    dbc.Col([
+                                        html.H3(id="epic_gfa",
+                                        className="text-end"),
+                                    ]),
+                                    dbc.Col([
+                                        html.P(id="epic_p",
+                                        className="text-start"),
+                                    ])
+                                ]),
+                                html.P("Design's Benchmark", className="text-center"),
                                 html.Div([
-                                    html.H6(percent_check_return(lowest_ec, epic_sum))    
-                                ], className="w-50 ")
-                            ], className="hstack"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    ], className="mt-5 text-center"),
+                                html.P("Benchmark Score", className="text-center"),
+                                html.P([
+                                    html.I(className="bi bi-cone-striped"),
+                                    "Benchmark Scores are still under construction",
+                                    html.I(className="bi bi-cone-striped")], 
+                                    className="text-center text-secondary")
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
 
                         ], className="py-5 px-3"),
+
                         dbc.Col([
-                            #ICE column
+                            #ICE column epic
                             html.H5("ICE DB", className="my-3"),
                             html.Div([
-                                html.H3("{:,}".format(ice_sum), className="text-center"),
-                                html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"], className="text-center"), 
-                            ]),
-                            html.Div([
-                                dmc.RingProgress(
-                                    id="ice_ec_ring",
-                                    label="+{}%".format(ice := percent_calc(lowest_ec, ice_sum)),
-                                    size=130,
-                                    thickness=20,
-                                    roundCaps=True,
-                                    sections=[
-                                        {"value": ice, "color": "yellow"},
-                                    ],
-                                    style={
-                                        'width':'50%', 
-                                        'display':'flex', 
-                                        'flexDirection': 'row',
-                                        'flex-wrap': 'wrap',
-                                        'justify-content': 'center',
-                                        'textAlign': 'center'}
-                                    ), 
-                                html.Div([
-                                    html.H6(percent_check_return(lowest_ec, ice_sum))
-                                ], className="w-50")  
-                            ], className="hstack"),
+                                dbc.Row([
+                                    dbc.Col(html.H3("{:,}".format(np.around(ice_sum,2)), className="text-end")),
+                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start")
+                                ]),
+                                html.P(percent_check_return(lowest_ec, ice_sum), className="text-center"),
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
 
-                         
+                            html.Hr(style={
+                                "marginLeft": "2rem",
+                                "marginRight": "2rem",
+                                "color": "d6d3d1"}),
+
+                            #GFA calc for ice
+                            html.Div([
+                                dbc.Row([
+                                    dbc.Col([
+                                        html.H3(id="ice_gfa",
+                                        className="text-end"),
+                                    ]),
+                                    dbc.Col([
+                                        html.P(id="ice_p",
+                                        className="text-start"),
+                                    ])
+                                ]),
+                                
+                                html.P("Design's Benchmark", className="text-center"),
+                                html.Div([
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    html.I(className="bi bi-star-fill mx-2"),
+                                    ], className="mt-5 text-center"),
+                                html.P("Benchmark Score", className="text-center"),
+                                html.P([
+                                    html.I(className="bi bi-cone-striped"),
+                                    "Benchmark Scores are still under construction",
+                                    html.I(className="bi bi-cone-striped")], 
+                                    className="text-center text-secondary")
+                                
+                            ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                         ], className="bg-light py-5 px-3"), 
                     ],className="my-5"),
                 ], fluid=True, className="gap-5"),
@@ -433,6 +486,10 @@ Output('archicad_gfa', 'children'),
 Output('archicad_p', 'children'),
 Output('gb_gfa', 'children'),
 Output('gb_p', 'children'),
+Output('epic_gfa', 'children'),
+Output('epic_p', 'children'),
+Output('ice_gfa', 'children'),
+Output('ice_p', 'children'),
 Input('gfa_input', 'value'), 
 State('main_store', 'data')
 )
@@ -446,9 +503,11 @@ def gfa_calc(val, data):
         gfa_val = [archicad_ec/val, gb_ec[0]/val, epic_ec[0]/val, ice_ec[0]/val]
         archicad_gfa_out = "{:,}".format(np.around(gfa_val[0],2))
         gb_gfa_out = "{:,}".format(np.around(gfa_val[1],2))
+        epic_gfa_out = "{:,}".format(np.around(gfa_val[2],2))
+        ice_gfa_out = "{:,}".format(np.around(gfa_val[3],2))
         default_str = [html.Span(["kgCO",html.Sup(2),html.Sub('e'),'/m',html.Sup(2)], className="fs-4")]
 
 
-        return archicad_gfa_out, default_str, gb_gfa_out, default_str
+        return archicad_gfa_out, default_str, gb_gfa_out, default_str, epic_gfa_out, default_str, ice_gfa_out, default_str
 
-    else: return "Unknown", "Input GFA above", "Unknown", "Input GFA above"  
+    else: return "Unknown", "Input GFA above", "Unknown", "Input GFA above", "Unknown", "Input GFA above","Unknown", "Input GFA above"  
