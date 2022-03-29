@@ -18,7 +18,7 @@ layout = html.Div([
                     dmc.Divider(variant="solid", class_name="mb-3"),
                     comparison_cards.card01
                 ], 
-                class_name='shadow p-3',)
+                class_name='shadow p-4',)
             ], width=4,),
             dbc.Col([
                 dbc.Card([

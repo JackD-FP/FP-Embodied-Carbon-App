@@ -153,19 +153,21 @@ def definition(data):
         return data
     else: PreventUpdate
 
-app.layout = html.Div([
-    dcc.Store(id="main_store", storage_type="session"), #stores all the BS here (⊙_⊙;) (add other stores if needed?)
-    dcc.Store(id="project_name", storage_type="session"), # Stores project name
-    dcc.Location(id="url", refresh=False), 
-    sidebar,
-    html.Div(id="content-id", style=CONTENT_STYLE)
-    ])
 
+# saves project name
 @app.callback(
 Output('project_name', 'data'),
 Input('name_input', 'value'), 
 )
 def project_name_update(value):
+    return value
+
+# save gfa value
+@app.callback(
+Output('gfa_store', 'data'),
+Input('gfa_input', 'value'), 
+)
+def gfa_store_update(value):
     return value
 
 #routing stuff also 404 page 
@@ -213,6 +215,15 @@ def render_page_content(pathname):
                 ),
         ]
     )
+
+app.layout = html.Div([
+    dcc.Store(id="main_store", storage_type="session"), #stores the current schedule
+    dcc.Store(id="gfa_store", storage_type="session"), # stores gfa
+    dcc.Store(id="project_name", storage_type="session"), # Stores project name
+    dcc.Location(id="url", refresh=False), 
+    sidebar,
+    html.Div(id="content-id", style=CONTENT_STYLE)
+    ])
 
 if __name__ == "__main__":
     #app.run_server(port=8888, debug=True)
