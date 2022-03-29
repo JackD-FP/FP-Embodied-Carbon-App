@@ -65,6 +65,7 @@ SIDEBAR_STYLE = {
     "backgroundColor": "#f8f9fa",
 }
 
+#----------------------- side bar stuff -----------------------------------------
 sidebar = html.Div(
     [
         html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
@@ -90,7 +91,15 @@ sidebar = html.Div(
             className="display-6",
         ), 
         html.Hr(className="mt-5"),
+
+        html.P([
+                    html.I(className="bi bi-cone-striped"),
+                    "save session is still under construction",
+                    html.I(className="bi bi-cone-striped")],
+                    className="text-center text-secondary fs-6"),
+
         html.H5("Files", className="mb-3 display-6 fs-3"),
+        html.P("Save your session locally or share your project with everyone.", className="text-secondary"),
         dbc.Nav([
             dbc.NavItem(
                 dbc.NavLink(
@@ -107,14 +116,24 @@ sidebar = html.Div(
                 dbc.DropdownMenuItem("test 1"),
                 dbc.DropdownMenuItem("test 2"),
                 dbc.DropdownMenuItem("test 3"),
-                ], nav=True, className="flex-grow-1"
+                ], nav=True, className="flex-grow-1 mb-3"
             ),
         ], vertical=True),
-        save_modal.save_modal
+        save_modal.save_modal,
+        dbc.Button([
+            html.Div([
+                html.Span(className="bi bi-share-fill"),
+                html.Span("Share", style={'marginLeft': '0.5rem'}),
+            ], style = {'display': 'block'}),
+        ],className="mb-3"),
+        html.P("Sharing Projects helps Architects \
+            compare their designs and make \
+            benchmark score more accurate", 
+            className="text-secondary")
     ],
     style=SIDEBAR_STYLE,
 )
-
+#---------------------------- callback functions ----------------------------
 @app.callback(
 Output('save', 'is_open'),
 Input('save_session', 'n_clicks'), 
@@ -135,13 +154,21 @@ def definition(data):
     else: PreventUpdate
 
 app.layout = html.Div([
-    dcc.Store(id="main_store", storage_type="session"), #stores all the BS here (⊙_⊙;) add other stores if needed
+    dcc.Store(id="main_store", storage_type="session"), #stores all the BS here (⊙_⊙;) (add other stores if needed?)
+    dcc.Store(id="project_name", storage_type="session"), # Stores project name
     dcc.Location(id="url", refresh=False), 
     sidebar,
     html.Div(id="content-id", style=CONTENT_STYLE)
     ])
 
-#routing bs
+@app.callback(
+Output('project_name', 'data'),
+Input('name_input', 'value'), 
+)
+def project_name_update(value):
+    return value
+
+#routing stuff also 404 page 
 @app.callback(
     Output("content-id", "children"), 
     [Input("url", "pathname")]

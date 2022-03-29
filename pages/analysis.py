@@ -1,5 +1,3 @@
-from gc import callbacks
-from click import option, style
 from dash import Input, Output, State, dcc, html, dash_table, callback
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
@@ -47,10 +45,5 @@ def definition(data):
             ], 
             is_open=True, 
             dismissable=True,
-            # className= "fixed-top w-25 mt-5 p-3",
-            # style = {
-            #     "zIndex": "2",
-            #     "marginLeft": "73%",
-            # },
         ),
 

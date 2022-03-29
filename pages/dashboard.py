@@ -17,7 +17,7 @@ import math
 import openpyxl #just so excel upload works 
 from index import app, config
 
-from src import db_loader
+from src import db_loader, building_type_option
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -276,18 +276,37 @@ def make_graphs(data):
             dbc.Card([
                 html.H3("Embodied Carbon(EC) calculation"),
                 dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
-                html.H5("GFA of Design:"),
-                dbc.Input(
-                    id="gfa_input",
-                    placeholder="What's the gross floor area (gfa)?",
-                    className="w-25",
-                    type="number",
-                    debounce=True,
-                    persistence= True,
-                    persistence_type="session",
-                    required=True
-                    
-                ),
+                html.Div([
+                    html.H5("Design Name:"),
+                    dbc.Input(
+                        id="name_input",
+                        placeholder="What's the project Name?",
+                        className="w-25",
+                        type="text",
+                        debounce=True,
+                        persistence= True,
+                        persistence_type="session",
+                        required=True
+                    ),
+                    html.H5("GFA of Design:", className="mt-3"),
+                    dbc.Input(
+                        id="gfa_input",
+                        placeholder="What's the gross floor area (gfa)?",
+                        className="w-25",
+                        type="number",
+                        debounce=True,
+                        persistence= True,
+                        persistence_type="session",
+                        required=True
+                    ),
+                    html.H5("BCA Building Type:", className="mt-3"),
+                    dbc.Select(
+                        id='bld_type', 
+                        placeholder = "Building Type Class 1, 2, 3... so on",
+                        options=building_type_option.building_type,
+                        className="w-25",
+                    ),
+                ], className="my-5"),
                 dbc.Container([
                     dbc.Row([
                         dbc.Col([
@@ -495,12 +514,14 @@ State('main_store', 'data')
 )
 def gfa_calc(val, data):
     df = pd.read_json(data, orient="split")
+    gb_ec, epic_ec, ice_ec = em_calc(df)
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
     archicad_ec = sum(df["Embodied Carbon"].tolist())
-    gb_ec, epic_ec, ice_ec = em_calc(df)
 
     if val is not None:
-        gfa_val = [archicad_ec/val, gb_ec[0]/val, epic_ec[0]/val, ice_ec[0]/val]
+
+        gfa_val = [archicad_ec/val, sum(gb_ec)/val, sum(epic_ec)/val, sum(ice_ec)/val]
+
         archicad_gfa_out = "{:,}".format(np.around(gfa_val[0],2))
         gb_gfa_out = "{:,}".format(np.around(gfa_val[1],2))
         epic_gfa_out = "{:,}".format(np.around(gfa_val[2],2))
