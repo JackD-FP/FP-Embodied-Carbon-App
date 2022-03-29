@@ -5,6 +5,8 @@ import dash_mantine_components as dmc
 from plotly.subplots import make_subplots
 import  plotly.graph_objects as go
 
+from src import comparison_cards
+
 layout = html.Div([
     html.H1("Comparison", className="display-2 mb-5 "),
     html.Hr(),
@@ -13,8 +15,8 @@ layout = html.Div([
             dbc.Col([
                 dbc.Card([
                     html.Div(id='comp_title', className='my-3'),
-                    dmc.Divider(variant="solid"),
-                    html.Div([])
+                    dmc.Divider(variant="solid", class_name="mb-3"),
+                    comparison_cards.card01
                 ], 
                 class_name='shadow p-3',)
             ], width=4,),

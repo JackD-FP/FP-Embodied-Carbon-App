@@ -1,3 +1,9 @@
+#---------------------------------------
+# there is a few problems with this part. sometimes dash with give you error, even though the data is there. 
+# we may need to refactor that bit to simplify it... use 1 callback rather than 3... they do pretty much similar thing
+# 
+#---------------------------------------
+
 from dash import Input, Output, State, dcc, html, dash_table, callback
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
@@ -46,4 +52,3 @@ def definition(data):
             is_open=True, 
             dismissable=True,
         ),
-

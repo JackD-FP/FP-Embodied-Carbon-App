@@ -127,8 +127,8 @@ sidebar = html.Div(
             ], style = {'display': 'block'}),
         ],className="mb-3"),
         html.P("Sharing Projects helps Architects \
-            compare their designs and make \
-            benchmark score more accurate", 
+            compare embodied carbon with other projects and make \
+            benchmark scores more accurate", 
             className="text-secondary")
     ],
     style=SIDEBAR_STYLE,

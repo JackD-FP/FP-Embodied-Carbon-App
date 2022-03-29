@@ -2,10 +2,10 @@ from dash import Input, Output, dcc, html
 import dash_bootstrap_components as dbc
 
 layout = html.Div([
-    html.H1("Reference", className="display-2 mb-5 "),
+    html.H1("Documentation", className="display-2 mb-5 "),
     html.Hr(),
     html.H3("About Embodied Carbon Calculator"),
-    html.P("The ")
+    html.P("The... ")
 ])
 
 
