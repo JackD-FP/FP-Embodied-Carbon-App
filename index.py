@@ -220,6 +220,8 @@ app.layout = html.Div([
     dcc.Store(id="main_store", storage_type="session"), #stores the current schedule
     dcc.Store(id="gfa_store", storage_type="session"), # stores gfa
     dcc.Store(id="project_name", storage_type="session"), # Stores project name
+    dcc.Store(id="card02_store", storage_type="session"), # Stores project name
+    dcc.Store(id="card03_store", storage_type="session"), # Stores project name
     dcc.Location(id="url", refresh=False), 
     sidebar,
     html.Div(id="content-id", style=CONTENT_STYLE)
