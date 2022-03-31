@@ -1,0 +1,14 @@
+{
+    "files.autoSave": "off",
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+    //"python.linting.pylintEnabled": true,
+    //"python.linting.enabled": true,
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#4bff5a",
+        "titleBar.activeForeground": "#000000",
+    }
+}

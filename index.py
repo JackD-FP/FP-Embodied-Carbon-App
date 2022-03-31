@@ -1,17 +1,19 @@
+import json
+import os
 from http import server
+
 import dash
 import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
-from dash import Input, Output, State, dcc, html, callback
-from flask import Flask
-import json
-
-from src import save_modal
 import dash_mantine_components as dmc
+from dash import Input, Output, State, callback, dcc, html
+from dash.exceptions import PreventUpdate
+from flask import Flask
+
+from pages import analysis, comparison, dashboard, documentation
+from src import save_modal, uploader
+
 # from server import app
 
-from pages import analysis, dashboard, documentation, comparison
-import os
 
 config = { #just tells plotly to save as svg rather than jpeg
     'toImageButtonOptions': {
@@ -139,7 +141,7 @@ Output('save', 'is_open'),
 Input('save_session', 'n_clicks'), 
 Input('cancel_btn', 'n_clicks'),
 State('save', 'is_open'))
-def definition(n1, n2, is_open):
+def save_session_update(n1, n2, is_open):
     if n1 or n2:
         return not is_open
     return is_open
@@ -148,7 +150,16 @@ def definition(n1, n2, is_open):
 @app.callback(
 Output('main_store', 'data'),
 Input('temp-df-store', 'data'))
-def definition(data):
+def save_2_main(data):
+    if data is not None:
+        return data
+    else: PreventUpdate
+
+
+@app.callback(
+Output('card02_store', 'data'),
+Input('card2_temp_store', 'data'))
+def save_2_card02(data):
     if data is not None:
         return data
     else: PreventUpdate

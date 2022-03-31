@@ -1,11 +1,15 @@
-from dash import Input, Output, State, dcc, html, callback, dash_table
-from dash.exceptions import PreventUpdate
+import base64
+import io
+
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import openpyxl  # just so excel upload works
+import pandas as pd
+import plotly.graph_objects as go
+from dash import Input, Output, State, callback, dash_table, dcc, html
+from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-import  plotly.graph_objects as go
-
-from src import comparison_cards_01, comparison_cards_02
+from src import comparison_cards_01, comparison_cards_02, uploader
 
 layout = html.Div([
     html.H1("Comparison", className="display-2 mb-5 "),
@@ -26,26 +30,7 @@ layout = html.Div([
             # ---------- card 02 -----------
             dbc.Col([
                 dbc.Card([ # card 02
-                    dmc.Tooltip(
-                        label="upload a different project to compare",
-                        transition="pop",
-                        transitionDuration=300,
-                        transitionTimingFunction="ease",
-                        children=[
-                            dcc.Upload([
-                                dmc.Button(
-                                    html.I(className="bi bi-cloud-upload"),
-                                    radius="xl",
-                                    size="md",
-                                    class_name="shadow-sm",
-                                    id="card02_upload"
-                                ) 
-                            ], id="upload_card02"),
-                            
-                        ], class_name='position-absolute translate-middle',
-                        style={'zIndex':'5', 'left':'98%', 'top':'10%'}
-                    ),  
-                    comparison_cards_02.card02
+                    comparison_cards_02.card02,
                     ],
                     class_name='shadow p-4')
             ], width=4, class_name="h-25"),
@@ -53,26 +38,27 @@ layout = html.Div([
             # ---------- card 03 -----------
             dbc.Col([
                 dbc.Card([ # card 03
-                    dmc.Tooltip(
-                        label="upload a different project to compare",
-                        transition="pop",
-                        transitionDuration=300,
-                        transitionTimingFunction="ease",
-                        children=[
-                            dcc.Upload([
-                                dmc.Button(
-                                    html.I(className="bi bi-cloud-upload"),
-                                    radius="xl",
-                                    size="md",
-                                    class_name="shadow-sm",
-                                    id="card03_upload"
-                                ) 
-                            ], id="upload_card02"),
-                            
-                        ], class_name='position-absolute translate-middle',
-                        style={'zIndex':'5', 'left':'98%', 'top':'10%'}
-                    ), 
-                        html.P("Add Another Project you want to compare with", className="text-center")
+                    dcc.Upload(
+                        dmc.Tooltip(
+                            label="upload a different project to compare",
+                            transition="pop",
+                            transitionDuration=300,
+                            transitionTimingFunction="ease",
+                            children=[
+                                    dmc.Button(
+                                        html.I(className="bi bi-cloud-upload"),
+                                        radius="xl",
+                                        size="md",
+                                        class_name="shadow-sm",
+                                        id=""
+                                    )                             
+                            ], class_name='position-absolute translate-middle',
+                            style={'zIndex':'5', 'left':'98%', 'top':'10%'}
+                        ),
+                        id="upload_card03" 
+                    ),
+                        html.P("Add Another Project you want to compare with", className="text-center"),
+                        html.Div(id="test-card03")
                 ], class_name='shadow p-4')
             ], width=4,),
         ])
@@ -82,20 +68,20 @@ layout = html.Div([
 @callback(
 Output('comp_title', 'children'),
 Input('project_name', 'modified_timestamp'), 
-State('project_name', 'data'),
+State('project_name', 'data')
 )
-def title_update(ts, data):
-    val = [html.H3("Unknown"), html.P("You can give it a name in the dashboard", className="text-secondary")]
-    if ts is None: 
-        return val
-    else:
+def card1_title_update(mts, data):
+    if mts is None:
+        return html.H3([data, html.P(["Give it a name in the Dashboard."])], className="display-5")
+    else: 
         if data == "":
-            return val
-        else: return html.H3(data, className="display-5 mb-3")
-
-@callback(
-Output('card02_store', 'data'),
-Input('card02_upload', 'n_clicks'), 
-)
-def upload_card01(n):
-    return
+            return html.H3([
+                "No Name Project", 
+                html.P([
+                    "Give it a name in the Dashboard."
+                    ], className="fs-5 mt-3")
+                    ], 
+                    className="display-5")
+        else:
+            return html.H3(data, className="display-5")
+    

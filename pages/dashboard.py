@@ -1,23 +1,22 @@
-from pydoc import classname
-import dash
-from dash import Input, Output, State, dcc, html, callback, dash_table
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import dash_bootstrap_components as dbc
-from dash.exceptions import PreventUpdate
-import dash_mantine_components as dmc
-
 import base64
 import datetime
 import io
-import pandas as pd
-import numpy as np
 import math
-import openpyxl #just so excel upload works 
-from index import app, config
+from pydoc import classname
 
-from src import db_loader, building_type_option
+import dash
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+import numpy as np
+import openpyxl  # just so excel upload works
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from dash import Input, Output, State, callback, dash_table, dcc, html
+from dash.exceptions import PreventUpdate
+from index import app, config
+from plotly.subplots import make_subplots
+from src import building_type_option, db_loader, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -63,69 +62,10 @@ layout = html.Div([
         # Allow multiple files to be uploaded
         multiple=True
     ),
-    dcc.Store(id="dashboard_store"),
     html.Div(id="display-table"),    
-    html.Div(id='reload_table'),        # There is a bug where this loads whilst dashboard_graph is still active
     html.Div(id="dashboard_graph"),     # could just check but idk ceebs not elegant(?)...no thing is elegant (╯▔皿▔)╯
 ])
 
-
-def parse_contents(contents, filename, date):
-    content_type, content_string = contents.split(',')
-
-    decoded = base64.b64decode(content_string)
-    try:
-        if 'csv' in filename:
-            df = pd.read_csv(
-                io.StringIO(decoded.decode('utf-8')))
-        elif 'xls' in filename:
-            df = pd.read_excel(io.BytesIO(decoded))
-    except Exception as e:
-        print(e)
-        return dbc.Alert([
-            html.H1("An opsies occured 😢"),
-            html.Hr(),
-            html.P(str(e)),
-            html.P(["There is some error with the file you uploaded. Check ",html.A('reference page', href="/pages/reference"), " for more info."],
-            className="fs-3 p-3"),
-            ],
-            dismissable=True,
-            color="warning",
-            className= "fixed-top w-25 mt-5 shadow",
-            style = {
-                "zIndex": "2",
-                "marginLeft": "73%",
-            })
-    df = df.rename(columns=df.iloc[0], )
-    df = df.drop([0,0])
-    #df['Structure'] = df['Home Story Name'].str.contains('basement',case=False,regex=True)
-    df = df.replace("---", 0)
-    return html.Div([
-        html.H5(filename),
-        html.H6(datetime.datetime.fromtimestamp(date)),
-        dash_table.DataTable(
-            df.to_dict('records'),
-            [{'name': i, 'id': i} for i in df.columns],
-            page_size= 15,
-        ),
-        dcc.Store(id="temp-df-store", data = df.to_json(date_format="iso", orient="split")),
-        html.Hr(),
-                dbc.Alert(
-            [
-                html.H1("Upload is SUCCESSFUL!"),
-                html.Hr(),
-                html.P("{} has been uploaded succesfully".format(filename), className="fs-5"),
-                html.P("Happy designing! 😁")
-            ], 
-            is_open=True, 
-            dismissable=True,
-            className= "fixed-top w-25 mt-5 p-3",
-            style = {
-                "zIndex": "2",
-                "marginLeft": "73%",
-            },
-        ),
-    ])
 
 @callback(Output('display-table', 'children'),
               Input('upload-data', 'contents'),
@@ -134,30 +74,10 @@ def parse_contents(contents, filename, date):
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         children = [
-            parse_contents(c, n, d) for c, n, d in
+            uploader.parse_contents(c, n, d, "temp-df-store") for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
 
-@callback(                              #passes the data to a div that will stay there
-Output('dashboard_store', 'data'),      #idk who to fix multi-page... keep reloading to the original layout
-Input('temp-df-store', 'data'))         #maybe change layout into a dcc.store?  ¯\_(ツ)_/¯ 
-def pass_df(data):
-    return data
-
-@callback(
-Output('reload_table', 'children'),
-Input('dashboard', 'n_clicks'),
-State("main_store", 'data'))
-def rerender_table(n, data):
-    if n is None:
-        raise PreventUpdate
-    elif data is not None:
-        df = pd.read_json(data, orient="split")
-        return dash_table.DataTable(
-            df.to_dict('records'),
-            [{'name': i, 'id': i} for i in df.columns],
-            page_size= 15,
-        ),
 
 def em_calc(df):
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() # create consolidated df
@@ -208,10 +128,10 @@ def make_graphs(data):
     if data is None:
         raise PreventUpdate
     elif data is not None:
-        df = pd.read_json(data, orient="split") 
-        gb_ec, epic_ec, ice_ec = em_calc(df) # makes df for greenbook db
+        df_o = pd.read_json(data, orient="split") 
+        gb_ec, epic_ec, ice_ec = em_calc(df_o) # makes df for greenbook db
 
-        df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
+        df = df_o.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
         df_ec = df["Embodied Carbon"].tolist() 
 
@@ -269,6 +189,11 @@ def make_graphs(data):
         
 
         return html.Div([ # consolidated table..
+            dash_table.DataTable(
+                df_o.to_dict('records'),
+                [{'name': i, 'id': i} for i in df_o.columns],
+                page_size= 15,
+            ),
             dbc.Card([
                 html.H3("Structure Summery"),
                 dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
