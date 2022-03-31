@@ -155,7 +155,7 @@ def save_2_main(data):
         return data
     else: PreventUpdate
 
-
+# passes the upload from card 2 for later access.
 @app.callback(
 Output('card02_store', 'data'),
 Input('card2_temp_store', 'data'))
@@ -163,7 +163,6 @@ def save_2_card02(data):
     if data is not None:
         return data
     else: PreventUpdate
-
 
 # saves project name
 @app.callback(
@@ -231,7 +230,7 @@ app.layout = html.Div([
     dcc.Store(id="main_store", storage_type="session"), #stores the current schedule
     dcc.Store(id="gfa_store", storage_type="session"), # stores gfa
     dcc.Store(id="project_name", storage_type="session"), # Stores project name
-    dcc.Store(id="card02_store", storage_type="session"), # Stores project name
+    dcc.Store(id="card02_store", storage_type="session"), # Stores card 2 upload data  
     dcc.Store(id="card03_store", storage_type="session"), # Stores project name
     dcc.Location(id="url", refresh=False), 
     sidebar,

@@ -7,6 +7,11 @@ import pandas as pd
 from dash import dash_table, dcc, html
 
 
+def check_title(bool, id, data):
+    if bool is False:
+        pass
+    else: return dcc.Store(id=id, data = data)
+
 def parse_contents(contents, filename, date, id):
     content_type, content_string = contents.split(',')
 
@@ -38,7 +43,6 @@ def parse_contents(contents, filename, date, id):
     df = df.replace("---", 0)
     return html.Div([
         dcc.Store(id=id, data = df.to_json(date_format="iso", orient="split")),
-        html.Hr(),
             dbc.Alert([
                 html.H1("Upload is SUCCESSFUL!"),
                 html.Hr(),

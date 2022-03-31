@@ -13,7 +13,7 @@ from src import comparison_cards_01, comparison_cards_02, uploader
 
 layout = html.Div([
     html.H1("Comparison", className="display-2 mb-5 "),
-    html.Hr(),
+    html.Hr(className="my-5"),
     dbc.Container([
         dbc.Row([
 
@@ -33,7 +33,7 @@ layout = html.Div([
                     comparison_cards_02.card02,
                     ],
                     class_name='shadow p-4')
-            ], width=4, class_name="h-25"),
+            ], width=4),
 
             # ---------- card 03 -----------
             dbc.Col([
@@ -71,8 +71,14 @@ Input('project_name', 'modified_timestamp'),
 State('project_name', 'data')
 )
 def card1_title_update(mts, data):
-    if mts is None:
-        return html.H3([data, html.P(["Give it a name in the Dashboard."])], className="display-5")
+    if data is None or mts is None:
+        return html.H3([
+                "No Name Project", 
+                html.P([
+                    "Give it a name in the Dashboard."
+                    ], className="fs-5 mt-3")
+                    ], 
+                    className="display-5")
     else: 
         if data == "":
             return html.H3([
