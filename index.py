@@ -131,7 +131,29 @@ sidebar = html.Div(
         html.P("Sharing Projects helps Architects \
             compare embodied carbon with other projects and make \
             benchmark scores more accurate", 
-            className="text-secondary")
+            className="text-secondary"),
+        dmc.Affix(
+            dmc.Tooltip(
+                label="Send some feedback!",
+                transition="rotate-left",
+                transitionDuration=300,
+                transitionTimingFunction="ease",
+                children=[
+                    html.A(
+                        dmc.Button(
+                            html.H5(
+                                className="bi bi-chat-dots-fill translate-middle",
+                                style={'position': 'absolute', 'top': '50%'}
+                                ),
+                            radius="xl",
+                            size="lg",
+                        ),
+                        href="mailto:jackd@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
+                    ),
+                ],
+            ),
+            style={'marginRight': '2rem', 'marginBottom': '2rem'},
+        ),
     ],
     style=SIDEBAR_STYLE,
 )
@@ -239,4 +261,4 @@ app.layout = html.Div([
 
 if __name__ == "__main__":
     #app.run_server(port=8888, debug=True)
-    app.run_server(port=5555, debug=True)
+    app.run_server( host='0.0.0.0' ,port=5555, debug=True)

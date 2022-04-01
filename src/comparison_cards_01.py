@@ -60,14 +60,19 @@ def update_div(gfa_mts, main_data, gfa_data ):
 
 #----------- green book comparison for card 01 -----------
             html.H3("Green Book DB", className="mb-3"),
-            material_table.table_gen(
-                dbc.Select(options=greenbook_options.concrete_options, id="gb_comp_concrete", value="Concrete 50 MPa "),
-                html.P(id="gb_comp_concrete_val"),
-                dbc.Select(options=greenbook_options.steel_options, id="gb_comp_steel", value="Steel Universal Section"),
-                html.P(id="gb_comp_steel_val"),
-                dbc.Select(options=greenbook_options.timber_options, id="gb_comp_timber", value="Glue-Laminated Timber (Glu-lam)"),
-                html.P(id="gb_comp_timber_val"),
+            dmc.Accordion([
+                dmc.AccordionItem(
+                    material_table.table_gen(
+                        dbc.Select(options=greenbook_options.concrete_options, id="gb_comp_concrete", value="Concrete 50 MPa "),
+                        html.P(id="gb_comp_concrete_val"),
+                        dbc.Select(options=greenbook_options.steel_options, id="gb_comp_steel", value="Steel Universal Section"),
+                        html.P(id="gb_comp_steel_val"),
+                        dbc.Select(options=greenbook_options.timber_options, id="gb_comp_timber", value="Glue-Laminated Timber (Glu-lam)"),
+                        html.P(id="gb_comp_timber_val"),
+                    ),
+                    label="Green Book DB Material Options",
                 ),
+            ]),
             dbc.Row([
                 dbc.Col([
                     html.H3(id="gb_comp_total", className="text-center"),
@@ -84,14 +89,19 @@ def update_div(gfa_mts, main_data, gfa_data ):
 
 #---------- EPIC comparison for card 01 -----------
             html.H3("EPiC DB", className="mb-3"),
-            material_table.table_gen(
-                dbc.Select(options=epic_options.concrete_option, id="epic_comp_concrete", value="Concrete 50 MPa"),
-                html.P(id="epic_comp_concrete_val"),
-                dbc.Select(options=epic_options.steel_options, id="epic_comp_steel", value="Steel structural steel section"),
-                html.P(id="epic_comp_steel_val"),
-                dbc.Select(options=epic_options.timber_option, id="epic_comp_timber", value="Glued laminated timber (glulam)"),
-                html.P(id="epic_comp_timber_val"),
+            dmc.Accordion([
+                dmc.AccordionItem(
+                    material_table.table_gen(
+                        dbc.Select(options=epic_options.concrete_option, id="epic_comp_concrete", value="Concrete 50 MPa"),
+                        html.P(id="epic_comp_concrete_val"),
+                        dbc.Select(options=epic_options.steel_options, id="epic_comp_steel", value="Steel structural steel section"),
+                        html.P(id="epic_comp_steel_val"),
+                        dbc.Select(options=epic_options.timber_option, id="epic_comp_timber", value="Glued laminated timber (glulam)"),
+                        html.P(id="epic_comp_timber_val"),
+                    ),
+                    label="EPiC DB Material Options",
                 ),
+            ]),
             dbc.Row([
                 dbc.Col([
                     html.H3(id="epic_comp_total", className="text-center"),
