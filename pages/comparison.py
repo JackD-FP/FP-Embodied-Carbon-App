@@ -9,7 +9,8 @@ import plotly.graph_objects as go
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import comparison_cards_01, comparison_cards_02, uploader
+from src import (comparison_cards_01, comparison_cards_02, comparison_cards_03,
+                 uploader)
 
 layout = html.Div([
     html.H1("Comparison", className="display-2 mb-5 "),
@@ -38,33 +39,14 @@ layout = html.Div([
             # ---------- card 03 -----------
             dbc.Col([
                 dbc.Card([ # card 03
-                    dcc.Upload(
-                        dmc.Tooltip(
-                            label="upload a different project to compare",
-                            transition="pop",
-                            transitionDuration=300,
-                            transitionTimingFunction="ease",
-                            children=[
-                                    dmc.Button(
-                                        html.I(className="bi bi-cloud-upload"),
-                                        radius="xl",
-                                        size="md",
-                                        class_name="shadow-sm",
-                                        id=""
-                                    )                             
-                            ], class_name='position-absolute translate-middle',
-                            style={'zIndex':'5', 'left':'98%', 'top':'10%'}
-                        ),
-                        id="upload_card03" 
-                    ),
-                        html.P("Add Another Project you want to compare with", className="text-center"),
-                        html.Div(id="test-card03")
+                    comparison_cards_03.card03,
                 ], class_name='shadow p-4')
             ], width=4,),
         ])
     ], fluid=True)
 ], id="comp-div")
 
+#callback to update the contents of the comparison card
 @callback(
 Output('comp_title', 'children'),
 Input('project_name', 'modified_timestamp'), 

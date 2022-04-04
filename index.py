@@ -186,6 +186,15 @@ def save_2_card02(data):
         return data
     else: PreventUpdate
 
+# passes the upload from card 3 for later access.
+@app.callback(
+Output('card03_store', 'data'),
+Input('card3_temp_store', 'data'))
+def save_2_card03(data):
+    if data is not None:
+        return data
+    else: PreventUpdate
+
 # saves project name
 @app.callback(
 Output('project_name', 'data'),
