@@ -28,26 +28,128 @@ ice_more_info = [
     dmc.Skeleton(visible=False, children = dcc.Graph(id="ice_bar")),
 ]
 
-#Output('test_potato', 'children'),
-#Output('epic_bar', 'figure'),
-#Output('ice_bar', 'figure'),
-#Input('gb_accordion', 'state'), 
+# @callback(
+#     Output('gb_bar', 'figure'),
+#     Input('row_concrete', 'value'),
+#     Input('row_steel', 'value'),
+#     Input('row_timber', 'value'),
+#     State('main_store', 'data')
+# )# updates Green Book Database card
+# def accodion_graph(conc_value, steel_value, timber_value, data): 
+#     if data is not None:
+#         df = pd.read_json(data, orient="split")
+#         gb_ec = ec_calc("gb", df, conc_value, steel_value, timber_value)
+#         df['gb_ec'] = gb_ec
+#         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
+#         figure = px.bar(
+#             df,
+#             x="Home Story Name",
+#             y="gb_ec",
+#             color='Building Materials (All)',
+#             color_discrete_map={
+#                 'CONCRETE - IN-SITU':'#5463FF',
+#                 'TIMBER - STRUCTURAL': '#FF1818',
+#                 'STEEL - STRUCTURAL': '#FFC300'
+#             },
+#             labels={
+#                 'gb_ec': 'Embodied Carbon From Green Book Database'
+#             }
+#         )
+#         return figure
+#     else: raise PreventUpdate 
 
+# @callback(
+#     Output('epic_bar', 'figure'),
+#     Input('epic_row_concrete', 'value'),
+#     Input('epic_row_steel', 'value'),
+#     Input('epic_row_timber', 'value'),
+#     State('main_store', 'data')
+# )# updates the epic database card
+# def epic_accodion_graph(conc_value, steel_value, timber_value, data):
+#     if data is not None:
+#         df = pd.read_json(data, orient="split")
+#         epic_ec = ec_calc("epic", df, conc_value, steel_value, timber_value)
+#         df['epic_ec'] = epic_ec
+#         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
+#         figure = px.bar(
+#             df,
+#             x="Home Story Name",
+#             y="epic_ec",
+#             color='Building Materials (All)',
+#             color_discrete_map={
+#                 'CONCRETE - IN-SITU':'#5463FF',
+#                 'TIMBER - STRUCTURAL': '#FF1818',
+#                 'STEEL - STRUCTURAL': '#FFC300'
+#             },
+#             labels={
+#                 'epic_ec': 'Embodied Carbon From EPiC Database'
+#             }
+#         )
+#         return figure
+#     else: raise PreventUpdate 
+
+# @callback(
+#     Output('ice_bar', 'figure'),
+#     Input('ice_row_concrete', 'value'),
+#     Input('ice_row_steel', 'value'),
+#     Input('ice_row_timber', 'value'),
+#     State('main_store', 'data')
+# )# updates the ice database card
+# def ice_accodion_graph(conc_value, steel_value, timber_value, data):
+#     if data is not None:
+#         df = pd.read_json(data, orient="split")
+#         ice_ec = ec_calc("ice", df, conc_value, steel_value, timber_value)
+#         df['ice_ec'] = ice_ec
+#         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
+#         figure = px.bar(
+#             df,
+#             x="Home Story Name",
+#             y="ice_ec",
+#             color='Building Materials (All)',
+#             color_discrete_map={
+#                 'CONCRETE - IN-SITU':'#5463FF',
+#                 'TIMBER - STRUCTURAL': '#FF1818',
+#                 'STEEL - STRUCTURAL': '#FFC300'
+#             },
+#             labels={
+#                 'ice_ec': 'Embodied Carbon From ICE Database'
+#             }
+#         )
+#         return figure
+#     else: raise PreventUpdate 
 
 @callback(
-    Output('gb_bar', 'figure'),
-    Input('row_concrete', 'value'),
-    Input('row_steel', 'value'),
-    Input('row_timber', 'value'),
-    State('main_store', 'data')
-)# updates Green Book Database card
-def accodion_graph(conc_value, steel_value, timber_value, data): 
+Output('gb_bar', 'figure'),
+Output('epic_bar', 'figure'),
+Output('ice_bar', 'figure'),
+
+Input('row_concrete', 'value'),
+Input('row_steel', 'value'),
+Input('row_timber', 'value'),
+Input('epic_row_concrete', 'value'),
+Input('epic_row_steel', 'value'),
+Input('epic_row_timber', 'value'),
+Input('ice_row_concrete', 'value'),
+Input('ice_row_steel', 'value'),
+Input('ice_row_timber', 'value'),
+
+State('main_store', 'data')
+)
+def bar_update(
+    gb_conc_value, gb_steel_value, gb_timber_value,
+    epic_conc_value, epic_steel_value, epic_timber_value, 
+    ice_conc_value, ice_steel_value, ice_timber_value, 
+    data
+    ):
     if data is not None:
         df = pd.read_json(data, orient="split")
-        gb_ec = ec_calc("gb", df, conc_value, steel_value, timber_value)
-        df['gb_ec'] = gb_ec
+        df['gb_ec'] = ec_calc("gb", df, gb_conc_value, gb_steel_value, gb_timber_value)
+        df['epic_ec'] = ec_calc("epic", df, epic_conc_value, epic_steel_value, epic_timber_value)
+        df['ice_ec'] = ec_calc("ice", df, ice_conc_value, ice_steel_value, ice_timber_value)
+
         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
-        figure = px.bar(
+
+        gb_fig = px.bar(
             df,
             x="Home Story Name",
             y="gb_ec",
@@ -58,26 +160,11 @@ def accodion_graph(conc_value, steel_value, timber_value, data):
                 'STEEL - STRUCTURAL': '#FFC300'
             },
             labels={
-                'gb_ec': 'Embodied Carbon From Green Book Database'
+                'gb_ec': 'Embodied Carbon From ICE Database'
             }
         )
-        return figure
-    else: raise PreventUpdate 
 
-@callback(
-    Output('epic_bar', 'figure'),
-    Input('epic_row_concrete', 'value'),
-    Input('epic_row_steel', 'value'),
-    Input('epic_row_timber', 'value'),
-    State('main_store', 'data')
-)# updates the epic database card
-def epic_accodion_graph(conc_value, steel_value, timber_value, data):
-    if data is not None:
-        df = pd.read_json(data, orient="split")
-        epic_ec = ec_calc("epic", df, conc_value, steel_value, timber_value)
-        df['epic_ec'] = epic_ec
-        df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
-        figure = px.bar(
+        epic_fig = px.bar(
             df,
             x="Home Story Name",
             y="epic_ec",
@@ -88,26 +175,11 @@ def epic_accodion_graph(conc_value, steel_value, timber_value, data):
                 'STEEL - STRUCTURAL': '#FFC300'
             },
             labels={
-                'epic_ec': 'Embodied Carbon From EPiC Database'
+                'epic_ec': 'Embodied Carbon From ICE Database'
             }
         )
-        return figure
-    else: raise PreventUpdate 
 
-@callback(
-    Output('ice_bar', 'figure'),
-    Input('ice_row_concrete', 'value'),
-    Input('ice_row_steel', 'value'),
-    Input('ice_row_timber', 'value'),
-    State('main_store', 'data')
-)# updates the ice database card
-def ice_accodion_graph(conc_value, steel_value, timber_value, data):
-    if data is not None:
-        df = pd.read_json(data, orient="split")
-        epic_ec = ec_calc("ice", df, conc_value, steel_value, timber_value)
-        df['ice_ec'] = epic_ec
-        df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
-        figure = px.bar(
+        ice_fig = px.bar(
             df,
             x="Home Story Name",
             y="ice_ec",
@@ -121,9 +193,14 @@ def ice_accodion_graph(conc_value, steel_value, timber_value, data):
                 'ice_ec': 'Embodied Carbon From ICE Database'
             }
         )
-        return figure
-    else: raise PreventUpdate 
+        return gb_fig, epic_fig, ice_fig
+    else: raise PreventUpdate
 
+"""
+    WE MAY NEED TO REFACTOR THIS DEFINITION BELOW. 
+    SOMEONE UPLOADS SOMETHING THAT DOENS'T HAVE 'CONCRETE - IN-SITU', 'STEEL - STRUCTURAL' OR 'TIMBER - STRUCTURAL'
+    THE DEFINITION WILL NOT WORK.
+"""
 
 def ec_calc(database, df, conc_value, steel_value, timber_value):
     ec_list = []
