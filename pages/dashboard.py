@@ -71,7 +71,6 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
 
-
 def em_calc(df):
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() # create consolidated df
     #materials = []
@@ -116,14 +115,9 @@ def percent_check_return(lo, hi):
         sub = (hi-lo)*100
         return "+{}% more than lowest".format(np.around(sub/hi, 2))
 
-def percent_calc(lo, hi):
-    sub = (hi-lo)*100
-    return int(sub/hi)
-
-
 @callback(
 Output('dashboard_graph', 'children'),
-[Input('main_store', 'data')],)
+[Input('main_store', 'data')])
 def make_graphs(data):
     if data is None:
         raise PreventUpdate
@@ -228,59 +222,13 @@ def make_graphs(data):
                     html.H5("BCA Building Type:", className="mt-3"),
                     dbc.Select(
                         id='bld_type', 
-                        placeholder = "Building Type Class 1, 2, 3... so on",
+                        value='5_a_grade',
                         options=building_type_option.building_type,
                         className="w-25",
                     ),
                 ], className="my-5"),
                 dbc.Container([
                     dbc.Row([
-                        # dbc.Col([
-                        #     #ArchiCAD Column
-                        #     html.H5("Archicad", className="mt-3 mb-4"),   
-                        #     html.Div([                         
-                        #         dbc.Row([
-                        #             dbc.Col(html.H3("{:,}".format(np.around(archicad_sum,2)), className="text-end")),
-                        #             dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),    
-                        #         ]),
-                        #         html.P(percent_check_return(lowest_ec, archicad_sum), className="text-center"),
-                        #     ],id="archicad_ec_check", style={"marginTop":"3rem","marginBottom":"3rem"} ),
-
-                        #     html.Hr(style={
-                        #         "marginLeft": "2rem",
-                        #         "marginRight": "2rem",
-                        #         "color": "d6d3d1"}),
-
-                        #     #GFA calc for archicad
-                        #     html.Div([
-                        #         dbc.Row([
-                        #             dbc.Col([
-                        #                 html.H3(id="archicad_gfa",
-                        #                 className="text-end"),
-                        #             ]),
-                        #             dbc.Col([
-                        #                 html.P(id="archicad_p",
-                        #                 className="text-start"),
-                        #             ])
-                        #         ]),
-                        #         html.P("Design's Benchmark", className="text-center"),
-                        #         html.Div([
-                        #             html.I(className="bi bi-star-fill mx-2"),
-                        #             html.I(className="bi bi-star-fill mx-2"),
-                        #             html.I(className="bi bi-star-fill mx-2"),
-                        #             html.I(className="bi bi-star-fill mx-2"),
-                        #             html.I(className="bi bi-star-fill mx-2"),
-                        #             ], className="mt-5 text-center"),
-                        #         html.P("Benchmark Score", className="text-center"),
-                        #         html.P([
-                        #             html.I(className="bi bi-cone-striped"),
-                        #             "Benchmark Scores are still under construction",
-                        #             html.I(className="bi bi-cone-striped")], 
-                        #             className="text-center text-secondary")
-                        #     ], style={"marginTop":"3rem","marginBottom":"3rem"}),
-
-                        # ], className="py-5 px-3"),
-
                         dbc.Col([
                             #Green Book Column
                             html.H5(
@@ -306,29 +254,13 @@ def make_graphs(data):
                                         className="text-end"),
                                     ]),
                                     dbc.Col([
-                                        html.P(id="gb_p",
+                                        html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e'),'/m',html.Sup(2)], className="fs-4")], id="gb_p",
                                         className="text-start"),
                                     ])
                                 ]),
                                 html.P("Design's Benchmark", className="text-center"),
-                                dmc.Tooltip(
-                                    label="Based on Green Book Benchmark scores",
-                                    withArrow=True,
-                                    position="top",
-                                    placement="center",
-                                    color="dark",
-                                    children=[ #@TODO: add working benchmark for green book
-                                        html.Div([
-                                            html.I(className="bi bi-star-fill mx-2"),
-                                            html.I(className="bi bi-star-fill mx-2"),
-                                            html.I(className="bi bi-star-fill mx-2"),
-                                            html.I(className="bi bi-star-fill mx-2"),
-                                            html.I(className="bi bi-star-fill mx-2"),
-                                            ], className="mt-5 text-center"),
-                                        html.P("Benchmark Score", className="text-center"),
-                                    ],
-                                    style={"display":"block"}
-                                ),
+                                html.P("Benchmark Score", className="text-center mt-5 "),
+                                html.Div(id="gb_benchmark"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
 
                         ], className="bg-light py-5 px-3"),
@@ -358,7 +290,7 @@ def make_graphs(data):
                                         className="text-end"),
                                     ]),
                                     dbc.Col([
-                                        html.P(id="epic_p",
+                                        html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e'),'/m',html.Sup(2)], className="fs-4")], id="epic_p",
                                         className="text-start"),
                                     ])
                                 ]),
@@ -402,7 +334,7 @@ def make_graphs(data):
                                         className="text-end"),
                                     ]),
                                     dbc.Col([
-                                        html.P(id="ice_p",
+                                        html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e'),'/m',html.Sup(2)], className="fs-4")],id="ice_p",
                                         className="text-start"),
                                     ])
                                 ]), 
@@ -425,37 +357,94 @@ def make_graphs(data):
             ], class_name="my-5 p-4 shadow"),
         ])
 
-
 @callback(
-# Output('archicad_gfa', 'children'),
-# Output('archicad_p', 'children'),
 Output('gb_gfa', 'children'),
-Output('gb_p', 'children'),
 Output('epic_gfa', 'children'),
-Output('epic_p', 'children'),
 Output('ice_gfa', 'children'),
-Output('ice_p', 'children'),
+Output('gb_benchmark', 'children'),
+
 Input('gfa_input', 'value'), 
+Input('bld_type', 'value'),
+
 State('main_store', 'data')
 )
-def gfa_calc(val, data):
+def gfa_calc(val, bld_type, data):
     df = pd.read_json(data, orient="split")
     gb_ec, epic_ec, ice_ec = em_calc(df)
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-    # archicad_ec = sum(df["Embodied Carbon"].tolist())
 
     if val is not None:
 
-        # gfa_val = [archicad_ec/val, sum(gb_ec)/val, sum(epic_ec)/val, sum(ice_ec)/val]
         gfa_val = [sum(gb_ec)/val, sum(epic_ec)/val, sum(ice_ec)/val]
 
-        # archicad_gfa_out = "{:,}".format(np.around(gfa_val[0],2))
         gb_gfa_out = "{:,}".format(np.around(gfa_val[0],2))
         epic_gfa_out = "{:,}".format(np.around(gfa_val[1],2))
         ice_gfa_out = "{:,}".format(np.around(gfa_val[2],2))
-        default_str = [html.Span(["kgCO",html.Sup(2),html.Sub('e'),'/m',html.Sup(2)], className="fs-4")]
+
+        
+        def stars_append(n):
+            stars = []
+            for i in range(n):
+                stars.append(html.I(className="bi bi-star-fill mx-2"))
+            return stars
 
 
-        return gb_gfa_out, default_str, epic_gfa_out, default_str, ice_gfa_out, default_str
+        def benchmark(Embodied_Carbon, Building_Type):
+            if Building_Type == "2_premium":
+                if Embodied_Carbon <= 1450 and Embodied_Carbon >= 1160:
+                    return html.Div(stars_append(3), className="text-center")
+                elif Embodied_Carbon <= 1160 and Embodied_Carbon >= 870:
+                    return html.Div(stars_append(4), className="text-center")
+                elif Embodied_Carbon <= 870:
+                    return html.Div(stars_append(5), className="text-center")
+                else: return html.Div("Improvement Required", className="text-center")
 
-    else: return "Unknown", "Input GFA above", "Unknown", "Input GFA above","Unknown", "Input GFA above"  
+            elif Building_Type == "2_multi-res":
+                if Embodied_Carbon <= 990 and Embodied_Carbon >= 790:
+                    return html.Div(stars_append(3), className="text-center")
+                elif Embodied_Carbon <= 790 and Embodied_Carbon >= 590:
+                    return html.Div(stars_append(4), className="text-center")
+                elif Embodied_Carbon <= 590:
+                    return html.Div(stars_append(5), className="text-center")
+                else: return html.Div("Improvement Required", className="text-center")
+
+            elif Building_Type == "5_premium":
+                if Embodied_Carbon <= 1500 and Embodied_Carbon >= 1200:
+                    return html.Div(stars_append(3), className="text-center")
+                elif Embodied_Carbon <= 1200 and Embodied_Carbon >= 900:
+                    return html.Div(stars_append(4), className="text-center")
+                elif Embodied_Carbon <= 900:
+                    return html.Div(stars_append(5), className="text-center")
+                else: return html.Div("Improvement Required", className="text-center")
+
+            elif Building_Type == "5_a_grade":
+                if Embodied_Carbon <= 800 and Embodied_Carbon >= 640:
+                    return html.Div(stars_append(3), className="text-center")
+                elif Embodied_Carbon <= 640 and Embodied_Carbon >= 480:
+                    return html.Div(stars_append(4), className="text-center")
+                elif Embodied_Carbon <= 480:
+                    return html.Div(stars_append(5), className="text-center")
+                else: return html.Div("Improvement Required", className="text-center")
+
+            elif Building_Type == "6_regional":
+                if Embodied_Carbon <= 2150 and Embodied_Carbon >= 1750:
+                    return html.Div(stars_append(3), className="text-center")
+                elif Embodied_Carbon <= 1720 and Embodied_Carbon >= 1250:
+                    return html.Div(stars_append(4), className="text-center")
+                elif Embodied_Carbon <= 1290:
+                    return html.Div(stars_append(5), className="text-center")
+                else: return html.Div("Improvement Required", className="text-center")
+
+            elif Building_Type == "5_sub_regional":
+                if Embodied_Carbon <= 1220 and Embodied_Carbon >= 970:
+                    return html.Div(stars_append(3), className="text-center")
+                elif Embodied_Carbon <= 970 and Embodied_Carbon >= 730:
+                    return html.Div(stars_append(4), className="text-center")
+                elif Embodied_Carbon <= 730:
+                    return html.Div(stars_append(5), className="text-center")
+                else: return html.Div("Improvement Required", className="text-center")
+
+        return gb_gfa_out, epic_gfa_out, ice_gfa_out, html.Div(benchmark(gfa_val[0],bld_type))
+
+    else: return "Unknown - Input GFA above", "Unknown - Input GFA above", "Unknown - Input GFA above", ""
+

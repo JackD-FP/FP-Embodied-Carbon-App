@@ -1,42 +1,26 @@
 building_type = [
     {
-        "label": "Class 1, A,B and C",
-        "value": "class 1"
+        "label": "Class 2 Residential - Premium(>25m)",
+        "value": "2_premium",
+    },
+   {
+        "label": "Class 2 - Multi-residential",
+        "value": "2_multi-res"
     },
     {
-        "label": "Class 2",
-        "value": "class 2"
+        "label": "Class 5 Office - Premium",
+        "value": "5_premium"
     },
     {
-        "label": "Class 3",
-        "value": "class 3"
+        "label": "Class 5 Office - A Grade",
+        "value": "5_a_grade"
     },
     {
-        "label": "Class 4",
-        "value": "class 4"
+        "label": "Class 6 Retail - Regional",
+        "value": "6_regional"
     },
     {
-        "label": "Class 5",
-        "value": "class 5"
-    },
-    {
-        "label": "Class 6",
-        "value": "class 6"
-    },
-    {
-        "label": "Class 7, A and B",
-        "value": "class 7"
-    },
-    {
-        "label": "Class 8",
-        "value": "class 8"
-    },
-    {
-        "label": "Class 9, A, B and C",
-        "value": "class 9"
-    },
-    {
-        "label": "Class 10, A, B and C",
-        "value": "class 10"
+        "label": "Class 5 Retail - Sub Regional",
+        "value": "5_sub_regional"
     },
 ]   
