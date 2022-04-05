@@ -1,29 +1,21 @@
-import base64
-import datetime
-import io
-import math
 import re
 from pydoc import classname
 
-import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
+from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
-from index import app, config
 from plotly.subplots import make_subplots
-from src import building_type_option, db_loader, uploader
+from src import building_type_option, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
-
-graph_colors = ['#5463FF', '#FFC300', '#FF1818'] # graphing colours 
 
 layout = html.Div([
     html.H1("Dashboard", className="display-2 mb-5 "),
@@ -189,7 +181,7 @@ def make_graphs(data):
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         
         #df = df.drop(["Complex Profile", "Structure"], axis=1)
-        df = df.drop(["Complex Profile"], axis=1)
+        df = df.drop(["Complex Profile", "Embodied Carbon"], axis=1)
 
         #calc for them progress ring
         # db_total = sum((ec_list := [archicad_sum, gb_sum, epic_sum, ice_sum]))
@@ -293,9 +285,10 @@ def make_graphs(data):
                             #Green Book Column
                             html.H5(
                                 "Green Book DB", 
-                                className="my-4 display-6",
+                                className="my-4 display-6 text-center",
                                 style={"marginLeft": "2rem"},
                                 ),
+                            dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
                                 dbc.Row([
                                     dbc.Col(html.H3("{:,}".format(np.around(gb_sum,2)), className="text-end")),
@@ -303,11 +296,7 @@ def make_graphs(data):
                                 ]),
                                 html.P(percent_check_return(lowest_ec, gb_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
-
-                            html.Hr(style={
-                                "marginLeft": "2rem",
-                                "marginRight": "2rem",
-                                "color": "d6d3d1"}),
+                            dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
                             #GFA calc for green book
                             html.Div([
@@ -348,9 +337,10 @@ def make_graphs(data):
                             #EPiC Column
                             html.H5(
                                 "EPIC DB", 
-                                className="my-3 display-6",
+                                className="my-4 display-6 text-center",
                                 style={"marginLeft": "2rem"},
                                 ),
+                            dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
                                 dbc.Row([
                                     dbc.Col(html.H3("{:,}".format(np.around(epic_sum,2)), className="text-end")),
@@ -358,11 +348,7 @@ def make_graphs(data):
                                 ]),
                                 html.P(percent_check_return(lowest_ec, epic_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
-
-                            html.Hr(style={
-                                "marginLeft": "2rem",
-                                "marginRight": "2rem",
-                                "color": "d6d3d1"}),
+                            dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
                             #GFA calc for epic
                             html.Div([
@@ -395,8 +381,10 @@ def make_graphs(data):
                         dbc.Col([
                             #ICE column epic
                             html.H5("ICE DB", 
-                            className="my-4 display-6",
-                            style={"marginLeft": "2rem"}),
+                            className="my-4 display-6 text-center",
+                            style={"marginLeft": "2rem"}
+                            ),
+                            dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
                                 dbc.Row([
                                     dbc.Col(html.H3("{:,}".format(np.around(ice_sum,2)), className="text-end")),
@@ -404,11 +392,7 @@ def make_graphs(data):
                                 ]),
                                 html.P(percent_check_return(lowest_ec, ice_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
-
-                            html.Hr(style={
-                                "marginLeft": "2rem",
-                                "marginRight": "2rem",
-                                "color": "d6d3d1"}),
+                            dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
                             #GFA calc for ice
                             html.Div([

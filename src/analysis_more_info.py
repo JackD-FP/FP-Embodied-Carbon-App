@@ -1,25 +1,17 @@
 from multiprocessing.sharedctypes import Value
-from dash import Input, Output, State, dcc, html, dash_table, callback
-from dash.exceptions import PreventUpdate
+
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import plotly.express as px
-import pandas as pd
 import numpy as np
+import pandas as pd
+import plotly.express as px
+from config import config
+from dash import Input, Output, State, callback, dash_table, dcc, html
+from dash.exceptions import PreventUpdate
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
-
-config = { #just tells plotly to save as svg rather than jpeg
-    'toImageButtonOptions': {
-        'format': 'svg', # one of png, svg, jpeg, webp
-        'filename': 'custom_image',
-        'height': 500,
-        'width': 700,
-        'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
-    }
-}
 
 gb_more_info = [
     html.H3("Embodied Carbon per Floor From Green Book Database"),

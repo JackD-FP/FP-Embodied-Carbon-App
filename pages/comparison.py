@@ -1,16 +1,12 @@
-import base64
-import io
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import openpyxl  # just so excel upload works
-import pandas as pd
 import plotly.graph_objects as go
-from dash import Input, Output, State, callback, dash_table, dcc, html
-from dash.exceptions import PreventUpdate
-from plotly.subplots import make_subplots
-from src import (comparison_cards_01, comparison_cards_02, comparison_cards_03,
-                 uploader)
+from dash import Input, Output, State, callback, html
+# from dash.exceptions import PreventUpdate
+# from plotly.subplots import make_subplots
+from src import (comparison_cards_01, comparison_cards_02, comparison_cards_03)
 
 layout = html.Div([
     html.H1("Comparison", className="display-2 mb-5 "),

@@ -6,31 +6,34 @@
 # databases... at the moment everything is good. (till it's not)
 
 
-from dash import Input, Output, State, dcc, html, dash_table, callback
-from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import plotly.graph_objects as go 
-import pandas as pd
 import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+from config import config
+from dash import Input, Output, State, callback, dash_table, dcc, html
+from dash.exceptions import PreventUpdate
 
-from src import greenbook_options, epic_options, ice_options, analysis_more_info
+from src import (analysis_more_info, epic_options, greenbook_options,
+                 ice_options)
+from config import graph_colors
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
 
-config = { #just tells plotly to save as svg rather than jpeg
-    'toImageButtonOptions': {
-        'format': 'svg', # one of png, svg, jpeg, webp
-        'filename': 'custom_image',
-        'height': 500,
-        'width': 700,
-        'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
-    }
-}
+# config = { #just tells plotly to save as svg rather than jpeg
+#     'toImageButtonOptions': {
+#         'format': 'svg', # one of png, svg, jpeg, webp
+#         'filename': 'custom_image',
+#         'height': 500,
+#         'width': 700,
+#         'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
+#     }
+# }
 
-graph_colors = ['#5463FF', '#FFC300', '#FF1818']
+# graph_colors = ['#5463FF', '#FFC300', '#FF1818']
 
 # ------------------------------Green Book Card--------------------------------------
 table_header = [html.Thead(html.Tr([html.Th("Material"), html.Th("Embodied Carbon (kgCO2e)")]))]

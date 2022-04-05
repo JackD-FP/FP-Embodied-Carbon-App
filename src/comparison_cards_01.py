@@ -10,6 +10,7 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pandas as pd
 import plotly.graph_objects as go
+from config import graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
@@ -187,8 +188,9 @@ def definition(conc_val, steel_val, timber_val, val, data):
             values = [concrete, steel, timber]
             # yummy yummy pie
             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)])
-
-            return gb_concrete, gb_steel, gb_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/val), dcc.Graph(figure=fig)
+            fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
+            
+            return gb_concrete, gb_steel, gb_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/float(val)), dcc.Graph(figure=fig)
 
 
 # ---------------- EPIC CALLBACK ----------------
@@ -231,8 +233,9 @@ def definition(conc_val, steel_val, timber_val, val, data):
             values = [concrete, steel, timber]
             # yummy yummy pie
             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)])
+            fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
 
-            return epic_concrete, epic_steel, epic_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/val), dcc.Graph(figure=fig)
+            return epic_concrete, epic_steel, epic_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/float(val)), dcc.Graph(figure=fig)
 
 
 # ---------------- ICE CALLBACK ----------------
@@ -275,5 +278,6 @@ def definition(conc_val, steel_val, timber_val, val, data):
             values = [concrete, steel, timber]
             # yummy yummy pie
             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)])
+            fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
 
-            return ice_concrete, ice_steel, ice_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/val), dcc.Graph(figure=fig)
+            return ice_concrete, ice_steel, ice_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/float(val)), dcc.Graph(figure=fig)

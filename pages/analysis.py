@@ -4,16 +4,10 @@
 # 
 #---------------------------------------
 
-from dash import Input, Output, State, dcc, html, dash_table, callback
-from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
-import plotly.graph_objects as go 
 import pandas as pd
-import numpy as np
-from src import greenbook_options
+from dash import Input, Output, callback, dcc, html
 from src import analysis_cards
-from pages import dashboard
-import json
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 

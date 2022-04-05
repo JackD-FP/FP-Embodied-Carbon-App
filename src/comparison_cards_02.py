@@ -1,15 +1,10 @@
-import base64
-import datetime
-import io
-import math
-
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from dash import Input, Output, State, callback, dash_table, dcc, html
-from dash.exceptions import PreventUpdate
+from config import graph_colors
+from dash import Input, Output, State, callback, dcc, html
 
 from src import (epic_options, greenbook_options, ice_options, material_table,
                  uploader)
@@ -281,9 +276,10 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
 
         # Generate Pie graph
         fig = go.Figure(data=[go.Pie(labels=labels, values=values_pie, hole=0.5)])
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         pie_child = dcc.Graph(figure=fig)
 
-        return html.H3(np.around(total,2)), html.H3(np.around(total_per_m2, 2)), gb_concrete, gb_steel, gb_timber, pie_child
+        return html.H3("{:,}".format(np.around(total,2))), html.H3("{:,}".format(np.around(total_per_m2, 2))), gb_concrete, gb_steel, gb_timber, pie_child
 
 
 
@@ -332,9 +328,10 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
 
         # Generate Pie graph
         fig = go.Figure(data=[go.Pie(labels=labels, values=values_pie, hole=0.5)])
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         pie_child = dcc.Graph(figure=fig)
 
-        return html.H3(np.around(total,2)), html.H3(np.around(total_per_m2, 2)), epic_concrete, epic_steel, epic_timber, pie_child
+        return html.H3("{:,}".format(np.around(total,2))), html.H3("{:,}".format(np.around(total_per_m2, 2))), epic_concrete, epic_steel, epic_timber, pie_child
 
 # ice callback
 @callback(
@@ -381,6 +378,7 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
 
         # Generate Pie graph
         fig = go.Figure(data=[go.Pie(labels=labels, values=values_pie, hole=0.5)])
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         pie_child = dcc.Graph(figure=fig)
 
-        return html.H3(total), html.H3(np.around(total_per_m2, 2)), ice_concrete, ice_steel, ice_timber, pie_child
+        return html.H3("{:,}".format(np.around(total))), html.H3("{:,}".format(np.around(total_per_m2, 2))), ice_concrete, ice_steel, ice_timber, pie_child
