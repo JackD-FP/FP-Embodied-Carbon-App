@@ -127,35 +127,27 @@ def make_graphs(data):
 
         df = df_o.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
-        # df_ec = df["Embodied Carbon"].tolist() 
 
         embodied_carbon_dict = { 
             "Materials" : df_mat , 
-            # "Archicad (kgCO2e)" : df_ec,
             "Green Book (kgCO2e)" : gb_ec, 
             "EPiC EC (kgCO2e)": epic_ec, 
             "ICE EC (kgCO2e)": ice_ec
             }
         total_dict = { #lol u a total dict
             "Materials" : "TOTALS", 
-            #"Archicad (kgCO2e)" : (archicad_sum := sum(df_ec)),
             "Green Book (kgCO2e)" :(gb_sum := sum(gb_ec)), 
             "EPiC EC (kgCO2e)": (epic_sum := sum(epic_ec)), 
             "ICE EC (kgCO2e)": (ice_sum := sum(ice_ec))
         }
 
         ec_df = pd.DataFrame(embodied_carbon_dict)
-        #ec_df = ec_df.append(total_dict, ignore_index=True)
 
-        #ec_df.loc[:,"Archicad (kgCO2e)"] = ec_df["Archicad (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"Green Book (kgCO2e)"] = ec_df["Green Book (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map('{:,.2f}'.format)
 
         fig = make_subplots(rows=1, cols=3, specs=[[{'type':'domain'}, {'type':'domain'},{'type':'domain'}]])
-        #subplot for archicad
-        # fig.add_trace(go.Pie(labels=df_mat, values=df_ec, name="Archicad", hole=0.5, scalegroup="dashboard_pie"),
-        #       1, 1)
         #subplot for greenbook
         fig.add_trace(go.Pie(labels=df_mat, values=gb_ec, name="Green Book DB", hole=0.5, scalegroup="dashboard_pie"),
               1, 1)
@@ -167,23 +159,35 @@ def make_graphs(data):
         fig.update_layout(
             title_text="Structure Embodied Carbon",
             # Add annotations in the center of the donut pies.
-            annotations=[#dict(text='Archicad', x=0.205, y=0.80, font_size=16, showarrow=False),
+            annotations=[
                        dict(text='Greenbook', x=0.12, y=0.50, font_size=16, showarrow=False),
                        dict(text='EPiC', x=0.50, y=0.50, font_size=16, showarrow=False),
                        dict(text='ICE', x=0.87, y=0.50, font_size=16, showarrow=False)],
                       )
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         
-        #df = df.drop(["Complex Profile", "Structure"], axis=1)
-        df = df.drop(["Complex Profile", "Embodied Carbon"], axis=1)
+        #drop embodied carbon if it exist
+        if 'Embodied Carbon' in df.columns:
+            df = df.drop(["Embodied Carbon"], axis=1)
+        else: pass
+
+        df.rename(
+            columns={
+            "Building Materials (All)": "Materials", 
+            "Mass": "Mass (kg)", 
+            "Volume (Net)": "Volume (m³)", 
+            "3D Length": "Length (m)"}, 
+            inplace=True
+            )
 
         #calc for them progress ring
-        # db_total = sum((ec_list := [archicad_sum, gb_sum, epic_sum, ice_sum]))
         db_total = sum((ec_list := [gb_sum, epic_sum, ice_sum]))
         lowest_ec = min(ec_list)
         
 
         return html.Div([ # consolidated table..
+            html.H3("Uploaded File", className="my-3"),
+            html.P("You can review your uploaded file with the table below. See if there are any errors or missing data.", className="my-3"),
             dash_table.DataTable(
                 df_o.to_dict('records'),
                 [{'name': i, 'id': i} for i in df_o.columns],
@@ -239,10 +243,35 @@ def make_graphs(data):
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
                                 dbc.Row([
-                                    dbc.Col(html.H3("{:,}".format(np.around(gb_sum,2)), className="text-end")),
-                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),
+                                    dbc.Col(
+                                        dmc.Tooltip(
+                                            wrapLines=True,
+                                            width=220,
+                                            withArrow=True,
+                                            transition="fade",
+                                            transitionDuration=200,
+                                            label="Use this button to save this information in your profile, after that you will be able to access it "
+                                            "any time and share it via email.",
+                                            children=[
+                                                html.H3("{:,}".format(np.around(gb_sum,2)), className="text-end")                             
+                                            ],
+                                        ),
+
+                                    ),
+                                    dbc.Col(
+                                        html.P([
+                                            html.Span([
+                                                "kgCO",
+                                                html.Sup(2),
+                                                html.Sub('e')
+                                            ], 
+                                            className="fs-4"
+                                            ), " Total EC"
+                                        ]),
+                                        className="text-start"
+                                    ),
                                 ]),
-                                html.P(percent_check_return(lowest_ec, gb_sum), className="text-center"),
+                                #html.P(percent_check_return(lowest_ec, gb_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
@@ -278,7 +307,7 @@ def make_graphs(data):
                                     dbc.Col(html.H3("{:,}".format(np.around(epic_sum,2)), className="text-end")),
                                     dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),
                                 ]),
-                                html.P(percent_check_return(lowest_ec, epic_sum), className="text-center"),
+                                #html.P(percent_check_return(lowest_ec, epic_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
@@ -322,7 +351,7 @@ def make_graphs(data):
                                     dbc.Col(html.H3("{:,}".format(np.around(ice_sum,2)), className="text-end")),
                                     dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start")
                                 ]),
-                                html.P(percent_check_return(lowest_ec, ice_sum), className="text-center"),
+                                #html.P(percent_check_return(lowest_ec, ice_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
