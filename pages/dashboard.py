@@ -403,6 +403,7 @@ def make_graphs(data):
                                     ],
                                     style={"display": "block"}
                                 ),   
+
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 

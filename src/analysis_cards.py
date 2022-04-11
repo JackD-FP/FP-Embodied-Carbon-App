@@ -1,4 +1,4 @@
-# todo: 
+# @TODO: 
 # * I think it's better if we used pattern matching for the 3 diffrent card table menu thingy
 # keeps the code smaller and efficient(?). 
 # * I also think we can refactor the cards into a functions... not sure if callbacks like it
@@ -6,34 +6,24 @@
 # databases... at the moment everything is good. (till it's not)
 
 
+import re
+
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from config import config
-from dash import Input, Output, State, callback, dash_table, dcc, html
+from config import config, graph_colors
+from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
+from pages.dashboard import gfa_calc
 
 from src import (analysis_more_info, epic_options, greenbook_options,
                  ice_options)
-from config import graph_colors
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
-
-# config = { #just tells plotly to save as svg rather than jpeg
-#     'toImageButtonOptions': {
-#         'format': 'svg', # one of png, svg, jpeg, webp
-#         'filename': 'custom_image',
-#         'height': 500,
-#         'width': 700,
-#         'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
-#     }
-# }
-
-# graph_colors = ['#5463FF', '#FFC300', '#FF1818']
 
 # ------------------------------Green Book Card--------------------------------------
 table_header = [html.Thead(html.Tr([html.Th("Material"), html.Th("Embodied Carbon (kgCO2e)")]))]
@@ -58,19 +48,26 @@ row3 = html.Tr([
 table_body = [html.Tbody([row1, row2, row3])]
 
 greenbook_card = dbc.Card([
-    html.H3("Green Book Database", className="mb-3"),
+    html.H3("Green Book Database", className="mb-3 display-5"),
     html.Hr(),
     html.Div([
-        dbc.Table(
-            table_header + table_body, 
-            striped=True, 
-            bordered=True, 
-            hover=True,
-            style = {"width": "75%"}
-            ),
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.Div(id="gb_analysis_total", className="text-center")),
+                dbc.Col(html.Div(id="gb_analysis_gfa", className="text-center"))
+            ], className="mb-3"),
+            dbc.Table(
+                table_header + table_body, 
+                striped=True, 
+                bordered=True, 
+                hover=True,
+                ),
+        ], style = {"width": "75%"}),
         dcc.Graph(id="gb_pie", config=config),
 
-    ], className="hstack"),
+    ], 
+    className="hstack",
+    ),
     dmc.Accordion([
         dmc.AccordionItem(
             children=analysis_more_info.gb_more_info, 
@@ -82,50 +79,89 @@ greenbook_card = dbc.Card([
 class_name="my-5 p-4 shadow"
 )
 
-# for the next 3 callbacks  
-# I think it would be better if we used pattern matching... ¯\_( ͡° ͜ʖ ͡°)_/¯
+
 @callback(
 Output('row_concrete_value', 'children'),
-Input('row_concrete', 'value'),
-State('main_store', 'data'))
-def row_concrete_update(value, data):
-    if value is not None:
-        df = pd.read_json(data, orient="split")
-        ec = gb_df.loc[gb_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
-
-        ec_concrete = np.around((ec * structure_concrete), 2)
-        return html.P(ec_concrete, className="text-center")
-    else: PreventUpdate
-
-@callback(
 Output('row_steel_value', 'children'),
-[Input('row_steel', 'value')],
-State('main_store', 'data'))
-def row_steel_update(value, data):
-    if value is not None:
-        df = pd.read_json(data, orient="split")
-        ec = gb_df.loc[gb_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
-
-        ec_steel = ec * structure_steel
-        return html.P(np.around(ec_steel, 2), className="text-center")
-        
-    else: PreventUpdate
-
-@callback(
 Output('row_timber_value', 'children'),
+Output('gb_analysis_total', 'children'),
+Output('gb_analysis_gfa', 'children'),
+
+Input('row_concrete', 'value'), 
+Input('row_steel', 'value'),
 Input('row_timber', 'value'), 
-State('main_store', 'data'))
-def row_timber_update(value, data):
-    if value is not None:
+
+State('main_store', 'data'),
+State('gfa_store', 'data')
+)
+def gb_row_update(concrete, steel, timber, data, gfa):
+    if concrete is not None and steel is not None and timber is not None:
         df = pd.read_json(data, orient="split")
-        ec = gb_df.loc[gb_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
+        conc_ec = gb_df.loc[gb_df["Sub Category"] == concrete, "Embodied Carbon"] 
+        steel_ec = gb_df.loc[gb_df["Sub Category"] == steel, "Embodied Carbon"] 
+        timber_ec = gb_df.loc[gb_df["Sub Category"] == timber, "Embodied Carbon"] 
+
+        # structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+        # structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
+        # structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
+
+        df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         
-        ec_timber = ec * structure_timber
-        return html.P(np.around(ec_timber, 2), className="text-center")
-    else: PreventUpdate
+        # for index, row in df.iterrows():
+        #     if re.search(row["Building Materials (All)"], "concrete", re.IGNORECASE):
+        #         structure_concrete = row["Volume (Net)"]
+        #     elif re.search(row["Building Materials (All)"], "steel", re.IGNORECASE):
+        #         structure_steel = row["Mass"]
+        #     elif re.search(row["Building Materials (All)"], "timber", re.IGNORECASE):
+        #         structure_timber = row["Volume (Net)"]
+
+        for index, row in df.iterrows():
+            print(row["Building Materials (All)"])
+            if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
+                print("concrete was found")
+                structure_concrete = row["Volume (Net)"]
+            elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
+                print("steel was found")
+                structure_steel = row["Mass"]
+            elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
+                print("timber was found")
+                structure_timber = row["Volume (Net)"]
+
+          
+        
+        # @TODO: MAYBE USE DATACLASSES FOR THIS?
+        # current process looks for specific building materials and sums them up.
+        # however the better way for flexility is using regex to find certain patterns
+        # for instance rather than "STEEL - STRUCTURAL" we can look for "steel". 
+
+        # this allows for flexibility of users to name "Building Materials" as any name they want.
+        
+
+        # ec_concrete = conc_ec * structure_concrete
+        # ec_steel = steel_ec * structure_steel
+        # ec_timber = timber_ec * structure_timber
+
+        ec_concrete = conc_ec * 1
+        ec_steel = steel_ec * 1
+        ec_timber = timber_ec * 1
+
+        total_ec = ec_concrete.tolist()[0] + ec_steel.tolist()[0] + ec_timber.tolist()[0]
+        gfa_ = total_ec/gfa
+
+        total = html.Div([
+            html.H3("{:,}".format(np.around(total_ec))),
+            html.P([html.Span("kgCO2e ", className="fs-4"),"Total EC"])
+        ], style={"display": "block"})
+
+        gfa_calc = html.Div([
+            html.H3(["{:,} ".format(np.around(gfa_))]),
+            html.P([html.Span("kgCO2e/m² ", className="fs-4"),"EC per m²"])
+        ], style={"display": "block"})
+
+        return html.P(ec_concrete.map("{:,.2f}".format), className="text-center"), \
+            html.P(ec_steel.map("{:,.2f}".format), className="text-center"), \
+            html.P(ec_timber.map("{:,.2f}".format), className="text-center"), total, gfa_calc
+    else: raise PreventUpdate
 
 @callback(
 Output('gb_pie', 'figure'),
@@ -189,16 +225,22 @@ row3 = html.Tr([
 table_body = [html.Tbody([row1, row2, row3])]
 
 epic_card = dbc.Card([
-    html.H3("EPiC Database", className="mb-3"),
+    html.H3("EPiC Database", className="mb-3 display-5"),
     html.Hr(),
     html.Div([
-        dbc.Table(
-            table_header + table_body, 
-            striped=True, 
-            bordered=True, 
-            hover=True,
-            style = {"width": "75%"}
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.Div(id="epic_analysis_total", className="text-center")),
+                dbc.Col(html.Div(id="epic_analysis_gfa", className="text-center"))
+            ], className="mb-3"),
+            dbc.Table(
+                table_header + table_body, 
+                striped=True, 
+                bordered=True, 
+                hover=True,
             ),
+        ], style = {"width": "75%"}),        
+
         dcc.Graph(id="epic_pie", config=config),
     ], className="hstack"),
     dmc.Accordion([
@@ -212,47 +254,54 @@ epic_card = dbc.Card([
 class_name="my-5 p-4 shadow"
 )
 
+
 @callback(
 Output('epic_row_concrete_value', 'children'),
-Input('epic_row_concrete', 'value'),
-State('main_store', 'data'))
-def row_concrete_update(value, data):
-    if value is not None:
-        df = pd.read_json(data, orient="split")
-        ec = epic_df.loc[epic_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
-
-        ec_concrete = np.around((ec*structure_concrete), 2)
-        return html.P(ec_concrete, className="text-center")
-    else: PreventUpdate
-
-@callback(
 Output('epic_row_steel_value', 'children'),
-Input('epic_row_steel', 'value'),
-State('main_store', 'data'))
-def row_steel_update(value, data):
-    if value is not None:
-        df = pd.read_json(data, orient="split")
-        ec = epic_df.loc[epic_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
-
-        ec_steel = ec * structure_steel
-        return html.P(np.around(ec_steel, 2), className="text-center")
-    else: PreventUpdate
-
-@callback(
 Output('epic_row_timber_value', 'children'),
+Output('epic_analysis_total', 'children'),
+Output('epic_analysis_gfa', 'children'),
+
+Input('epic_row_concrete', 'value'), 
+Input('epic_row_steel', 'value'),
 Input('epic_row_timber', 'value'), 
-State('main_store', 'data'))
-def row_timber_update(value, data):
-    if value is not None:
+
+State('main_store', 'data'),
+State('gfa_store', 'data')
+)
+def epic_row_update(concrete, steel, timber, data, gfa):
+    if concrete is not None and steel is not None and timber is not None:
         df = pd.read_json(data, orient="split")
-        ec = epic_df.loc[epic_df["Sub Category"] == value, "Embodied Carbon"] 
+        conc_ec = epic_df.loc[epic_df["Sub Category"] == concrete, "Embodied Carbon"] 
+        steel_ec = epic_df.loc[epic_df["Sub Category"] == steel, "Embodied Carbon"] 
+        timber_ec = epic_df.loc[epic_df["Sub Category"] == timber, "Embodied Carbon"] 
+
+        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
         structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
-        
-        ec_timber = ec * structure_timber
-        return html.P(np.around(ec_timber, 2), className="text-center")
-    else: PreventUpdate
+
+        ec_concrete = np.around(conc_ec * structure_concrete, 2)
+        ec_steel = np.around(steel_ec * structure_steel,2 )
+        ec_timber = np.around(timber_ec * structure_timber, 2)
+
+        total_ec = ec_concrete.tolist()[0] + ec_steel.tolist()[0] + ec_timber.tolist()[0]
+        gfa_ = total_ec/gfa
+
+        total = html.Div([
+            html.H3("{:,}".format(np.around(total_ec))),
+            html.P([html.Span("kgCO2e ", className="fs-4"),"Total EC"])
+        ], style={"display": "block"})
+
+        gfa_calc = html.Div([
+            html.H3(["{:,} ".format(np.around(gfa_))]),
+            html.P([html.Span("kgCO2e/m² ", className="fs-4"),"EC per m²"])
+        ], style={"display": "block"})
+
+
+        return html.P(ec_concrete.map("{:,}".format), className="text-center"), \
+            html.P(ec_steel.map("{:,}".format), className="text-center"), \
+            html.P(ec_timber.map("{:,}".format), className="text-center"), total, gfa_calc
+    else: raise PreventUpdate
 
 @callback(
 Output('epic_pie', 'figure'),
@@ -321,16 +370,22 @@ row3 = html.Tr([
 table_body = [html.Tbody([row1, row2, row3])]
 
 ice_card = dbc.Card([
-    html.H3("ICE Database", className="mb-3"),
+    html.H3("ICE Database", className="mb-3 display-5"),
     html.Hr(),
     html.Div([
-        dbc.Table(
-            table_header + table_body, 
-            striped=True, 
-            bordered=True, 
-            hover=True,
-            style = {"width": "75%"}
+        html.Div([
+            dbc.Row([
+                dbc.Col(html.Div(id="ice_analysis_total", className="text-center")),
+                dbc.Col(html.Div(id="ice_analysis_gfa", className="text-center"))
+            ], className="mb-3"),
+            dbc.Table(
+                table_header + table_body, 
+                striped=True, 
+                bordered=True, 
+                hover=True,
             ),
+        ], style = {"width": "75%"}),
+
         dcc.Graph(id="ice_pie", config=config),
     ], className="hstack"),
     dmc.Accordion([
@@ -346,45 +401,52 @@ class_name="my-5 p-4 shadow"
 
 @callback(
 Output('ice_row_concrete_value', 'children'),
-Input('ice_row_concrete', 'value'),
-State('main_store', 'data'))
-def row_concrete_update(value, data):
-    if value is not None:
-        df = pd.read_json(data, orient="split")
-        ec = ice_df.loc[ice_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
-
-        ec_concrete = np.around((ec*structure_concrete), 2)
-        return html.P(ec_concrete, className="text-center")
-    else: PreventUpdate
-
-@callback(
 Output('ice_row_steel_value', 'children'),
-Input('ice_row_steel', 'value'),
-State('main_store', 'data'))
-def row_steel_update(value, data):
-    if value is not None:
-        df = pd.read_json(data, orient="split")
-        ec = ice_df.loc[ice_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
-
-        ec_steel = ec * structure_steel
-        return html.P(np.around(ec_steel, 2), className="text-center")
-    else: PreventUpdate
-
-@callback(
 Output('ice_row_timber_value', 'children'),
+Output('ice_analysis_total', 'children'),
+Output('ice_analysis_gfa', 'children'),
+
+Input('ice_row_concrete', 'value'),
+Input('ice_row_steel', 'value'),
 Input('ice_row_timber', 'value'), 
-State('main_store', 'data'))
-def row_timber_update(value, data):
-    if value is not None:
+
+State('main_store', 'data'),
+State('gfa_store', 'data')
+)
+def ice_row_update(concrete, steel, timber, data, gfa):
+    if concrete is not None and steel is not None and timber is not None:
         df = pd.read_json(data, orient="split")
-        ec = ice_df.loc[ice_df["Sub Category"] == value, "Embodied Carbon"] 
-        structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Mass"].sum()
-        
-        ec_timber = ec * structure_timber
-        return html.P(np.around(ec_timber, 2), className="text-center")
-    else: PreventUpdate
+        conc_ec = ice_df.loc[ice_df["Sub Category"] == concrete, "Embodied Carbon"] 
+        steel_ec = ice_df.loc[ice_df["Sub Category"] == steel, "Embodied Carbon"] 
+        timber_ec = ice_df.loc[ice_df["Sub Category"] == timber, "Embodied Carbon"] 
+
+        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
+        structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
+
+        ec_concrete = np.around(conc_ec * structure_concrete, 2)
+        ec_steel = np.around(steel_ec * structure_steel, 2)
+        ec_timber = np.around(timber_ec * structure_timber, 2)
+
+        total_ec = ec_concrete.tolist()[0] + ec_steel.tolist()[0] + ec_timber.tolist()[0]
+        gfa_ = total_ec/gfa
+
+        total = html.Div([
+            html.H3("{:,}".format(np.around(total_ec))),
+            html.P([html.Span("kgCO2e ", className="fs-4"),"Total EC"])
+        ])
+
+        gfa_calc = html.Div([
+            html.H3(["{:,} ".format(np.around(gfa_))]),
+            html.P([html.Span("kgCO2e/m² ", className="fs-4"),"EC per m²"])
+        ])
+
+        return html.P(ec_concrete.map("{:,}".format), className="text-center"), \
+            html.P(ec_steel.map("{:,}".format), className="text-center"), \
+            html.P(ec_timber.map("{:,}".format), className="text-center"), total, gfa_calc
+    else: raise PreventUpdate
+    
+
 
 @callback(
 Output('ice_pie', 'figure'),
