@@ -11,7 +11,7 @@ from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import building_type_option, uploader
+from src import building_type_option, checker, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -242,35 +242,36 @@ def make_graphs(data):
                                 ),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
-                                dbc.Row([
-                                    dbc.Col(
-                                        dmc.Tooltip(
-                                            wrapLines=True,
-                                            width=220,
-                                            withArrow=True,
-                                            transition="fade",
-                                            transitionDuration=200,
-                                            label="Use this button to save this information in your profile, after that you will be able to access it "
-                                            "any time and share it via email.",
-                                            children=[
-                                                html.H3("{:,}".format(np.around(gb_sum,2)), className="text-end")                             
-                                            ],
-                                        ),
-
-                                    ),
-                                    dbc.Col(
-                                        html.P([
-                                            html.Span([
-                                                "kgCO",
-                                                html.Sup(2),
-                                                html.Sub('e')
-                                            ], 
-                                            className="fs-4"
-                                            ), " Total EC"
+                                dmc.Tooltip(
+                                    wrapLines=True,
+                                    width=224,
+                                    withArrow=True,
+                                    transition="fade",
+                                    transitionDuration=200,
+                                    label= checker.total_ec_comparison(gb_sum,epic_sum,ice_sum,"EPiC DB","ICE DB"),
+                                    children=[
+                                        dbc.Row([
+                                            dbc.Col(
+                                                html.H3("{:,}".format(np.around(gb_sum,2)
+                                                ), 
+                                                className="text-end")
+                                            ),
+                                            dbc.Col(
+                                                html.P([
+                                                    html.Span([
+                                                        "kgCO",
+                                                        html.Sup(2),
+                                                        html.Sub('e')
+                                                    ], 
+                                                    className="fs-4"
+                                                    ), " Total EC"
+                                                ]),
+                                                className="text-start"
+                                            ),
                                         ]),
-                                        className="text-start"
-                                    ),
-                                ]),
+                                    ],
+                                    style={"display": "block"}
+                                ),
                                 #html.P(percent_check_return(lowest_ec, gb_sum), className="text-center"),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
@@ -303,11 +304,36 @@ def make_graphs(data):
                                 ),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
-                                dbc.Row([
-                                    dbc.Col(html.H3("{:,}".format(np.around(epic_sum,2)), className="text-end")),
-                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start"),
-                                ]),
-                                #html.P(percent_check_return(lowest_ec, epic_sum), className="text-center"),
+                                dmc.Tooltip(
+                                    wrapLines=True,
+                                    width=256,
+                                    withArrow=True,
+                                    transition="fade",
+                                    transitionDuration=200,
+                                    label= checker.total_ec_comparison(epic_sum,gb_sum,ice_sum,"Green Book DB","ICE DB"),
+                                    children=[
+                                        dbc.Row([
+                                            dbc.Col(
+                                                html.H3("{:,}".format(np.around(epic_sum,2)
+                                                ), 
+                                                className="text-end")
+                                            ),
+                                            dbc.Col(
+                                                html.P([
+                                                    html.Span([
+                                                        "kgCO",
+                                                        html.Sup(2),
+                                                        html.Sub('e')
+                                                    ], 
+                                                    className="fs-4"
+                                                    ), " Total EC"
+                                                ]),
+                                                className="text-start"
+                                            ),
+                                        ]),
+                                    ],
+                                    style={"display": "block"}
+                                ),
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
@@ -347,11 +373,36 @@ def make_graphs(data):
                             ),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
                             html.Div([
-                                dbc.Row([
-                                    dbc.Col(html.H3("{:,}".format(np.around(ice_sum,2)), className="text-end")),
-                                    dbc.Col(html.P([html.Span(["kgCO",html.Sup(2),html.Sub('e')], className="fs-4"), " Total EC"]),className="text-start")
-                                ]),
-                                #html.P(percent_check_return(lowest_ec, ice_sum), className="text-center"),
+                                dmc.Tooltip(
+                                    wrapLines=True,
+                                    width=256,
+                                    withArrow=True,
+                                    transition="fade",
+                                    transitionDuration=200,
+                                    label= checker.total_ec_comparison(ice_sum,gb_sum,epic_sum,"Green Book DB","EPiC DB"),
+                                    children=[
+                                        dbc.Row([
+                                            dbc.Col(
+                                                html.H3("{:,}".format(np.around(ice_sum,2)
+                                                ), 
+                                                className="text-end")
+                                            ),
+                                            dbc.Col(
+                                                html.P([
+                                                    html.Span([
+                                                        "kgCO",
+                                                        html.Sup(2),
+                                                        html.Sub('e')
+                                                    ], 
+                                                    className="fs-4"
+                                                    ), " Total EC"
+                                                ]),
+                                                className="text-start"
+                                            ),
+                                        ]),
+                                    ],
+                                    style={"display": "block"}
+                                ),   
                             ], style={"marginTop":"3rem","marginBottom":"3rem"}),
                             dmc.Divider(style={"marginLeft": "2rem", "marginRight": "2rem"}),
 
