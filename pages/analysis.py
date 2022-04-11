@@ -25,8 +25,11 @@ Input('main_store', 'data'),
 def definition(data):
     if data is not None:
         df = pd.read_json(data, orient="split")
+        if 'Embodied Carbon' in df.columns:
+            df = df.drop(["Embodied Carbon"], axis=1)
+        else: pass
+
         df = df.groupby(by=['Building Materials (All)'], as_index=False).sum()
-        df = df.drop(columns=["Complex Profile"])
 
         return html.Div([
             html.H3("Structure Schedule"),

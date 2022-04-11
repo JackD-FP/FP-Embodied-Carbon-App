@@ -10,7 +10,7 @@ def total_ec_comparison(base, val1, val2, val1_db, val2_db):
 
 def checker(base, val, val_db):
     if base <=  val:
-        val1_percent = (base/val) * 100
+        val1_percent = (val/base) * 100
         return "{} is 🔺 by +{:,.2f}%, ".format(val_db, val1_percent)
     else:
         val1_percent = (val/base) * 100

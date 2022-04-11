@@ -8,4 +8,4 @@ config = { #just tells plotly to save as svg rather than jpeg
     }
 }
 
-graph_colors = ['#5463FF', '#FFC300', '#FF1818'] # graphing colours
+graph_colors = ['#5463FF', '#FFC300', '#FF1818', '#ececec', '#79b159'] # graphing colours

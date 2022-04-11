@@ -20,14 +20,13 @@ ice_df = pd.read_csv("src/ice _reduced.csv")
 layout = html.Div([
     html.H1("Dashboard", className="display-2 mb-5 "),
     html.Hr(),
-    html.P("Lorem ipsum dolor sit amet, consectetur adipiscing elit. \
-        Curabitur scelerisque a eros sit amet egestas. Maecenas eget erat mollis, \
-        molestie neque non, tincidunt elit. Nam maximus ex nec neque blandit semper. \
-        Morbi ut sagittis velit, quis lacinia turpis. Proin nisl elit, venenatis et odio et, \
-        egestas scelerisque eros. Nulla facilisi. Class aptent taciti sociosqu ad litora torquent per conubia nostra,\
-        per inceptos himenaeos. Suspendisse faucibus libero vitae auctor faucibus. Duis at diam vel leo euismod pretium. \
-        Praesent quis neque a metus pulvinar fermentum lacinia et purus. \
-        Nulla egestas elit eros, ut venenatis ex sodales sit amet. Ut non eros eleifend.",
+    html.P('The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. \
+        It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of materials are necessary for structural stability, \
+        the answer is less obvious. We should all strive to minimise our design’s embodied carbon, however, not compromise with structural stability and design excellence.\
+        The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the later. \
+        It can also help identify what floor is causing the issue if a redesign or alteration is required.\
+        This app free and open source for anyone. At Fitzpatrick and Partners, \
+        we believe this is the way to help our industry move forward and achieve a better and sustainable tomorrow.'
         ),
     dcc.Upload(
         id='upload-data',
@@ -147,6 +146,19 @@ def make_graphs(data):
         ec_df.loc[:,"EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map('{:,.2f}'.format)
 
+    
+        def label_colours_update(l):
+            color_list = []
+            for i, iter in enumerate(l):
+                if re.search("concrete", iter, re.IGNORECASE):
+                    color_list.append(graph_colors[0])
+                elif re.search("steel", iter, re.IGNORECASE):
+                    color_list.append(graph_colors[1])
+                elif re.search("timber", iter, re.IGNORECASE):
+                    color_list.append(graph_colors[2])
+            return color_list
+        label_colors = label_colours_update(df_mat)
+
         fig = make_subplots(rows=1, cols=3, specs=[[{'type':'domain'}, {'type':'domain'},{'type':'domain'}]])
         #subplot for greenbook
         fig.add_trace(go.Pie(labels=df_mat, values=gb_ec, name="Green Book DB", hole=0.5, scalegroup="dashboard_pie"),
@@ -164,7 +176,8 @@ def make_graphs(data):
                        dict(text='EPiC', x=0.50, y=0.50, font_size=16, showarrow=False),
                        dict(text='ICE', x=0.87, y=0.50, font_size=16, showarrow=False)],
                       )
-        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
+        # fig.update_traces(hoverinfo='label+percent+value', textinfo='percent', marker=dict(colors=graph_colors))
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent', marker=dict(colors=label_colors))
         
         #drop embodied carbon if it exist
         if 'Embodied Carbon' in df.columns:
@@ -178,7 +191,7 @@ def make_graphs(data):
             "Volume (Net)": "Volume (m³)", 
             "3D Length": "Length (m)"}, 
             inplace=True
-            )
+        )
 
         #calc for them progress ring
         db_total = sum((ec_list := [gb_sum, epic_sum, ice_sum]))
@@ -244,7 +257,7 @@ def make_graphs(data):
                             html.Div([
                                 dmc.Tooltip(
                                     wrapLines=True,
-                                    width=224,
+                                    width=208,
                                     withArrow=True,
                                     transition="fade",
                                     transitionDuration=200,
@@ -306,7 +319,7 @@ def make_graphs(data):
                             html.Div([
                                 dmc.Tooltip(
                                     wrapLines=True,
-                                    width=256,
+                                    width=240,
                                     withArrow=True,
                                     transition="fade",
                                     transitionDuration=200,

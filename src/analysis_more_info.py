@@ -1,4 +1,4 @@
-from multiprocessing.sharedctypes import Value
+import re
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -15,24 +15,32 @@ ice_df = pd.read_csv("src/ice _reduced.csv")
 
 gb_more_info = [
     html.H3("Embodied Carbon per Floor From Green Book Database"),
-    dmc.Skeleton(visible=False, children = dcc.Graph(id="gb_bar", config = config)),
+    dmc.LoadingOverlay(
+        children = dcc.Graph(id="gb_bar", config = config), 
+        loaderProps={"variant": "dots", "color": "violet", "size": "xl"}
+    ),
 ]
 
 epic_more_info = [
     html.H3("Embodied Carbon per Floor From Epic Database"),
-    dmc.Skeleton(visible=False, children = dcc.Graph(id="epic_bar")),
+    dmc.LoadingOverlay(
+        children = dcc.Graph(id="epic_bar", config = config), 
+        loaderProps={"variant": "dots", "color": "violet", "size": "xl"}
+        ),
 ]
 
 ice_more_info = [
     html.H3("Embodied Carbon per Floor From Ice Database"),
-    dmc.Skeleton(visible=False, children = dcc.Graph(id="ice_bar")),
+    dmc.LoadingOverlay(
+        children = dcc.Graph(id="ice_bar", config = config),
+        loaderProps={"variant": "dots", "color": "violet", "size": "xl"}
+        ),
 ]
 
 @callback(
 Output('gb_bar', 'figure'),
 Output('epic_bar', 'figure'),
 Output('ice_bar', 'figure'),
-
 Input('row_concrete', 'value'),
 Input('row_steel', 'value'),
 Input('row_timber', 'value'),
@@ -42,7 +50,6 @@ Input('epic_row_timber', 'value'),
 Input('ice_row_concrete', 'value'),
 Input('ice_row_steel', 'value'),
 Input('ice_row_timber', 'value'),
-
 State('main_store', 'data')
 )
 def bar_update(
@@ -57,20 +64,30 @@ def bar_update(
         df['epic_ec'] = ec_calc("epic", df, epic_conc_value, epic_steel_value, epic_timber_value)
         df['ice_ec'] = ec_calc("ice", df, ice_conc_value, ice_steel_value, ice_timber_value)
 
+        labels = df['Building Materials (All)'].unique()
         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
+
+        def label_colours_update(l):
+            dict = {}
+            for i, iter in enumerate(l):
+                if re.search("concrete", iter, re.IGNORECASE):
+                    dict[iter] = '#5463FF'
+                elif re.search("steel", iter, re.IGNORECASE):
+                    dict[iter] = '#FFC300'
+                elif re.search("timber", iter, re.IGNORECASE):
+                    dict[iter] = '#FF1818'
+        label_colors = label_colours_update(labels)
 
         gb_fig = px.bar(
             df,
             x="Home Story Name",
             y="gb_ec",
             color='Building Materials (All)',
-            color_discrete_map={
-                'CONCRETE - IN-SITU':'#5463FF',
-                'TIMBER - STRUCTURAL': '#FF1818',
-                'STEEL - STRUCTURAL': '#FFC300'
-            },
+            color_discrete_map=label_colors,
             labels={
-                'gb_ec': 'Embodied Carbon From ICE Database'
+                'gb_ec': 'Embodied Carbon (kgCO2e)',
+                'Building Materials (All)': 'Materials',
+                'Home Story Name': 'Level'
             }
         )
 
@@ -79,13 +96,11 @@ def bar_update(
             x="Home Story Name",
             y="epic_ec",
             color='Building Materials (All)',
-            color_discrete_map={
-                'CONCRETE - IN-SITU':'#5463FF',
-                'TIMBER - STRUCTURAL': '#FF1818',
-                'STEEL - STRUCTURAL': '#FFC300'
-            },
+            color_discrete_map=label_colors,
             labels={
-                'epic_ec': 'Embodied Carbon From ICE Database'
+                'epic_ec': 'Embodied Carbon (kgCO2e)',
+                'Building Materials (All)': 'Materials',
+                'Home Story Name': 'Level'
             }
         )
 
@@ -94,23 +109,15 @@ def bar_update(
             x="Home Story Name",
             y="ice_ec",
             color='Building Materials (All)',
-            color_discrete_map={
-                'CONCRETE - IN-SITU':'#5463FF',
-                'TIMBER - STRUCTURAL': '#FF1818',
-                'STEEL - STRUCTURAL': '#FFC300'
-            },
+            color_discrete_map=label_colors,
             labels={
-                'ice_ec': 'Embodied Carbon From ICE Database'
+                'ice_ec': 'Embodied Carbon (kgCO2e)',
+                'Building Materials (All)': 'Materials',
+                'Home Story Name': 'Level'
             }
         )
         return gb_fig, epic_fig, ice_fig
     else: raise PreventUpdate
-
-"""
-    WE MAY NEED TO REFACTOR THIS DEFINITION BELOW. 
-    SOMEONE UPLOADS SOMETHING THAT DOENS'T HAVE 'CONCRETE - IN-SITU', 'STEEL - STRUCTURAL' OR 'TIMBER - STRUCTURAL'
-    THE DEFINITION WILL NOT WORK.
-"""
 
 def ec_calc(database, df, conc_value, steel_value, timber_value):
     ec_list = []
@@ -119,7 +126,7 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
         df_vols = df["Volume (Net)"].tolist()
         df_mass = df['Mass'].tolist()
 
-        if elements == "CONCRETE - IN-SITU":
+        if re.search("concrete", elements, re.IGNORECASE):
             if database == "gb":
                 ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
                 ec_list.append(np.around(ec, 2))
@@ -131,7 +138,7 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 
-        elif elements == "STEEL - STRUCTURAL":
+        elif re.search("steel", elements, re.IGNORECASE):
             if database == "gb":
                 ec = gb_df.loc[gb_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * df_mass[i]
                 ec_list.append(np.around(ec, 2))
@@ -143,7 +150,7 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 
-        elif elements == "TIMBER - STRUCTURAL":
+        elif re.search('timber', elements, re.IGNORECASE):
             if database == "gb":
                 ec = gb_df.loc[gb_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * df_vols[i]
                 ec_list.append(np.around(ec, 2))
