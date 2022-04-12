@@ -1,5 +1,7 @@
 import re
+
 from config import graph_colors
+
 
 def total_ec_comparison(base, val1, val2, val1_db, val2_db):
     str = [
@@ -46,13 +48,31 @@ def find(df, ice):
     return structure_concrete, structure_steel, structure_timber
 
 
-def label_colours_update(l):
+def label_colours_update(l, type_):
     color_list = []
-    for i, iter in enumerate(l):
-        if re.search("concrete", iter, re.IGNORECASE):
-            color_list.append(graph_colors[0])
-        elif re.search("steel", iter, re.IGNORECASE):
-            color_list.append(graph_colors[1])
-        elif re.search("timber", iter, re.IGNORECASE):
-            color_list.append(graph_colors[2])
-    return color_list
+    color_dict = {}
+    if type_ == "list":
+
+        for i, iter in enumerate(l):
+            if re.search("concrete", iter, re.IGNORECASE):
+                color_list.append(graph_colors[0])
+            elif re.search("steel", iter, re.IGNORECASE):
+                color_list.append(graph_colors[1])
+            elif re.search("timber", iter, re.IGNORECASE):
+                color_list.append(graph_colors[2])
+        return color_list
+
+    else :
+
+        for i, iter in enumerate(l):
+            if re.search("concrete", iter, re.IGNORECASE):
+                # color_dict.append(graph_colors[0])
+                color_dict.update({iter: graph_colors[0]})
+            elif re.search("steel", iter, re.IGNORECASE):
+                # color_dict.append(graph_colors[1])
+                color_dict.update({iter: graph_colors[1]})
+            elif re.search("timber", iter, re.IGNORECASE):
+                # color_dict.append(graph_colors[2])
+                color_dict.update({iter: graph_colors[2]})
+
+        return color_dict

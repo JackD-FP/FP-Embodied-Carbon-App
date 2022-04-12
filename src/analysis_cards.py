@@ -18,7 +18,7 @@ from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from pages.dashboard import gfa_calc
 
-from src import (analysis_more_info, epic_options, greenbook_options,
+from src import (analysis_more_info, epic_options, funcs, greenbook_options,
                  ice_options)
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
@@ -96,30 +96,15 @@ State('main_store', 'data'),
 State('gfa_store', 'data')
 )
 def gb_row_update(concrete, steel, timber, data, gfa):
-    if concrete is not None and steel is not None and timber is not None:
+    if gfa is not None or gfa != 0:
         df = pd.read_json(data, orient="split")
         conc_ec = gb_df.loc[gb_df["Sub Category"] == concrete, "Embodied Carbon"].values[0].item()
         steel_ec = gb_df.loc[gb_df["Sub Category"] == steel, "Embodied Carbon"].values[0].item()
         timber_ec = gb_df.loc[gb_df["Sub Category"] == timber, "Embodied Carbon"].values[0].item()
 
         df_grouped = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-
-        structure_concrete = 0
-        structure_steel = 0
-        structure_timber = 0
-        '''
-            finds groupby df via regex
-            methods makes it more flexible if there is a non-typical layer like
-            TIMBER - STRUCTURAL (1) vs TIMBER - STRUCTURAL
-        '''
-        for index, row in df_grouped.iterrows():
-            if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete = row["Volume (Net)"]
-            elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
-                structure_steel = row["Mass"]
-            elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
-                structure_timber = row["Volume (Net)"]
-
+        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+         
         ec_concrete = conc_ec * structure_concrete
         ec_steel = steel_ec * structure_steel
         ec_timber = timber_ec * structure_timber
@@ -139,6 +124,7 @@ def gb_row_update(concrete, steel, timber, data, gfa):
 
         labels = [concrete, steel, timber]
         ec_val = [ec_concrete, ec_steel, ec_timber]
+        
         fig = go.Figure(data=[go.Pie(labels=labels, values=ec_val, hole=0.5)])
         fig.update_layout(
             title_text="Structure Embodied Carbon",
@@ -219,25 +205,14 @@ State('main_store', 'data'),
 State('gfa_store', 'data')
 )
 def epic_row_update(concrete, steel, timber, data, gfa):
-    if concrete is not None and steel is not None and timber is not None:
+    if gfa is not None or gfa != 0:
         df = pd.read_json(data, orient="split")
         conc_ec = epic_df.loc[epic_df["Sub Category"] == concrete, "Embodied Carbon"].values[0].item()
         steel_ec = epic_df.loc[epic_df["Sub Category"] == steel, "Embodied Carbon"].values[0].item()
         timber_ec = epic_df.loc[epic_df["Sub Category"] == timber, "Embodied Carbon"].values[0].item()
 
         df_grouped = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-
-        structure_concrete = 0
-        structure_steel = 0
-        structure_timber = 0
-
-        for index, row in df_grouped.iterrows():
-            if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete = row["Volume (Net)"]
-            elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
-                structure_steel = row["Mass"]
-            elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
-                structure_timber = row["Volume (Net)"]
+        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
 
         ec_concrete = conc_ec * structure_concrete
         ec_steel = steel_ec * structure_steel
@@ -338,25 +313,14 @@ State('main_store', 'data'),
 State('gfa_store', 'data')
 )
 def ice_row_update(concrete, steel, timber, data, gfa):
-    if concrete is not None and steel is not None and timber is not None:
+    if gfa is not None or gfa != 0:
         df = pd.read_json(data, orient="split")
         conc_ec = ice_df.loc[ice_df["Sub Category"] == concrete, "Embodied Carbon"].values[0].item()
         steel_ec = ice_df.loc[ice_df["Sub Category"] == steel, "Embodied Carbon"].values[0].item()
         timber_ec = ice_df.loc[ice_df["Sub Category"] == timber, "Embodied Carbon"].values[0].item()
 
         df_grouped = df.groupby(by=['Building Materials (All)'], as_index=False).sum()
-
-        structure_concrete = 0
-        structure_steel = 0
-        structure_timber = 0
-
-        for index, row in df_grouped.iterrows():
-            if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete = row["Volume (Net)"]
-            elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
-                structure_steel = row["Mass"]
-            elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
-                structure_timber = row["Mass"]
+        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, True)
 
         ec_concrete = conc_ec * structure_concrete
         ec_steel = steel_ec * structure_steel

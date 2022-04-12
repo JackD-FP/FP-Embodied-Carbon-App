@@ -9,6 +9,8 @@ from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 
+from src import funcs
+
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
@@ -41,6 +43,7 @@ ice_more_info = [
 Output('gb_bar', 'figure'),
 Output('epic_bar', 'figure'),
 Output('ice_bar', 'figure'),
+
 Input('row_concrete', 'value'),
 Input('row_steel', 'value'),
 Input('row_timber', 'value'),
@@ -50,6 +53,7 @@ Input('epic_row_timber', 'value'),
 Input('ice_row_concrete', 'value'),
 Input('ice_row_steel', 'value'),
 Input('ice_row_timber', 'value'),
+
 State('main_store', 'data')
 )
 def bar_update(
@@ -67,16 +71,7 @@ def bar_update(
         labels = df['Building Materials (All)'].unique()
         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
 
-        def label_colours_update(l):
-            dict = {}
-            for i, iter in enumerate(l):
-                if re.search("concrete", iter, re.IGNORECASE):
-                    dict[iter] = '#5463FF'
-                elif re.search("steel", iter, re.IGNORECASE):
-                    dict[iter] = '#FFC300'
-                elif re.search("timber", iter, re.IGNORECASE):
-                    dict[iter] = '#FF1818'
-        label_colors = label_colours_update(labels)
+        label_colors = funcs.label_colours_update(labels, "dict")
 
         gb_fig = px.bar(
             df,
@@ -121,56 +116,53 @@ def bar_update(
 
 def ec_calc(database, df, conc_value, steel_value, timber_value):
     ec_list = []
-    for i, elements in enumerate(df['Building Materials (All)']):
 
-        df_vols = df["Volume (Net)"].tolist()
-        df_mass = df['Mass'].tolist()
-
-        if re.search("concrete", elements, re.IGNORECASE):
+    for i, row in df.iterrows():
+        if re.search('CONCRETE', row['Building Materials (All)'], re.IGNORECASE):
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
-                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 
-        elif re.search("steel", elements, re.IGNORECASE):
+        elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * df_mass[i]
+                ec = gb_df.loc[gb_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * row['Mass']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * df_mass[i]
+                ec = epic_df.loc[epic_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * row['Mass']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
-                ec = ice_df.loc[ice_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * df_mass[i]
+                ec = ice_df.loc[ice_df['Sub Category'] == steel_value, 'Embodied Carbon'].values[0] * row['Mass']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 
-        elif re.search('timber', elements, re.IGNORECASE):
+        elif re.search('timber', row["Building Materials (All)"], re.IGNORECASE):
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = gb_df.loc[gb_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = epic_df.loc[epic_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
-                ec = ice_df.loc[ice_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * df_mass[i]
+                ec = ice_df.loc[ice_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Mass']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 
         else: #if empty or unknown... it just defualts it to concrete
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
-                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * df_vols[i]
+                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 

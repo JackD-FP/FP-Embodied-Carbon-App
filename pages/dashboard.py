@@ -146,7 +146,7 @@ def make_graphs(data):
         ec_df.loc[:,"EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map('{:,.2f}'.format)
 
-        label_colors = funcs.label_colours_update(df_mat)
+        label_colors = funcs.label_colours_update(df_mat, "list")
 
         fig = make_subplots(rows=1, cols=3, specs=[[{'type':'domain'}, {'type':'domain'},{'type':'domain'}]])
         #subplot for greenbook
