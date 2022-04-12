@@ -6,6 +6,9 @@
 # - add bar chart in card 01 for GB, epic and ice
 # - create upload feature for cards 02 and 03
 
+import re
+from operator import index
+
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import pandas as pd
@@ -14,7 +17,8 @@ from config import graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
-from src import epic_options, greenbook_options, ice_options, material_table
+from src import (epic_options, funcs, greenbook_options, ice_options,
+                 material_table)
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -169,15 +173,19 @@ def definition(conc_val, steel_val, timber_val, val, data):
             raise PreventUpdate
         else:
             df = pd.read_json(data, orient="split")
-            #concrete gb calculation
+            df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+
+            structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+
+            # concrete gb calculation
             conc_ec = gb_df.loc[gb_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-            structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
-            #iron gb calculation
+
+            # iron gb calculation
             steel_ec = gb_df.loc[gb_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-            structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
-            #wowd gb calculation
+
+            # WOOD gb calculation
             timber_ec = gb_df.loc[gb_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
-            structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
+
 
             gb_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
             gb_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
@@ -214,15 +222,18 @@ def definition(conc_val, steel_val, timber_val, val, data):
             raise PreventUpdate
         else:
             df = pd.read_json(data, orient="split")
+            df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+
+            structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+
             #concrete epic calculation
             conc_ec = epic_df.loc[epic_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-            structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+
             #iron epic calculation
             steel_ec = epic_df.loc[epic_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-            structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
+
             #wowd epic calculation
             timber_ec = epic_df.loc[epic_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
-            structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
             
             epic_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
             epic_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
@@ -259,15 +270,18 @@ def definition(conc_val, steel_val, timber_val, val, data):
             raise PreventUpdate
         else:  
             df = pd.read_json(data, orient="split")
+            df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+
+            structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, True)
+
             #concrete ice calculation
             conc_ec = ice_df.loc[ice_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-            structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+
             #iron ice calculation
             steel_ec = ice_df.loc[ice_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-            structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
+
             #wowd ice calculation
             timber_ec = ice_df.loc[ice_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
-            structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Mass"].sum()
             
             ice_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
             ice_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
@@ -281,3 +295,4 @@ def definition(conc_val, steel_val, timber_val, val, data):
             fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
 
             return ice_concrete, ice_steel, ice_timber, "{:,.2f}".format(ec_total), "{:,.2f}".format(ec_total/float(val)), dcc.Graph(figure=fig)
+

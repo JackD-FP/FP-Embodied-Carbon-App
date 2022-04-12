@@ -6,8 +6,8 @@ import plotly.graph_objects as go
 from config import graph_colors
 from dash import Input, Output, State, callback, dcc, html
 
-from src import (epic_options, greenbook_options, ice_options, material_table,
-                 uploader)
+from src import (epic_options, funcs, greenbook_options, ice_options,
+                 material_table, uploader)
 from src.comparison_cards_01 import epic_df, gb_df, ice_df
 
 card02 = html.Div([
@@ -254,16 +254,19 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
         return unknown_total_gfa, unknown_total_gfa, unknown, unknown, unknown
     else:
         df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+
+        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
 
         #iron ice calculation
         conc_ec = gb_df.loc[gb_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+
         #iron ice calculation
         steel_ec = gb_df.loc[gb_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
+
         #wood ice calculation
         timber_ec = gb_df.loc[gb_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
-        structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
+
 
         gb_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
         gb_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
@@ -306,16 +309,19 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
         return unknown_total_gfa, unknown_total_gfa, unknown, unknown, unknown
     else:
         df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+
+        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
 
         #iron ice calculation
         conc_ec = epic_df.loc[epic_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
+        # structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
         #iron ice calculation
         steel_ec = epic_df.loc[epic_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
+        # structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
         #wood ice calculation
         timber_ec = epic_df.loc[epic_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
-        structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
+        # structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Volume (Net)"].sum()
 
         epic_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
         epic_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
@@ -356,16 +362,16 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
         return unknown_total_gfa, unknown_total_gfa, unknown, unknown, unknown
     else:
         df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+
+        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, True)
 
         #iron ice calculation
         conc_ec = ice_df.loc[ice_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-        structure_concrete = df.loc[df["Building Materials (All)"] == "CONCRETE - IN-SITU", "Volume (Net)"].sum()
         #iron ice calculation
         steel_ec = ice_df.loc[ice_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-        structure_steel = df.loc[df["Building Materials (All)"] == "STEEL - STRUCTURAL", "Mass"].sum()
         #wood ice calculation
         timber_ec = ice_df.loc[ice_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
-        structure_timber = df.loc[df["Building Materials (All)"] == "TIMBER - STRUCTURAL", "Mass"].sum()
 
         ice_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
         ice_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))

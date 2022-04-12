@@ -11,7 +11,7 @@ from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import building_type_option, checker, uploader
+from src import building_type_option, funcs, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -261,7 +261,7 @@ def make_graphs(data):
                                     withArrow=True,
                                     transition="fade",
                                     transitionDuration=200,
-                                    label= checker.total_ec_comparison(gb_sum,epic_sum,ice_sum,"EPiC DB","ICE DB"),
+                                    label= funcs.total_ec_comparison(gb_sum,epic_sum,ice_sum,"EPiC DB","ICE DB"),
                                     children=[
                                         dbc.Row([
                                             dbc.Col(
@@ -323,7 +323,7 @@ def make_graphs(data):
                                     withArrow=True,
                                     transition="fade",
                                     transitionDuration=200,
-                                    label= checker.total_ec_comparison(epic_sum,gb_sum,ice_sum,"Green Book DB","ICE DB"),
+                                    label= funcs.total_ec_comparison(epic_sum,gb_sum,ice_sum,"Green Book DB","ICE DB"),
                                     children=[
                                         dbc.Row([
                                             dbc.Col(
@@ -392,7 +392,7 @@ def make_graphs(data):
                                     withArrow=True,
                                     transition="fade",
                                     transitionDuration=200,
-                                    label= checker.total_ec_comparison(ice_sum,gb_sum,epic_sum,"Green Book DB","EPiC DB"),
+                                    label= funcs.total_ec_comparison(ice_sum,gb_sum,epic_sum,"Green Book DB","EPiC DB"),
                                     children=[
                                         dbc.Row([
                                             dbc.Col(
