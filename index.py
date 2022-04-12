@@ -187,7 +187,7 @@ def save_2_card03(data):
 # saves project name
 @app.callback(
 Output('project_name', 'data'),
-Input('name_input', 'value'), 
+Input('name_1', 'data'), 
 )
 def project_name_update(value):
     return value
@@ -251,7 +251,7 @@ app.layout = html.Div([
     dcc.Store(id="gfa_store", storage_type="session"), # stores gfa
     dcc.Store(id="project_name", storage_type="session"), # Stores project name
     dcc.Store(id="card02_store", storage_type="session"), # Stores card 2 upload data  
-    dcc.Store(id="card03_store", storage_type="session"), # Stores project name
+    dcc.Store(id="card03_store", storage_type="session"), # Stores card 3 upload data 
     dcc.Location(id="url", refresh=False), 
     sidebar,
     html.Div(id="content-id", style=CONTENT_STYLE)

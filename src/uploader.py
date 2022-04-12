@@ -12,7 +12,7 @@ def check_title(bool, id, data):
         pass
     else: return dcc.Store(id=id, data = data)
 
-def parse_contents(contents, filename, date, id):
+def parse_contents(contents, filename, date, id, id_name):
     content_type, content_string = contents.split(',')
 
     decoded = base64.b64decode(content_string)
@@ -43,20 +43,21 @@ def parse_contents(contents, filename, date, id):
     df = df.replace("---", 0)
     return html.Div([
         dcc.Store(id=id, data = df.to_json(date_format="iso", orient="split")),
-            dbc.Alert([
-                html.H1("Upload is SUCCESSFUL!"),
-                html.Hr(),
-                html.P("{} has been uploaded succesfully".format(filename), className="fs-5"),
-                html.P("Happy designing! 😁")
-            ], 
-            is_open=True, 
-            dismissable=True,
-            className= "fixed-top w-25 mt-5 p-3",
-            style = {
-                "zIndex": "10",
-                "marginLeft": "73%",
-            },
-        ),
+        dcc.Store(id=id_name, data = filename),
+        dbc.Alert([
+            html.H1("Upload is SUCCESSFUL!"),
+            html.Hr(),
+            html.P("{} has been uploaded succesfully".format(filename), className="fs-5"),
+            html.P("Happy designing! 😁")
+        ], 
+        is_open=True, 
+        dismissable=True,
+        className= "fixed-top w-25 mt-5 p-3",
+        style = {
+            "zIndex": "10",
+            "marginLeft": "73%",
+        },
+    ),
     ])
 
 

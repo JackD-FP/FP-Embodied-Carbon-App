@@ -66,7 +66,7 @@ layout = html.Div([
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         children = [
-            uploader.parse_contents(c, n, d, "temp-df-store") for c, n, d in
+            uploader.parse_contents(c, n, d, "temp-df-store", "name_1") for c, n, d in
             zip(list_of_contents, list_of_names, list_of_dates)]
         return children
 
@@ -188,7 +188,7 @@ def make_graphs(data):
         
 
         return html.Div([ # consolidated table..
-            html.H3("Uploaded File", className="my-3"),
+            html.H3(["Uploaded File: ", html.Span(id="file_name", className="display-5")], className="my-3"),
             html.P("You can review your uploaded file with the table below. See if there are any errors or missing data.", className="my-3"),
             dash_table.DataTable(
                 df_o.to_dict('records'),
@@ -203,17 +203,17 @@ def make_graphs(data):
                 html.H3("Embodied Carbon(EC) calculation"),
                 dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
                 html.Div([
-                    html.H5("Design Name:"),
-                    dbc.Input(
-                        id="name_input",
-                        placeholder="What's the project Name?",
-                        className="w-25",
-                        type="text",
-                        debounce=True,
-                        persistence= True,
-                        persistence_type="session",
-                        required=True
-                    ),
+                    # html.H5("Design Name:"),
+                    # dbc.Input(
+                    #     id="name_input",
+                    #     placeholder="What's the project Name?",
+                    #     className="w-25",
+                    #     type="text",
+                    #     debounce=True,
+                    #     persistence= True,
+                    #     persistence_type="session",
+                    #     required=True
+                    # ),
                     html.H5("GFA of Design:", className="mt-3"),
                     dbc.Input(
                         id="gfa_input",
@@ -439,6 +439,14 @@ def make_graphs(data):
                 dcc.Graph(figure=fig ,style={'height': '75vh'}, className='mt-3',config=config),
             ], class_name="my-5 p-4 shadow"),
         ])
+
+@callback(
+Output('file_name', 'children'),
+Input('project_name', 'data'), 
+)
+def filename_update(data):
+    return data
+
 
 @callback(
 Output('gb_gfa', 'children'),

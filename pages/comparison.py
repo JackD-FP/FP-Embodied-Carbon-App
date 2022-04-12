@@ -55,8 +55,8 @@ def card1_title_update(mts, data):
                 html.P([
                     "Give it a name in the Dashboard."
                     ], className="fs-5 mt-3")
-                    ], 
-                    className="display-5")
+                ], 
+                className="display-5")
     else: 
         if data == "":
             return html.H3([
@@ -64,8 +64,8 @@ def card1_title_update(mts, data):
                 html.P([
                     "Give it a name in the Dashboard."
                     ], className="fs-5 mt-3")
-                    ], 
-                    className="display-5")
+                ], 
+                className="display-5")
         else:
-            return html.H3(data, className="display-5")
+            return html.H3(data, className="display-6")
     
