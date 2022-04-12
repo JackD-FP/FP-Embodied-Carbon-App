@@ -19,4 +19,4 @@ layout = html.Div([
     #     html.Img(
     #         src="https://img.icons8.com/ios-filled/100/000000/under-construction.png", 
     #         alt="under construction icon")
-    # ], className="hstack gap-3") /
+    # ], className="hstack gap-3") 

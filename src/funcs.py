@@ -1,5 +1,5 @@
 import re
-
+from config import graph_colors
 
 def total_ec_comparison(base, val1, val2, val1_db, val2_db):
     str = [
@@ -44,3 +44,15 @@ def find(df, ice):
             else:
                 pass
     return structure_concrete, structure_steel, structure_timber
+
+
+def label_colours_update(l):
+    color_list = []
+    for i, iter in enumerate(l):
+        if re.search("concrete", iter, re.IGNORECASE):
+            color_list.append(graph_colors[0])
+        elif re.search("steel", iter, re.IGNORECASE):
+            color_list.append(graph_colors[1])
+        elif re.search("timber", iter, re.IGNORECASE):
+            color_list.append(graph_colors[2])
+    return color_list

@@ -7,7 +7,7 @@ import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.graph_objects as go
-from config import config, graph_colors
+from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
@@ -146,18 +146,7 @@ def make_graphs(data):
         ec_df.loc[:,"EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map('{:,.2f}'.format)
         ec_df.loc[:,"ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map('{:,.2f}'.format)
 
-    
-        def label_colours_update(l):
-            color_list = []
-            for i, iter in enumerate(l):
-                if re.search("concrete", iter, re.IGNORECASE):
-                    color_list.append(graph_colors[0])
-                elif re.search("steel", iter, re.IGNORECASE):
-                    color_list.append(graph_colors[1])
-                elif re.search("timber", iter, re.IGNORECASE):
-                    color_list.append(graph_colors[2])
-            return color_list
-        label_colors = label_colours_update(df_mat)
+        label_colors = funcs.label_colours_update(df_mat)
 
         fig = make_subplots(rows=1, cols=3, specs=[[{'type':'domain'}, {'type':'domain'},{'type':'domain'}]])
         #subplot for greenbook

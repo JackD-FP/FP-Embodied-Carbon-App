@@ -9,8 +9,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from config import graph_colors
-from dash import Input, Output, State, callback, dash_table, dcc, html
-from dash.exceptions import PreventUpdate
+from dash import Input, Output, State, callback, dcc, html
 
 from src import (epic_options, funcs, greenbook_options, ice_options,
                  material_table, uploader)
@@ -288,7 +287,7 @@ def card3_total_gfa_update(val, conc_val, steel_val, timber_val, data):
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         pie_child = dcc.Graph(figure=fig)
 
-        return html.H3("{:,}".format(np.around(total))), html.H3("{:,}".format(np.around(total_per_m2, 2))), gb_concrete, gb_steel, gb_timber, pie_child
+        return html.H3("{:,}".format(np.around(total, 2))), html.H3("{:,}".format(np.around(total_per_m2, 2))), gb_concrete, gb_steel, gb_timber, pie_child
 
 
 
