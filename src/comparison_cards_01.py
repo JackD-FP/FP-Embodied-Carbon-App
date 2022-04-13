@@ -16,6 +16,7 @@ import plotly.graph_objects as go
 from config import graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
+import numpy as np
 
 from src import (epic_options, funcs, greenbook_options, ice_options,
                  material_table)
@@ -40,7 +41,11 @@ def update_div(gfa_mts, main_data, gfa_data ):
     else:
         df = pd.read_json(main_data, orient="split")
         _df = df.groupby(by=['Building Materials (All)'], as_index=False).sum()
+        # rounds the values to 2 decimal places
+        tmp = _df.select_dtypes(include=['float64'])
+        _df.loc[:, tmp.columns] = np.around(tmp,2)
         _df = _df.filter(items=['Building Materials (All)', 'Mass', 'Volume (Net)'])
+
 
         if gfa_mts is None or gfa_mts == "":
             gfa = 0
@@ -149,7 +154,10 @@ def update_div(gfa_mts, main_data, gfa_data ):
 
         ]
         return table_out 
-
+'''
+    @TODO: refactor the code below to be one callback function
+    There is a lot of repetition in these callbacks. There is a possibility to refactor this into a callback. 
+'''
 # ---------------- GREENBOOK CALLBACK ----------------
 @callback(
 Output('gb_comp_concrete_val', 'children'),
@@ -175,21 +183,18 @@ def definition(conc_val, steel_val, timber_val, val, data):
             df = pd.read_json(data, orient="split")
             df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
 
-            structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+            structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, False)
 
-            # concrete gb calculation
+
+            # gb EC calculation
             conc_ec = gb_df.loc[gb_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-
-            # iron gb calculation
             steel_ec = gb_df.loc[gb_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-
-            # WOOD gb calculation
             timber_ec = gb_df.loc[gb_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
 
 
-            gb_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
-            gb_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
-            gb_timber = html.P("{:,.2f}".format((timber := timber_ec * structure_timber)))
+            gb_concrete = html.P("{:,.2f}".format((concrete := conc_ec * sum(structure_concrete))))
+            gb_steel = html.P("{:,.2f}".format((steel := steel_ec * sum(structure_steel))))
+            gb_timber = html.P("{:,.2f}".format((timber := timber_ec * sum(structure_timber))))
 
             labels = [conc_val, steel_val, timber_val]
             ec_total = concrete + steel + timber
@@ -209,6 +214,7 @@ Output('epic_comp_timber_val', 'children'),
 Output('epic_comp_total', 'children'),
 Output('epic_comp_gfa', 'children'),
 Output('epic_pie', 'children'),
+
 Input('epic_comp_concrete', 'value'), 
 Input('epic_comp_steel', 'value'), 
 Input('epic_comp_timber', 'value'), 
@@ -224,20 +230,16 @@ def definition(conc_val, steel_val, timber_val, val, data):
             df = pd.read_json(data, orient="split")
             df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
 
-            structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+            structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, False)
 
-            #concrete epic calculation
+            # epic EC calculation
             conc_ec = epic_df.loc[epic_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-
-            #iron epic calculation
             steel_ec = epic_df.loc[epic_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-
-            #wowd epic calculation
             timber_ec = epic_df.loc[epic_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
             
-            epic_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
-            epic_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
-            epic_timber = html.P("{:,.2f}".format((timber := timber_ec * structure_timber)))
+            epic_concrete = html.P("{:,.2f}".format((concrete := conc_ec * sum(structure_concrete))))
+            epic_steel = html.P("{:,.2f}".format((steel := steel_ec * sum(structure_steel))))
+            epic_timber = html.P("{:,.2f}".format((timber := timber_ec * sum(structure_timber))))
 
             labels = [conc_val, steel_val, timber_val]
             ec_total = concrete + steel + timber
@@ -272,20 +274,16 @@ def definition(conc_val, steel_val, timber_val, val, data):
             df = pd.read_json(data, orient="split")
             df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
 
-            structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, True)
+            structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, True)
 
-            #concrete ice calculation
+            # ice EC calculation
             conc_ec = ice_df.loc[ice_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-
-            #iron ice calculation
             steel_ec = ice_df.loc[ice_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-
-            #wowd ice calculation
             timber_ec = ice_df.loc[ice_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
             
-            ice_concrete = html.P("{:,.2f}".format((concrete := conc_ec * structure_concrete)))
-            ice_steel = html.P("{:,.2f}".format((steel := steel_ec * structure_steel)))
-            ice_timber = html.P("{:,.2f}".format((timber := timber_ec * structure_timber)))
+            ice_concrete = html.P("{:,.2f}".format((concrete := conc_ec * sum(structure_concrete))))
+            ice_steel = html.P("{:,.2f}".format((steel := steel_ec * sum(structure_steel))))
+            ice_timber = html.P("{:,.2f}".format((timber := timber_ec * sum(structure_timber))))
 
             labels = [conc_val, steel_val, timber_val]
             ec_total = concrete + steel + timber

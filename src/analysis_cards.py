@@ -244,9 +244,9 @@ def epic_row_update(concrete, steel, timber, data, gfa):
             annotations=[ dict(text='EPiC DB', x=0.5, y=0.5, font_size=16, showarrow=False)] )
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=label_colors))
 
-        return html.P("{:,}".format(ec_concrete), className="text-center"), \
-            html.P("{:,}".format(ec_steel), className="text-center"), \
-            html.P("{:,}".format(ec_timber), className="text-center"), total, gfa_calc, fig
+        return html.P("{:,.2f}".format(ec_concrete), className="text-center"), \
+            html.P("{:,.2f}".format(ec_steel), className="text-center"), \
+            html.P("{:,.2f}".format(ec_timber), className="text-center"), total, gfa_calc, fig
     else: raise PreventUpdate
 
 # ------------------------------ice database Card--------------------------------------
@@ -353,7 +353,7 @@ def ice_row_update(concrete, steel, timber, data, gfa):
             annotations=[ dict(text='Green Book', x=0.5, y=0.5, font_size=16, showarrow=False)] )
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=label_colors))
 
-        return html.P("{:,}".format(ec_concrete), className="text-center"), \
-            html.P("{:,}".format(ec_steel), className="text-center"), \
-            html.P("{:,}".format(ec_timber), className="text-center"), total, gfa_calc, fig
+        return html.P("{:,.2f}".format(ec_concrete), className="text-center"), \
+            html.P("{:,.2f}".format(ec_steel), className="text-center"), \
+            html.P("{:,.2f}".format(ec_timber), className="text-center"), total, gfa_calc, fig
     else: raise PreventUpdate
