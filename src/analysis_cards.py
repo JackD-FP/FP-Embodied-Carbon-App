@@ -16,10 +16,12 @@ import plotly.graph_objects as go
 from config import config, graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
-from pages.dashboard import gfa_calc
 
 from src import (analysis_more_info, epic_options, funcs, greenbook_options,
                  ice_options)
+
+# from pages.dashboard import em_calc, gfa_calc
+
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -103,17 +105,19 @@ def gb_row_update(concrete, steel, timber, data, gfa):
         timber_ec = gb_df.loc[gb_df["Sub Category"] == timber, "Embodied Carbon"].values[0].item()
 
         df_grouped = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+        structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, False)
          
-        ec_concrete = conc_ec * structure_concrete
-        ec_steel = steel_ec * structure_steel
-        ec_timber = timber_ec * structure_timber
+        ec_concrete = conc_ec * sum(structure_concrete)
+        ec_steel = steel_ec * sum(structure_steel)
+        ec_timber = timber_ec * sum(structure_timber)
 
-        total_ec = ec_concrete + ec_steel + ec_timber
-        gfa_ = total_ec/gfa
+        ec_list = funcs.em_calc("gb", df, conc_ec, steel_ec, timber_ec)
+        #print(ec_list)
+
+        gfa_ = sum(ec_list)/gfa
 
         total = html.Div([
-            html.H3("{:,}".format(np.around(total_ec,2))),
+            html.H3("{:,}".format(np.around(sum(ec_list),2))),
             html.P([html.Span("kgCO2e ", className="fs-4"),"Total EC"])
         ], style={"display": "block"})
 
@@ -122,14 +126,14 @@ def gb_row_update(concrete, steel, timber, data, gfa):
             html.P([html.Span("kgCO2e/m² ", className="fs-4"),"EC per m²"])
         ], style={"display": "block"})
 
-        labels = [concrete, steel, timber]
-        ec_val = [ec_concrete, ec_steel, ec_timber]
+        labels = df_grouped["Building Materials (All)"].tolist()
         
-        fig = go.Figure(data=[go.Pie(labels=labels, values=ec_val, hole=0.5)])
+        label_colors = funcs.label_colours_update(labels, "list")
+        fig = go.Figure(data=[go.Pie(labels=labels, values=ec_list, hole=0.5)])
         fig.update_layout(
             title_text="Structure Embodied Carbon",
             annotations=[ dict(text='Green Book', x=0.5, y=0.5, font_size=16, showarrow=False)] )
-        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=label_colors))
 
         return html.P("{:,.2f}".format(ec_concrete), className="text-center"), \
             html.P("{:,.2f}".format(ec_steel), className="text-center"), \
@@ -212,17 +216,17 @@ def epic_row_update(concrete, steel, timber, data, gfa):
         timber_ec = epic_df.loc[epic_df["Sub Category"] == timber, "Embodied Carbon"].values[0].item()
 
         df_grouped = df.groupby(by=['Building Materials (All)'], as_index=False).sum() 
-        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, False)
+        structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, False)
 
-        ec_concrete = conc_ec * structure_concrete
-        ec_steel = steel_ec * structure_steel
-        ec_timber = timber_ec * structure_timber
+        ec_concrete = conc_ec * sum(structure_concrete)
+        ec_steel = steel_ec * sum(structure_steel)
+        ec_timber = timber_ec * sum(structure_timber)
 
-        total_ec = ec_concrete + ec_steel + ec_timber
-        gfa_ = total_ec/gfa
+        ec_list = funcs.em_calc("gb", df, conc_ec, steel_ec, timber_ec)
+        gfa_ = sum(ec_list)/gfa
 
         total = html.Div([
-            html.H3("{:,}".format(np.around(total_ec,2))),
+            html.H3("{:,}".format(np.around(sum(ec_list),2))),
             html.P([html.Span("kgCO2e ", className="fs-4"),"Total EC"])
         ], style={"display": "block"})
 
@@ -231,13 +235,14 @@ def epic_row_update(concrete, steel, timber, data, gfa):
             html.P([html.Span("kgCO2e/m² ", className="fs-4"),"EC per m²"])
         ], style={"display": "block"})
 
-        labels = [concrete, steel, timber]
-        ec_val = [ec_concrete, ec_steel, ec_timber]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=ec_val, hole=0.5)])
+        labels = df_grouped["Building Materials (All)"].tolist()
+
+        label_colors = funcs.label_colours_update(labels, "list")
+        fig = go.Figure(data=[go.Pie(labels=labels, values=ec_list, hole=0.5)])
         fig.update_layout(
             title_text="Structure Embodied Carbon",
             annotations=[ dict(text='EPiC DB', x=0.5, y=0.5, font_size=16, showarrow=False)] )
-        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=label_colors))
 
         return html.P("{:,}".format(ec_concrete), className="text-center"), \
             html.P("{:,}".format(ec_steel), className="text-center"), \
@@ -320,17 +325,17 @@ def ice_row_update(concrete, steel, timber, data, gfa):
         timber_ec = ice_df.loc[ice_df["Sub Category"] == timber, "Embodied Carbon"].values[0].item()
 
         df_grouped = df.groupby(by=['Building Materials (All)'], as_index=False).sum()
-        structure_concrete, structure_steel, structure_timber = funcs.find(df_grouped, True)
+        structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, True)
 
-        ec_concrete = conc_ec * structure_concrete
-        ec_steel = steel_ec * structure_steel
-        ec_timber = timber_ec * structure_timber
+        ec_concrete = conc_ec * sum(structure_concrete)
+        ec_steel = steel_ec * sum(structure_steel)
+        ec_timber = timber_ec * sum(structure_timber)
 
-        total_ec = ec_concrete + ec_steel + ec_timber
-        gfa_ = total_ec/gfa
+        ec_list = funcs.em_calc("ice", df, conc_ec, steel_ec, timber_ec)
+        gfa_ = sum(ec_list)/gfa
 
         total = html.Div([
-            html.H3("{:,}".format(np.around(total_ec, 2))),
+            html.H3("{:,}".format(np.around(sum(ec_list), 2))),
             html.P([html.Span("kgCO2e ", className="fs-4"),"Total EC"])
         ])
 
@@ -339,13 +344,14 @@ def ice_row_update(concrete, steel, timber, data, gfa):
             html.P([html.Span("kgCO2e/m² ", className="fs-4"),"EC per m²"])
         ])
 
-        labels = [concrete, steel, timber]
-        ec_val = [ec_concrete, ec_steel, ec_timber]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=ec_val, hole=0.5)])
+        labels = df_grouped["Building Materials (All)"].tolist()
+
+        label_colors = funcs.label_colours_update(labels, "list")
+        fig = go.Figure(data=[go.Pie(labels=labels, values=ec_list, hole=0.5)])
         fig.update_layout(
             title_text="Structure Embodied Carbon",
             annotations=[ dict(text='Green Book', x=0.5, y=0.5, font_size=16, showarrow=False)] )
-        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
+        fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=label_colors))
 
         return html.P("{:,}".format(ec_concrete), className="text-center"), \
             html.P("{:,}".format(ec_steel), className="text-center"), \

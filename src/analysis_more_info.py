@@ -72,7 +72,7 @@ def bar_update(
         df = df.groupby(['Home Story Name', 'Building Materials (All)'], as_index=False).sum()
 
         label_colors = funcs.label_colours_update(labels, "dict")
-
+       
         gb_fig = px.bar(
             df,
             x="Home Story Name",
@@ -116,7 +116,6 @@ def bar_update(
 
 def ec_calc(database, df, conc_value, steel_value, timber_value):
     ec_list = []
-
     for i, row in df.iterrows():
         if re.search('CONCRETE', row['Building Materials (All)'], re.IGNORECASE):
             if database == "gb":
@@ -165,5 +164,4 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
                 ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
-
     return ec_list
