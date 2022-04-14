@@ -161,9 +161,13 @@ def make_graphs(data):
             title_text="Structure Embodied Carbon",
             # Add annotations in the center of the donut pies.
             annotations=[
-                       dict(text='Greenbook', x=0.12, y=0.50, font_size=16, showarrow=False),
-                       dict(text='EPiC', x=0.50, y=0.50, font_size=16, showarrow=False),
-                       dict(text='ICE', x=0.87, y=0.50, font_size=16, showarrow=False)],
+                        dict(text='Greenbook', x=0.12, y=0.50, font_size=16, showarrow=False),
+                        dict(text='{:,.2f} kgCO2e'.format(gb_sum), x=0, y=0.1, font_size=32, showarrow=False),
+                        dict(text='EPiC', x=0.50, y=0.50, font_size=16, showarrow=False),
+                        dict(text='{:,.2f} kgCO2e'.format(epic_sum), x=0.5, y=0.1, font_size=32, showarrow=False),
+                        dict(text='ICE', x=0.87, y=0.50, font_size=16, showarrow=False),
+                        dict(text='{:,.2f} kgCO2e'.format(ice_sum), x=1, y=0.1, font_size=32, showarrow=False),
+                        ],
                       )
         # fig.update_traces(hoverinfo='label+percent+value', textinfo='percent', marker=dict(colors=graph_colors))
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent', marker=dict(colors=label_colors))
