@@ -77,8 +77,8 @@ def find2(df, ice):
                 structure_steel.append(row["Mass"])
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
                 structure_timber.append(row["Volume (Net)"])
-            else:
-                pass
+            else: #if it doesn't know it'll assume it's concrete
+                structure_concrete.append(row["Volume (Net)"])
     else:
         for index, row in df.iterrows():
             if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
@@ -87,8 +87,8 @@ def find2(df, ice):
                 structure_steel.append(row["Mass"])
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
                 structure_timber.append(row["Mass"])
-            else:
-                pass
+            else: #if it doesn't know it'll assume it's concrete
+                structure_concrete.append(row["Volume (Net)"])
     return structure_concrete, structure_steel, structure_timber
 
 

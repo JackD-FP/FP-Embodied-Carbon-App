@@ -260,13 +260,8 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
 
         structure_concrete, structure_steel, structure_timber = funcs.find2(df_grouped, False)
 
-        #iron ice calculation
         conc_ec = gb_df.loc[gb_df["Sub Category"] == conc_val, "Embodied Carbon"].values[0]
-
-        #iron ice calculation
         steel_ec = gb_df.loc[gb_df["Sub Category"] == steel_val, "Embodied Carbon"].values[0]
-
-        #wood ice calculation
         timber_ec = gb_df.loc[gb_df["Sub Category"] == timber_val, "Embodied Carbon"].values[0]
 
 
@@ -284,7 +279,9 @@ def card2_total_gfa_update(val, conc_val, steel_val, timber_val, data):
         fig.update_traces(hoverinfo='label+percent+value', textinfo='percent',marker=dict(colors=graph_colors))
         pie_child = dcc.Graph(figure=fig)
 
-        return html.H3("{:,}".format(np.around(total,2))), html.H3("{:,}".format(np.around(total_per_m2, 2))), gb_concrete, gb_steel, gb_timber, pie_child
+        return html.H3("{:,}".format(np.around(total,2))), \
+            html.H3("{:,}".format(np.around(total_per_m2, 2))), \
+            gb_concrete, gb_steel, gb_timber, pie_child
 
 
 
