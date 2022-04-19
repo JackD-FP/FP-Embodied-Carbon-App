@@ -1,8 +1,11 @@
 import re
 
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import numpy as np
 import pandas as pd
 from config import graph_colors
+from dash import html
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -177,3 +180,94 @@ def em_calc(db, df, conc_val, steel_val, timber_val):
       return epic_embodied_carbon
     elif db == "ice":
         return ice_embodied_carbon
+
+
+def stars_append(n):
+    stars = []
+    for i in range(n):
+        stars.append(html.I(className="bi bi-star-fill mx-2"))
+        star_outline = 4-i
+    for j in range(star_outline):
+        stars.append(html.I(className="bi bi-star mx-2"))
+    return html.Div(stars, className="text-center")
+
+def progress_bar(n_stars, ec_val, lower, upper):
+    """Progress bar for EC values
+
+    Args:
+        n_stars ( int ): number of stars
+        ec_val ( float ): the EC value
+        lower ( float ): lower bounds of benchmark
+        upper ( float ): upper bounds of benchmark
+
+    Returns:
+        list: return list of components to render
+    """
+
+    val = (ec_val - lower)/(upper - lower)
+    val = val * 100
+
+    if lower == 0:
+        label = "Design is {}% away from 4 stars. Please note that value will never reach 0 EC per meter.".format(100-int(val)) 
+    else:
+        label = "{}% more for the next star".format(int(val)),
+
+    return html.Div([
+        stars_append(n_stars),
+        html.Div([
+            html.P(lower, className="text-start mb-0"),
+            dmc.Tooltip(
+                label=label,
+                transition="pop",
+                width=220,
+                transitionDuration=300,
+                transitionTimingFunction="ease",
+                withArrow=True,
+                children=[
+                    dbc.Progress(label="{}%".format(int(val)), value=val),
+                ],
+                class_name="w-75"
+            ),
+            html.P(upper, className="text-end mb-0"),
+        ], className="hstack mt-5", style={"justify-content": "space-between"}),
+        html.Div([
+            html.P(["kgCO", html.Sub("e"), html.Sup("2"), "/m", html.Sup("2")], className="text-start text-secondary"),
+            html.P(["kgCO", html.Sub("e"), html.Sup("2"), "/m", html.Sup("2")], className="text-start text-secondary"),
+        ], className="hstack", style={"justify-content": "space-between"})    
+    ], className="mx-5")
+
+def upload_alert(df):
+    """checks for errors and returns a message
+
+    Args:
+        df ( dataframe ): dataframe from the uploaded schedule
+
+    Returns:
+        list: components to render
+    """
+
+    nan_check = sum(df.isna().sum().tolist())
+    nan_values = df[df.isna().any(axis=1)]
+    nan_values_list = nan_values.index.tolist()
+
+    if nan_check > 0:
+        return dbc.Alert([
+            html.H3([
+                html.Span(
+                    html.I(className="bi bi-exclamation-circle-fill me-3")
+                ),"Warning:"], 
+                className="mb-3"
+            ),
+            html.P("Please note that there are {} missing values in your input file. This will cause errors in the Analysis Page.".format(nan_check)),
+            dmc.Divider(class_name="my-3"),
+            html.P(["missing values can be found in row/s: ", html.Strong("{}".join(str(e) for e in nan_values_list))]),
+            dbc.Table.from_dataframe(nan_values, striped=False, bordered=True, hover=True, responsive=True),
+            
+            ],
+            "Please fill in all the fields", 
+            color="warning",
+            dismissable=True,
+            is_open=True,
+        )
+    else:
+        pass

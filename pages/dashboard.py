@@ -1,6 +1,4 @@
 import re
-from pydoc import classname
-
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
@@ -186,14 +184,11 @@ def make_graphs(data):
             inplace=True
         )
 
-        #calc for them progress ring
-        db_total = sum((ec_list := [gb_sum, epic_sum, ice_sum]))
-        lowest_ec = min(ec_list)
-        
 
         return html.Div([ # consolidated table..
             html.H3(["Uploaded File: ", html.Span(id="file_name", className="display-5")], className="my-3"),
             html.P("You can review your uploaded file with the table below. See if there are any errors or missing data.", className="my-3"),
+            html.Div(id="error_check"),
             dash_table.DataTable(
                 df_o.to_dict('records'),
                 [{'name': i, 'id': i} for i in df_o.columns],
@@ -207,17 +202,6 @@ def make_graphs(data):
                 html.H3("Embodied Carbon(EC) calculation"),
                 dbc.Table.from_dataframe(ec_df, striped=True, bordered=True, hover=True),
                 html.Div([
-                    # html.H5("Design Name:"),
-                    # dbc.Input(
-                    #     id="name_input",
-                    #     placeholder="What's the project Name?",
-                    #     className="w-25",
-                    #     type="text",
-                    #     debounce=True,
-                    #     persistence= True,
-                    #     persistence_type="session",
-                    #     required=True
-                    # ),
                     html.H5("GFA of Design:", className="mt-3"),
                     dbc.Input(
                         id="gfa_input",
@@ -451,6 +435,15 @@ Input('project_name', 'data'),
 def filename_update(data):
     return data
 
+@callback(
+Output('error_check', 'children'),
+Input('main_store', 'data'),
+)
+def error_update(data):
+    df = pd.read_json(data, orient="split")
+    return funcs.upload_alert(df)
+    
+
 
 @callback(
 Output('gb_gfa', 'children'),
@@ -477,66 +470,60 @@ def gfa_calc(val, bld_type, data):
         ice_gfa_out = "{:,}".format(np.around(gfa_val[2],2))
 
         
-        def stars_append(n):
-            stars = []
-            for i in range(n):
-                stars.append(html.I(className="bi bi-star-fill mx-2"))
-            return stars
-
-
         def benchmark(Embodied_Carbon, Building_Type):
             if Building_Type == "2_premium":
                 if Embodied_Carbon <= 1450 and Embodied_Carbon >= 1160:
-                    return html.Div(stars_append(3), className="text-center")
+                    return funcs.progress_bar(3, Embodied_Carbon, 1160, 1450)
                 elif Embodied_Carbon <= 1160 and Embodied_Carbon >= 870:
-                    return html.Div(stars_append(4), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 870, 1160)
                 elif Embodied_Carbon <= 870:
-                    return html.Div(stars_append(5), className="text-center")
+                    return funcs.progress_bar(5, Embodied_Carbon, 0, 870)
                 else: return html.Div("Improvement Required", className="text-center")
 
             elif Building_Type == "2_multi-res":
                 if Embodied_Carbon <= 990 and Embodied_Carbon >= 790:
-                    return html.Div(stars_append(3), className="text-center")
+                    return funcs.progress_bar(3, Embodied_Carbon, 790, 990)
                 elif Embodied_Carbon <= 790 and Embodied_Carbon >= 590:
-                    return html.Div(stars_append(4), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 590, 790)
                 elif Embodied_Carbon <= 590:
-                    return html.Div(stars_append(5), className="text-center")
+                    return funcs.progress_bar(5, Embodied_Carbon, 0, 590)
                 else: return html.Div("Improvement Required", className="text-center")
 
             elif Building_Type == "5_premium":
                 if Embodied_Carbon <= 1500 and Embodied_Carbon >= 1200:
-                    return html.Div(stars_append(3), className="text-center")
+                    return funcs.progress_bar(3, Embodied_Carbon, 1200, 1500)
                 elif Embodied_Carbon <= 1200 and Embodied_Carbon >= 900:
-                    return html.Div(stars_append(4), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 900, 1200)
                 elif Embodied_Carbon <= 900:
-                    return html.Div(stars_append(5), className="text-center")
+                    return funcs.progress_bar(5, Embodied_Carbon, 0, 900)
                 else: return html.Div("Improvement Required", className="text-center")
 
             elif Building_Type == "5_a_grade":
                 if Embodied_Carbon <= 800 and Embodied_Carbon >= 640:
-                    return html.Div(stars_append(3), className="text-center")
+                    return funcs.progress_bar(3, Embodied_Carbon, 640, 800)
                 elif Embodied_Carbon <= 640 and Embodied_Carbon >= 480:
-                    return html.Div(stars_append(4), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 480, 640)
                 elif Embodied_Carbon <= 480:
-                    return html.Div(stars_append(5), className="text-center")
+                    return funcs.progress_bar(5, Embodied_Carbon, 0, 480)
+                    # stars_append(5)
                 else: return html.Div("Improvement Required", className="text-center")
 
             elif Building_Type == "6_regional":
                 if Embodied_Carbon <= 2150 and Embodied_Carbon >= 1750:
-                    return html.Div(stars_append(3), className="text-center")
+                    return funcs.progress_bar(3, Embodied_Carbon, 1750, 2150)
                 elif Embodied_Carbon <= 1720 and Embodied_Carbon >= 1250:
-                    return html.Div(stars_append(4), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 1250, 1720)
                 elif Embodied_Carbon <= 1290:
-                    return html.Div(stars_append(5), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 0, 1290)
                 else: return html.Div("Improvement Required", className="text-center")
 
             elif Building_Type == "5_sub_regional":
                 if Embodied_Carbon <= 1220 and Embodied_Carbon >= 970:
-                    return html.Div(stars_append(3), className="text-center")
+                    return funcs.progress_bar(3, Embodied_Carbon, 970, 1220)
                 elif Embodied_Carbon <= 970 and Embodied_Carbon >= 730:
-                    return html.Div(stars_append(4), className="text-center")
+                    return funcs.progress_bar(4, Embodied_Carbon, 730, 970)
                 elif Embodied_Carbon <= 730:
-                    return html.Div(stars_append(5), className="text-center")
+                    return funcs.progress_bar(5, Embodied_Carbon, 0, 730)
                 else: return html.Div("Improvement Required", className="text-center")
 
         return gb_gfa_out, epic_gfa_out, ice_gfa_out, html.Div(benchmark(gfa_val[0],bld_type))

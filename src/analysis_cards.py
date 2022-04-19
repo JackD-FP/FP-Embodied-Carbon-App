@@ -112,7 +112,7 @@ def gb_row_update(concrete, steel, timber, data, gfa):
         ec_timber = timber_ec * sum(structure_timber)
 
         ec_list = funcs.em_calc("gb", df, conc_ec, steel_ec, timber_ec)
-        print(ec_list)
+        #print(ec_list)
 
         gfa_ = sum(ec_list)/gfa
 
