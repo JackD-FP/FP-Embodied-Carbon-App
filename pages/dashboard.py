@@ -120,6 +120,7 @@ def make_graphs(data):
         raise PreventUpdate
     elif data is not None:
         df_o = pd.read_json(data, orient="split") 
+        df_o = df_o.reset_index()
         gb_ec, epic_ec, ice_ec = em_calc(df_o) # makes df for greenbook db
 
         df = df_o.groupby(by=['Building Materials (All)'], as_index=False).sum() 
@@ -193,6 +194,18 @@ def make_graphs(data):
                 df_o.to_dict('records'),
                 [{'name': i, 'id': i} for i in df_o.columns],
                 page_size= 15,
+                style_data_conditional=([
+                    {
+                        'if': {
+                            'filter_query': '{{{}}} is blank'.format(col),
+                            'column_id': col
+                        },
+                        'backgroundColor': 'rgb(254,111,94)',
+                    } for col in df_o.columns
+                    ]),
+                style_header={
+                    'fontWeight': 'bold'
+                }
             ),
             dbc.Card([
                 html.H3("Structure Summery"),

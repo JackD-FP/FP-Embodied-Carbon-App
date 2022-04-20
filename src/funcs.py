@@ -1,3 +1,4 @@
+import math
 import re
 
 import dash_bootstrap_components as dbc
@@ -245,7 +246,7 @@ def upload_alert(df):
     Returns:
         list: components to render
     """
-
+    df = df.reset_index()
     nan_check = sum(df.isna().sum().tolist())
     nan_values = df[df.isna().any(axis=1)]
     nan_values_list = nan_values.index.tolist()
@@ -258,9 +259,10 @@ def upload_alert(df):
                 ),"Warning:"], 
                 className="mb-3"
             ),
-            html.P("Please note that there are {} missing values in your input file. This will cause errors in the Analysis Page.".format(nan_check)),
+            html.P(["Please note that there are ", html.Strong("{}".format(nan_check)), " missing values in your input file. This will cause errors in the Analysis Page."]),
             dmc.Divider(class_name="my-3"),
-            html.P(["missing values can be found in row/s: ", html.Strong("{}".join(str(e) for e in nan_values_list))]),
+            html.P(["missing values can be found in row/s: ", html.Strong(",".join(str(e+1) for e in nan_values_list))]),
+            html.P("You can edit the value on excel or other spreadsheet software and upload again."),
             dbc.Table.from_dataframe(nan_values, striped=False, bordered=True, hover=True, responsive=True),
             
             ],
@@ -270,4 +272,44 @@ def upload_alert(df):
             is_open=True,
         )
     else:
-        pass
+        return dbc.Alert([
+            html.H3([
+                html.Span(
+                    html.I(className="bi bi-exclamation-circle-fill me-3")
+                ),"No errors found 😁"], 
+                className="mb-3"
+            ),
+            html.P(["there was no missing values in your input file. You can proceed to the Analysis Page."]),
+            ],
+            "Please fill in all the fields", 
+            color="success",
+            dismissable=True,
+            is_open=True,
+            duration=2000,
+
+        )
+
+def mass2vol(mass, density):
+    """converts mass to volume
+
+    Args:
+        mass ( float ): mass in kg
+        density ( float ): density in kg/m3
+
+    Returns:
+        float: volume in m3
+    """
+    return mass/density
+
+def cyl2vol(diameter, height):
+    """converts cylinder to volume
+
+    Args:
+        diameter ( float ): diameter in m
+        height ( float ): height in m
+
+    Returns:
+        float: volume in m3
+    """
+    return math.pi*(diameter/2)**2*height
+

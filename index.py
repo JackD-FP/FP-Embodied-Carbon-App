@@ -1,16 +1,17 @@
-import json
+from ast import Not
 import os
 from http import server
 
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import pandas as pd
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from flask import Flask
 
 from pages import analysis, comparison, dashboard, documentation
-from src import save_modal, uploader
+from src import save_modal
 
 # from server import app
 
@@ -69,7 +70,18 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Dashboard", href="/pages/dashboard",  id="dashboard", active="exact"),
-                dbc.NavLink("Analysis", href="/pages/analysis", id="analysis", active="exact"),
+                dmc.Tooltip(
+                    label="Make sure upload has no errors and GFA is not empty",
+                    wrapLines=True,
+                    width=220,
+                    withArrow=True,
+                    transition="fade",
+                    transitionDuration=300,
+                    transitionTimingFunction="ease",
+                    children=[
+                        dbc.NavLink("Analysis", href="/pages/analysis", id="analysis", active="exact", disabled=True),
+                    ],
+                ),
                 dbc.NavLink("Comparison", href="/pages/comparison", id="tec", active="exact"),
                 dbc.NavLink("How To...", href="/pages/documentation", id="documentation", active="exact")
             ],
@@ -245,6 +257,21 @@ def render_page_content(pathname):
                 ),
         ]
     )
+
+@app.callback(
+Output('analysis', 'disabled'),
+Input('main_store', 'data'), 
+Input('gfa_store', 'data'),
+)
+def analysis_update(main_store, gfa_store):
+    if main_store is not None:
+        df = pd.read_json(main_store, orient="split")
+        nan_check = sum(df.isna().sum().tolist())
+        if nan_check > 0 or gfa_store is None or gfa_store == "":
+            return True
+        else:
+            return False
+    else: PreventUpdate
 
 app.layout = html.Div([
     dcc.Store(id="main_store", storage_type="session"), #stores the current schedule
