@@ -313,3 +313,127 @@ def cyl2vol(diameter, height):
     """
     return math.pi*(diameter/2)**2*height
 
+def vol2mass(vol, density):
+    """converts volume to mass
+
+    Args:
+        vol ( float ): volume in m3
+        density ( float ): density in kg/m3
+
+    Returns:
+        float: mass in kg
+    """
+    return vol*density
+
+
+# # calculates the amount of reinforcement bars in the building
+# df_s = df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE)
+# conc_vol = df.loc[lambda df: df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE) == True, "Volume (Net)"]
+# conc_mass = df.loc[lambda df: df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE) == True, "Mass"]
+
+
+def find_vols(vol, ratio):
+    """Finds the volume of concrete and rebar of a beams element
+
+    Args:
+        vol ( float ): Volume of the element
+        ratio ( float ): ratio of vol of rebar : vol of concrete
+
+    Returns:
+        Tuple: (vol_conc, vol_rebar) volume of concrete and rebar respectively
+    """
+
+    vol_conc = vol/(ratio + 1)
+    vol_rebar = vol - vol_conc
+    return vol_conc, vol_rebar
+
+def mat_interpreter(df):
+    """interprets the materials in the schedule
+
+    Args:
+        df ( pd dataframe): uploaded schedule
+
+    Returns:
+        tuple: (mat, vol, mass, floor) tuple of lists of mass, volume, material and floor
+    """
+
+
+    mass = []
+    vol = []
+    mat = []
+    floor = []
+
+    for i, row in df.iterrows():
+        if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
+            if re.search("beams", row["Layer"], re.IGNORECASE):                 
+                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.0385)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(vol2mass(vol_conc, 2332))
+                floor.append(row["Home Story Name"])
+                
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(vol2mass(vol_rebar, 7850))
+                floor.append(row["Home Story Name"])
+
+            elif re.search("columns", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.041)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(vol2mass(vol_conc, 2332))
+                floor.append(row["Home Story Name"])
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(vol2mass(vol_rebar, 7850))
+                floor.append(row["Home Story Name"])
+            
+            elif re.search("slab", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.013)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(vol2mass(vol_conc, 2332))
+                floor.append(row["Home Story Name"])
+
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(vol2mass(vol_rebar, 7850))
+                floor.append(row["Home Story Name"])
+
+            elif re.search("wall", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.022)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(vol2mass(vol_conc, 2332))
+                floor.append(row["Home Story Name"])
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(vol2mass(vol_rebar, 7850))
+                floor.append(row["Home Story Name"])
+
+            elif re.search("stairs", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.022)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(vol2mass(vol_conc, 2332))
+                floor.append(row["Home Story Name"])
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(vol2mass(vol_rebar, 7850))
+                floor.append(row["Home Story Name"])
+        else:
+            mat.append(row["Building Materials (All)"])
+            vol.append(row["Volume (Net)"])
+            mass.append(row["Mass"])
+            floor.append(row["Home Story Name"])
+    return mat, vol, mass, floor

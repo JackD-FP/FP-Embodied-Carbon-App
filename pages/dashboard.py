@@ -1,4 +1,5 @@
 import re
+
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
@@ -31,7 +32,7 @@ layout = html.Div([
         children=html.Div([
             dbc.Button([
                 html.I(className="bi bi-upload", style={"width":"2rem"}),
-                html.P("Drag and Drop or Schedule File")
+                html.P("Drag and Drop or Schedule File"),
                 ], 
             color="light",
             className = "align-center position-absolute top-50 start-50 translate-middle w-100 h-100",
@@ -119,12 +120,14 @@ def make_graphs(data):
     if data is None:
         raise PreventUpdate
     elif data is not None:
-        df_o = pd.read_json(data, orient="split") 
-        df_o = df_o.reset_index()
+        df_ = pd.read_json(data, orient="split") 
+        df_o = df_.reset_index()
         gb_ec, epic_ec, ice_ec = em_calc(df_o) # makes df for greenbook db
 
-        df = df_o.groupby(by=['Building Materials (All)'], as_index=False).sum() 
+        df = df_.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
+
+        
 
         embodied_carbon_dict = { 
             "Materials" : df_mat , 
@@ -132,12 +135,6 @@ def make_graphs(data):
             "EPiC EC (kgCO2e)": epic_ec, 
             "ICE EC (kgCO2e)": ice_ec
             }
-        total_dict = { #lol u a total dict
-            "Materials" : "TOTALS", 
-            "Green Book (kgCO2e)" :(gb_sum := sum(gb_ec)), 
-            "EPiC EC (kgCO2e)": (epic_sum := sum(epic_ec)), 
-            "ICE EC (kgCO2e)": (ice_sum := sum(ice_ec))
-        }
 
         ec_df = pd.DataFrame(embodied_carbon_dict)
 
@@ -161,11 +158,11 @@ def make_graphs(data):
             # Add annotations in the center of the donut pies.
             annotations=[
                         dict(text='Greenbook', x=0.12, y=0.50, font_size=16, showarrow=False),
-                        dict(text='{:,.2f} kgCO2e'.format(gb_sum), x=0, y=0.1, font_size=32, showarrow=False),
+                        dict(text='{:,.2f} kgCO2e'.format((gb_sum := sum(gb_ec))), x=0, y=0.1, font_size=32, showarrow=False),
                         dict(text='EPiC', x=0.50, y=0.50, font_size=16, showarrow=False),
-                        dict(text='{:,.2f} kgCO2e'.format(epic_sum), x=0.5, y=0.1, font_size=32, showarrow=False),
+                        dict(text='{:,.2f} kgCO2e'.format((epic_sum := sum(epic_ec))), x=0.5, y=0.1, font_size=32, showarrow=False),
                         dict(text='ICE', x=0.87, y=0.50, font_size=16, showarrow=False),
-                        dict(text='{:,.2f} kgCO2e'.format(ice_sum), x=1, y=0.1, font_size=32, showarrow=False),
+                        dict(text='{:,.2f} kgCO2e'.format((ice_sum := sum(ice_ec))), x=1, y=0.1, font_size=32, showarrow=False),
                         ],
                       )
         # fig.update_traces(hoverinfo='label+percent+value', textinfo='percent', marker=dict(colors=graph_colors))
@@ -176,19 +173,14 @@ def make_graphs(data):
             df = df.drop(["Embodied Carbon"], axis=1)
         else: pass
 
-        df.rename(
-            columns={
-            "Building Materials (All)": "Materials", 
-            "Mass": "Mass (kg)", 
-            "Volume (Net)": "Volume (m³)", 
-            "3D Length": "Length (m)"}, 
-            inplace=True
-        )
+        mat, vol, mass, floor = funcs.mat_interpreter(df_)
 
-
+        df_new = pd.DataFrame({"Floor Level": floor
+        ,"Materials": mat, "Mass (kg)": mass, "Volume (m³)": vol})
+        
         return html.Div([ # consolidated table..
             html.H3(["Uploaded File: ", html.Span(id="file_name", className="display-5")], className="my-3"),
-            html.P("You can review your uploaded file with the table below. See if there are any errors or missing data.", className="my-3"),
+            html.P("Review your uploaded file with the table below. See if there are any errors or missing data.", className="my-3"),
             html.Div(id="error_check"),
             dash_table.DataTable(
                 df_o.to_dict('records'),
@@ -209,7 +201,7 @@ def make_graphs(data):
             ),
             dbc.Card([
                 html.H3("Structure Summery"),
-                dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
+                dbc.Table.from_dataframe(df_new, striped=True, bordered=True, hover=True),
             ], class_name="my-5 p-4 shadow"),
             dbc.Card([
                 html.H3("Embodied Carbon(EC) calculation"),
