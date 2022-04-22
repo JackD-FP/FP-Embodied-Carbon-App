@@ -119,13 +119,13 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
     for i, row in df.iterrows():
         if re.search('CONCRETE', row['Building Materials (All)'], re.IGNORECASE):
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
-                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
 
@@ -143,10 +143,10 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
 
         elif re.search('timber', row["Building Materials (All)"], re.IGNORECASE):
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = gb_df.loc[gb_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = epic_df.loc[epic_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
                 ec = ice_df.loc[ice_df['Sub Category'] == timber_value, 'Embodied Carbon'].values[0] * row['Mass']
@@ -155,13 +155,13 @@ def ec_calc(database, df, conc_value, steel_value, timber_value):
 
         else: #if empty or unknown... it just defualts it to concrete
             if database == "gb":
-                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = gb_df.loc[gb_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             elif database == "epic":
-                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = epic_df.loc[epic_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             elif database == "ice":
-                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Volume (Net)']
+                ec = ice_df.loc[ice_df['Sub Category'] == conc_value, 'Embodied Carbon'].values[0] * row['Net Volume']
                 ec_list.append(np.around(ec, 2))
             else: print("error only gb, epic, ice")
     return ec_list

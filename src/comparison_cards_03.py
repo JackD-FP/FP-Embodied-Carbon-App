@@ -74,7 +74,7 @@ def card3_content_update(mts, data,):
         _df = df.groupby(by=['Building Materials (All)'], as_index=False).sum()
         tmp = _df.select_dtypes(include=['float64'])
         _df.loc[:, tmp.columns] = np.around(tmp,2)
-        _df = _df.filter(items=['Building Materials (All)', 'Mass', 'Volume (Net)'])
+        _df = _df.filter(items=['Building Materials (All)', 'Mass', 'Net Volume'])
 
         return html.Div([
             html.H3("Comparison 3", className="display-5 my-3"),

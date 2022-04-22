@@ -38,17 +38,17 @@ def find(df, ice):
     if ice != True:
         for index, row in df.iterrows():
             if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete = row["Volume (Net)"]
+                structure_concrete = row["Net Volume"]
             elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
                 structure_steel = row["Mass"]
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
-                structure_timber = row["Volume (Net)"]
+                structure_timber = row["Net Volume"]
             else:
                 pass
     else:
         for index, row in df.iterrows():
             if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete = row["Volume (Net)"]
+                structure_concrete = row["Net Volume"]
             elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
                 structure_steel = row["Mass"]
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
@@ -76,23 +76,23 @@ def find2(df, ice):
     if ice != True:
         for index, row in df.iterrows():
             if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete.append(row["Volume (Net)"])
+                structure_concrete.append(row["Net Volume"])
             elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
                 structure_steel.append(row["Mass"])
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
-                structure_timber.append(row["Volume (Net)"])
+                structure_timber.append(row["Net Volume"])
             else: #if it doesn't know it'll assume it's concrete
-                structure_concrete.append(row["Volume (Net)"])
+                structure_concrete.append(row["Net Volume"])
     else:
         for index, row in df.iterrows():
             if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-                structure_concrete.append(row["Volume (Net)"])
+                structure_concrete.append(row["Net Volume"])
             elif re.search("steel", row["Building Materials (All)"], re.IGNORECASE):
                 structure_steel.append(row["Mass"])
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
                 structure_timber.append(row["Mass"])
             else: #if it doesn't know it'll assume it's concrete
-                structure_concrete.append(row["Volume (Net)"])
+                structure_concrete.append(row["Net Volume"])
     return structure_concrete, structure_steel, structure_timber
 
 
@@ -146,7 +146,7 @@ def em_calc(db, df, conc_val, steel_val, timber_val):
     """
 
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() # create consolidated df
-    volumes = df["Volume (Net)"].tolist()
+    volumes = df["Net Volume"].tolist()
     df_mat = df["Building Materials (All)"].tolist()
     mass = df["Mass"].tolist()
 
@@ -328,7 +328,7 @@ def vol2mass(vol, density):
 
 # # calculates the amount of reinforcement bars in the building
 # df_s = df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE)
-# conc_vol = df.loc[lambda df: df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE) == True, "Volume (Net)"]
+# conc_vol = df.loc[lambda df: df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE) == True, "Net Volume"]
 # conc_mass = df.loc[lambda df: df["Building Materials (All)"].str.contains('concrete', regex=True, flags=re.IGNORECASE) == True, "Mass"]
 
 
@@ -342,7 +342,6 @@ def find_vols(vol, ratio):
     Returns:
         Tuple: (vol_conc, vol_rebar) volume of concrete and rebar respectively
     """
-
     vol_conc = vol/(ratio + 1)
     vol_rebar = vol - vol_conc
     return vol_conc, vol_rebar
@@ -356,84 +355,96 @@ def mat_interpreter(df):
     Returns:
         tuple: (mat, vol, mass, floor) tuple of lists of mass, volume, material and floor
     """
-
-
     mass = []
     vol = []
     mat = []
     floor = []
+    layer = []
+    gb_ec = []
 
     for i, row in df.iterrows():
         if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-            if re.search("beams", row["Layer"], re.IGNORECASE):                 
-                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.0385)
+            if re.search("beams", row["Layer"], re.IGNORECASE):                         #check if the layer is BEAMS                 
+                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.0385)
+                
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(vol2mass(vol_conc, 2332))
+                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
                 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(vol2mass(vol_rebar, 7850))
+                mass.append(row['Mass']-mass_conc)
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
 
             elif re.search("columns", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.041)
+                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.041)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(vol2mass(vol_conc, 2332))
+                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(vol2mass(vol_rebar, 7850))
+                mass.append(row['Mass']-mass_conc)
                 floor.append(row["Home Story Name"])
-            
+                layer.append(row["Layer"])
+
             elif re.search("slab", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.013)
+                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.013)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(vol2mass(vol_conc, 2332))
+                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(vol2mass(vol_rebar, 7850))
+                mass.append(row['Mass']-mass_conc)
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
 
             elif re.search("wall", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.022)
+                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(vol2mass(vol_conc, 2332))
+                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(vol2mass(vol_rebar, 7850))
+                mass.append(row['Mass']-mass_conc)
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
 
             elif re.search("stairs", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Volume (Net)'], 0.022)
+                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(vol2mass(vol_conc, 2332))
+                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(vol2mass(vol_rebar, 7850))
+                mass.append(row['Mass']-mass_conc)
                 floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
         else:
             mat.append(row["Building Materials (All)"])
-            vol.append(row["Volume (Net)"])
+            vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
-    return mat, vol, mass, floor
+            layer.append(row["Layer"])
+    return mat, vol, mass, floor, layer

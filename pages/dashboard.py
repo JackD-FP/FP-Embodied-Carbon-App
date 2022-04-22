@@ -72,7 +72,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
 def em_calc(df):
     df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() # create consolidated df
     #materials = []
-    volumes = df["Volume (Net)"].tolist()
+    volumes = df["Net Volume"].tolist()
     df_mat = df["Building Materials (All)"].tolist()
     mass = df["Mass"].tolist()
     gb_embodied_carbon = []
@@ -123,11 +123,23 @@ def make_graphs(data):
         df_ = pd.read_json(data, orient="split") 
         df_o = df_.reset_index()
         gb_ec, epic_ec, ice_ec = em_calc(df_o) # makes df for greenbook db
+        
 
         df = df_.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
 
-        
+        mat, vol, mass, floor, layer = funcs.mat_interpreter(df_)
+        df_new = pd.DataFrame({
+            "Floor Level": floor, 
+            "Layer": layer,
+            "Materials": mat, 
+            "Mass (kg)": mass, 
+            "Volume (m³)": vol
+        })
+        df_new_grouped = df_new.groupby(by=["Materials"], as_index=False).sum()
+        df_new_grouped.loc[:,"Mass (kg)"] = df_new_grouped["Mass (kg)"].map('{:,.2f}'.format)
+        df_new_grouped.loc[:,"Volume (m³)"] = df_new_grouped["Volume (m³)"].map('{:,.2f}'.format)
+
 
         embodied_carbon_dict = { 
             "Materials" : df_mat , 
@@ -173,11 +185,6 @@ def make_graphs(data):
             df = df.drop(["Embodied Carbon"], axis=1)
         else: pass
 
-        mat, vol, mass, floor = funcs.mat_interpreter(df_)
-
-        df_new = pd.DataFrame({"Floor Level": floor
-        ,"Materials": mat, "Mass (kg)": mass, "Volume (m³)": vol})
-        
         return html.Div([ # consolidated table..
             html.H3(["Uploaded File: ", html.Span(id="file_name", className="display-5")], className="my-3"),
             html.P("Review your uploaded file with the table below. See if there are any errors or missing data.", className="my-3"),
@@ -201,7 +208,8 @@ def make_graphs(data):
             ),
             dbc.Card([
                 html.H3("Structure Summery"),
-                dbc.Table.from_dataframe(df_new, striped=True, bordered=True, hover=True),
+                dbc.Table.from_dataframe(df_new_grouped, striped=True, bordered=True, hover=True),
+                dbc.Table.from_dataframe(df_new.head(15), striped=True, bordered=True, hover=True),
             ], class_name="my-5 p-4 shadow"),
             dbc.Card([
                 html.H3("Embodied Carbon(EC) calculation"),

@@ -44,7 +44,7 @@ def update_div(gfa_mts, main_data, gfa_data ):
         # rounds the values to 2 decimal places
         tmp = _df.select_dtypes(include=['float64'])
         _df.loc[:, tmp.columns] = np.around(tmp,2)
-        _df = _df.filter(items=['Building Materials (All)', 'Mass', 'Volume (Net)'])
+        _df = _df.filter(items=['Building Materials (All)', 'Mass', 'Net Volume'])
 
 
         if gfa_mts is None or gfa_mts == "":
