@@ -128,13 +128,15 @@ def make_graphs(data):
         df = df_.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
 
-        mat, vol, mass, floor, layer = funcs.mat_interpreter(df_)
+        mat, vol, mass, floor, layer, gbec, epicec = funcs.mat_interpreter(df_)
         df_new = pd.DataFrame({
             "Floor Level": floor, 
             "Layer": layer,
             "Materials": mat, 
             "Mass (kg)": mass, 
-            "Volume (m³)": vol
+            "Volume (m³)": vol,
+            "Green Book EC": gbec,
+            "Epic EC": epicec,
         })
         df_new_grouped = df_new.groupby(by=["Materials"], as_index=False).sum()
         df_new_grouped.loc[:,"Mass (kg)"] = df_new_grouped["Mass (kg)"].map('{:,.2f}'.format)

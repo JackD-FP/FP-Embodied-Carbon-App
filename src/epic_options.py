@@ -58,7 +58,8 @@ concrete_option = [
  {
    "label": "Concrete 50 MPa - GGBFS",
    "value": "Concrete 50 MPa - GGBFS"
- },]
+ },
+]
 
 aluminium_options = [
  {
@@ -179,4 +180,115 @@ timber_option =[
    "label": "Timber Softwood kiln-dried",
    "value": "Timber Softwood kiln-dried"
  }
+]
+
+#----------------------------------------------------------
+
+concrete = [
+ {
+   "label": "Concrete 20 MPa",
+   "value": 328
+ },
+ {
+   "label": "Concrete 20 MPa - fly ash",
+   "value": 251
+ },
+ {
+   "label": "Concrete 20 MPa - GGBS",
+   "value": 263
+ },
+ {
+   "label": "Concrete 25 MPa",
+   "value": 361
+ },
+ {
+   "label": "Concrete 25 MPa - fly ash",
+   "value": 277
+ },
+ {
+   "label": "Concrete 25 MPa - GGBS",
+   "value": 293
+ },
+ {
+   "label": "Concrete 32 MPa",
+   "value": 416
+ },
+ {
+   "label": "Concrete 32 MPa - fly ash",
+   "value": 314
+ },
+ {
+   "label": "Concrete 32 MPa - GGBS",
+   "value": 331
+ },
+ {
+   "label": "Concrete 40 MPa",
+   "value": 497
+ },
+ {
+   "label": "Concrete 40 MPa - fly ash",
+   "value": 373
+ },
+ {
+   "label": "Concrete 40 MPa - GGBS",
+   "value": 392
+ },
+ {
+   "label": "Concrete 50 MPa",
+   "value": 600
+ },
+ {
+   "label": "Concrete 50 MPa - fly ash",
+   "value": 467
+ },
+ {
+   "label": "Concrete 50 MPa - GGBFS",
+   "value": 492
+ },
+]
+
+timber=[
+ {
+   "label": "Cross laminated timber (CLT)",
+   "value": 645
+ },
+ {
+   "label": "Glued laminated timber (glulam)",
+   "value": 1718
+ },
+ {
+   "label": "Laminated veneer lumber (LVL)",
+   "value": 1059
+ },
+ {
+   "label": "Plywood outdoor",
+   "value": 1777
+ },
+ {
+   "label": "Timber Hardwood",
+   "value": 944
+ },
+ {
+   "label": "Timber Hardwood kiln-dried - dressed",
+   "value": 2269
+ },
+ {
+   "label": "Timber Hardwood kiln-dried - structural",
+   "value": 1178
+ },
+ {
+   "label": "Timber Softwood",
+   "value": 549
+ },
+ {
+   "label": "Timber Softwood kiln-dried",
+   "value": 583
+ }
+]
+
+rebar =[
+ {
+   "label": "Steel Reinforment Bar - 6mm, 8mm, 12mm",
+   "value": 2.9
+ },
 ]
