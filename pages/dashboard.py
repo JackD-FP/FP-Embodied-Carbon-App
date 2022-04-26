@@ -124,11 +124,11 @@ def make_graphs(data):
         df_o = df_.reset_index()
         gb_ec, epic_ec, ice_ec = em_calc(df_o) # makes df for greenbook db
         
-
         df = df_.groupby(by=['Building Materials (All)'], as_index=False).sum() 
         df_mat = df["Building Materials (All)"].tolist()
-
-        mat, vol, mass, floor, layer, gbec, epicec = funcs.mat_interpreter(df_)
+        
+        mat, vol, mass, floor, layer, gbec, epicec, iceec = funcs.mat_interpreter(df_)
+        print(len(iceec), len(epicec))
         df_new = pd.DataFrame({
             "Floor Level": floor, 
             "Layer": layer,

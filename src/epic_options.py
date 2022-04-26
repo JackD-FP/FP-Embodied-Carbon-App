@@ -115,7 +115,8 @@ steel_options = [
  {
    "label": "Steel sheet corrugated",
    "value": "Steel sheet corrugated"
- },]
+ },
+]
 
 brick_options = [
  {
@@ -290,5 +291,32 @@ rebar =[
  {
    "label": "Steel Reinforment Bar - 6mm, 8mm, 12mm",
    "value": 2.9
+ },
+]
+
+steel = [
+ {
+   "label": "Steel galvanised structural steel",
+   "value": 3.3
+ },
+ {
+   "label": "Steel structural section",
+   "value": 2.9
+ },
+ {
+   "label": "Steel hollow section extruded",
+   "value": 4.6
+ },
+ {
+   "label": "Steel bar",
+   "value": 2.1
+ },
+ {
+   "label": "Steel pipe",
+   "value": 3.5
+ },
+ {
+   "label": "Steel sheet corrugated",
+   "value": 5.5
  },
 ]

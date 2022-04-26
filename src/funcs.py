@@ -8,7 +8,7 @@ import pandas as pd
 from config import graph_colors
 from dash import html
 
-from src import epic_options, greenbook_options
+from src import epic_options, greenbook_options, ice_options
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -348,6 +348,10 @@ def find_vols(vol, ratio):
     vol_rebar = vol - vol_conc
     return vol_conc, vol_rebar
 
+
+# TODO: add parameters with default values for "gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])"
+# ATM this is a temp solution,
+# having params with default values would help the function be more flexible
 def mat_interpreter(df):
     """interprets the materials in the schedule
 
@@ -364,10 +368,13 @@ def mat_interpreter(df):
     layer = []
     gb_ec = []
     epic_ec = []
+    ice_ec = []
 
     for i, row in df.iterrows():
         if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-            if re.search("beams", row["Layer"], re.IGNORECASE):                         #check if the layer is BEAMS                 
+            
+# --------- check if the layer is BEAMS
+            if re.search("beams", row["Layer"], re.IGNORECASE):                 
                 vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.0385)
 
                 # add concrete volume
@@ -378,6 +385,7 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
                 epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
+                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])             
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
@@ -387,8 +395,10 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
                 epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
+                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
+                
 
-
+# --------- Cheack if the layer is COLUMNS
             elif re.search("columns", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.041)
                 # add concrete volume
@@ -399,6 +409,7 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
                 epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
+                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
                 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
@@ -408,7 +419,9 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
                 epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
+                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
 
+# --------- Check if the layer is SLAB
             elif re.search("slab", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.013)
                 # add concrete volume
@@ -419,6 +432,7 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
                 epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
+                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
@@ -428,7 +442,9 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
                 epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
+                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
 
+# --------- Check if the layer is WALLS
             elif re.search("wall", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.022)
                 # add concrete volume
@@ -439,6 +455,7 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
                 epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
+                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
@@ -448,7 +465,9 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
                 epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
+                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
 
+# --------- Check if the layer is STAIRS
             elif re.search("stairs", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.022)
                 # add concrete volume
@@ -459,6 +478,7 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
                 epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
+                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
@@ -468,7 +488,10 @@ def mat_interpreter(df):
                 layer.append(row["Layer"])
                 gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
                 epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
-        else:
+                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
+
+        # Appends timber values from layer
+        elif re.search("timber", row["layer"], re.IGNORECASE):
             mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
@@ -476,5 +499,17 @@ def mat_interpreter(df):
             layer.append(row["Layer"])
             gb_ec.append(row["Mass"]*greenbook_options.timber[1]['value'])      # timber... assumes there no other materials types
             epic_ec.append(row["Mass"]*epic_options.timber[1]['value'])
-    return mat, vol, mass, floor, layer, gb_ec, epic_ec
+            ice_ec.append(row["Mass"]*ice_options.timber[1]['value'])
+
+        # Appends steel values from layer
+        elif re.search("steel", row["layer"], re.IGNORECASE):
+            mat.append(row["Building Materials (All)"])
+            vol.append(row["Net Volume"])
+            mass.append(row["Mass"])
+            floor.append(row["Home Story Name"])
+            layer.append(row["Layer"])
+            gb_ec.append(row["Mass"]*greenbook_options.steel[1]['value'])      # timber... assumes there no other materials types
+            epic_ec.append(row["Mass"]*epic_options.steel[1]['value'])
+            ice_ec.append(row["Mass"]*ice_options.steel[1]['value'])
+    return mat, vol, mass, floor, layer, gb_ec, epic_ec, ice_ec
 
