@@ -17,19 +17,25 @@ ice_df = pd.read_csv("src/ice _reduced.csv")
 
 def total_ec_comparison(base, val1, val2, val1_db, val2_db):
     str = [
-        checker(base, val1, val1_db,),
+        checker(
+            base,
+            val1,
+            val1_db,
+        ),
         "\n",
         checker(base, val2, val2_db),
     ]
     return str
 
+
 def checker(base, val, val_db):
-    if base <=  val:
-        val1_percent = (val/base) * 100
+    if base <= val:
+        val1_percent = (val / base) * 100
         return "{} is 🔺 by +{:,.2f}%, ".format(val_db, val1_percent)
     else:
-        val1_percent = (val/base) * 100
+        val1_percent = (val / base) * 100
         return "{} is 🔻 by {:,.2f}%".format(val_db, val1_percent)
+
 
 def find(df, ice):
 
@@ -83,7 +89,7 @@ def find2(df, ice):
                 structure_steel.append(row["Mass"])
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
                 structure_timber.append(row["Net Volume"])
-            else: #if it doesn't know it'll assume it's concrete
+            else:  # if it doesn't know it'll assume it's concrete
                 structure_concrete.append(row["Net Volume"])
     else:
         for index, row in df.iterrows():
@@ -93,7 +99,7 @@ def find2(df, ice):
                 structure_steel.append(row["Mass"])
             elif re.search("timber", row["Building Materials (All)"], re.IGNORECASE):
                 structure_timber.append(row["Mass"])
-            else: #if it doesn't know it'll assume it's concrete
+            else:  # if it doesn't know it'll assume it's concrete
                 structure_concrete.append(row["Net Volume"])
     return structure_concrete, structure_steel, structure_timber
 
@@ -112,7 +118,7 @@ def label_colours_update(l, type_):
                 color_list.append(graph_colors[2])
         return color_list
 
-    else :
+    else:
 
         for i, iter in enumerate(l):
             if re.search("concrete", iter, re.IGNORECASE):
@@ -128,10 +134,11 @@ def label_colours_update(l, type_):
         return color_dict
 
 
-'''
+"""
         ADD OTHER MATERIALS LIKE ALUMINIUM AND BRICK!!! (╯‵□′)╯︵┻━┻
         - create flexibilities for other materials
-'''
+"""
+
 
 def em_calc(db, df, conc_val, steel_val, timber_val):
     """em_calc() calculates the EC of each material based on the database
@@ -147,7 +154,9 @@ def em_calc(db, df, conc_val, steel_val, timber_val):
         [ list ]: returns a list of the EC of input db
     """
 
-    df = df.groupby(by=['Building Materials (All)'], as_index=False).sum() # create consolidated df
+    df = df.groupby(
+        by=["Building Materials (All)"], as_index=False
+    ).sum()  # create consolidated df
     volumes = df["Net Volume"].tolist()
     df_mat = df["Building Materials (All)"].tolist()
     mass = df["Mass"].tolist()
@@ -159,28 +168,40 @@ def em_calc(db, df, conc_val, steel_val, timber_val):
     for i, mat in enumerate(df_mat):
         # if mat == "CONCRETE - IN-SITU":
         if re.search("concrete", mat, re.IGNORECASE):
-            gb_embodied_carbon.append(volumes[i]*conc_val) #Concrete 50 MPa || Green Book
-            epic_embodied_carbon.append(volumes[i]*conc_val) #Concrete 40 MPa || Epic 
-            ice_embodied_carbon.append(volumes[i]*conc_val) # Concrete 50 MPa || Ice
+            gb_embodied_carbon.append(
+                volumes[i] * conc_val
+            )  # Concrete 50 MPa || Green Book
+            epic_embodied_carbon.append(
+                volumes[i] * conc_val
+            )  # Concrete 40 MPa || Epic
+            ice_embodied_carbon.append(volumes[i] * conc_val)  # Concrete 50 MPa || Ice
         # elif mat == "STEEL - STRUCTURAL":
         elif re.search("steel", mat, re.IGNORECASE):
-            gb_embodied_carbon.append(mass[i]*steel_val) #Steel Universal Section || Green Book
-            epic_embodied_carbon.append(mass[i]*steel_val) #Steel structural steel section || Epic  
-            ice_embodied_carbon.append(mass[i]*steel_val) # steel Section|| Ice
+            gb_embodied_carbon.append(
+                mass[i] * steel_val
+            )  # Steel Universal Section || Green Book
+            epic_embodied_carbon.append(
+                mass[i] * steel_val
+            )  # Steel structural steel section || Epic
+            ice_embodied_carbon.append(mass[i] * steel_val)  # steel Section|| Ice
         # elif mat == "TIMBER - STRUCTURAL":
         elif re.search("timber", mat, re.IGNORECASE):
-            gb_embodied_carbon.append(volumes[i]*timber_val) #Glue-Laminated Timber (Glu-lam) || Green Book
-            epic_embodied_carbon.append(volumes[i]*timber_val) #Glued laminated timber (glulam) || Epic 
-            ice_embodied_carbon.append(mass[i]*timber_val) # Timber Gluelam || Ice
-        else: # if all else fail assume concrete
-            gb_embodied_carbon.append(volumes[i]*conc_val) # Green Book
-            epic_embodied_carbon.append(volumes[i]*conc_val) # Epic
-            ice_embodied_carbon.append(volumes[i]*conc_val) # Ice       
+            gb_embodied_carbon.append(
+                volumes[i] * timber_val
+            )  # Glue-Laminated Timber (Glu-lam) || Green Book
+            epic_embodied_carbon.append(
+                volumes[i] * timber_val
+            )  # Glued laminated timber (glulam) || Epic
+            ice_embodied_carbon.append(mass[i] * timber_val)  # Timber Gluelam || Ice
+        else:  # if all else fail assume concrete
+            gb_embodied_carbon.append(volumes[i] * conc_val)  # Green Book
+            epic_embodied_carbon.append(volumes[i] * conc_val)  # Epic
+            ice_embodied_carbon.append(volumes[i] * conc_val)  # Ice
 
     if db == "gb":
         return gb_embodied_carbon
     elif db == "epic":
-      return epic_embodied_carbon
+        return epic_embodied_carbon
     elif db == "ice":
         return ice_embodied_carbon
 
@@ -189,10 +210,11 @@ def stars_append(n):
     stars = []
     for i in range(n):
         stars.append(html.I(className="bi bi-star-fill mx-2"))
-        star_outline = 4-i
+        star_outline = 4 - i
     for j in range(star_outline):
         stars.append(html.I(className="bi bi-star mx-2"))
     return html.Div(stars, className="text-center")
+
 
 def progress_bar(n_stars, ec_val, lower, upper):
     """Progress bar for EC values
@@ -207,37 +229,57 @@ def progress_bar(n_stars, ec_val, lower, upper):
         list: return list of components to render
     """
 
-    val = (ec_val - lower)/(upper - lower)
+    val = (ec_val - lower) / (upper - lower)
     val = val * 100
 
     if lower == 0:
-        label = "Design is {}% away from 4 stars. Please note that value will never reach 0 EC per meter.".format(100-int(val)) 
+        label = "Design is {}% away from 4 stars. Please note that value will never reach 0 EC per meter.".format(
+            100 - int(val)
+        )
     else:
-        label = "{}% more for the next star".format(int(val)),
+        label = ("{}% more for the next star".format(int(val)),)
 
-    return html.Div([
-        stars_append(n_stars),
-        html.Div([
-            html.P(lower, className="text-start mb-0"),
-            dmc.Tooltip(
-                label=label,
-                transition="pop",
-                width=220,
-                transitionDuration=300,
-                transitionTimingFunction="ease",
-                withArrow=True,
-                children=[
-                    dbc.Progress(label="{}%".format(int(val)), value=val),
+    return html.Div(
+        [
+            stars_append(n_stars),
+            html.Div(
+                [
+                    html.P(lower, className="text-start mb-0"),
+                    dmc.Tooltip(
+                        label=label,
+                        transition="pop",
+                        width=220,
+                        transitionDuration=300,
+                        transitionTimingFunction="ease",
+                        withArrow=True,
+                        children=[
+                            dbc.Progress(label="{}%".format(int(val)), value=val),
+                        ],
+                        class_name="w-75",
+                    ),
+                    html.P(upper, className="text-end mb-0"),
                 ],
-                class_name="w-75"
+                className="hstack mt-5",
+                style={"justify-content": "space-between"},
             ),
-            html.P(upper, className="text-end mb-0"),
-        ], className="hstack mt-5", style={"justify-content": "space-between"}),
-        html.Div([
-            html.P(["kgCO", html.Sub("e"), html.Sup("2"), "/m", html.Sup("2")], className="text-start text-secondary"),
-            html.P(["kgCO", html.Sub("e"), html.Sup("2"), "/m", html.Sup("2")], className="text-start text-secondary"),
-        ], className="hstack", style={"justify-content": "space-between"})    
-    ], className="mx-5")
+            html.Div(
+                [
+                    html.P(
+                        ["kgCO", html.Sub("e"), html.Sup("2"), "/m", html.Sup("2")],
+                        className="text-start text-secondary",
+                    ),
+                    html.P(
+                        ["kgCO", html.Sub("e"), html.Sup("2"), "/m", html.Sup("2")],
+                        className="text-start text-secondary",
+                    ),
+                ],
+                className="hstack",
+                style={"justify-content": "space-between"},
+            ),
+        ],
+        className="mx-5",
+    )
+
 
 def upload_alert(df):
     """checks for errors and returns a message
@@ -254,42 +296,72 @@ def upload_alert(df):
     nan_values_list = nan_values.index.tolist()
 
     if nan_check > 0:
-        return dbc.Alert([
-            html.H3([
-                html.Span(
-                    html.I(className="bi bi-exclamation-circle-fill me-3")
-                ),"Warning:"], 
-                className="mb-3"
-            ),
-            html.P(["Please note that there are ", html.Strong("{}".format(nan_check)), " missing values in your input file. This will cause errors in the Analysis Page."]),
-            dmc.Divider(class_name="my-3"),
-            html.P(["missing values can be found in row/s: ", html.Strong(",".join(str(e+1) for e in nan_values_list))]),
-            html.P("You can edit the value on excel or other spreadsheet software and upload again."),
-            dbc.Table.from_dataframe(nan_values, striped=False, bordered=True, hover=True, responsive=True),
-            
+        return dbc.Alert(
+            [
+                html.H3(
+                    [
+                        html.Span(
+                            html.I(className="bi bi-exclamation-circle-fill me-3")
+                        ),
+                        "Warning:",
+                    ],
+                    className="mb-3",
+                ),
+                html.P(
+                    [
+                        "Please note that there are ",
+                        html.Strong("{}".format(nan_check)),
+                        " missing values in your input file. This will cause errors in the Analysis Page.",
+                    ]
+                ),
+                dmc.Divider(class_name="my-3"),
+                html.P(
+                    [
+                        "missing values can be found in row/s: ",
+                        html.Strong(",".join(str(e + 1) for e in nan_values_list)),
+                    ]
+                ),
+                html.P(
+                    "You can edit the value on excel or other spreadsheet software and upload again."
+                ),
+                dbc.Table.from_dataframe(
+                    nan_values,
+                    striped=False,
+                    bordered=True,
+                    hover=True,
+                    responsive=True,
+                ),
             ],
-            "Please fill in all the fields", 
+            "Please fill in all the fields",
             color="warning",
             dismissable=True,
             is_open=True,
         )
     else:
-        return dbc.Alert([
-            html.H3([
-                html.Span(
-                    html.I(className="bi bi-exclamation-circle-fill me-3")
-                ),"No errors found 😁"], 
-                className="mb-3"
-            ),
-            html.P(["there was no missing values in your input file. You can proceed to the Analysis Page."]),
+        return dbc.Alert(
+            [
+                html.H3(
+                    [
+                        html.Span(
+                            html.I(className="bi bi-exclamation-circle-fill me-3")
+                        ),
+                        "No errors found 😁",
+                    ],
+                    className="mb-3",
+                ),
+                html.P(
+                    [
+                        "there was no missing values in your input file. You can proceed to the Analysis Page."
+                    ]
+                ),
             ],
-            "Please fill in all the fields", 
+            "Please fill in all the fields",
             color="success",
             dismissable=True,
             is_open=True,
             duration=2000,
-
         )
+
 
 def mass2vol(mass, density):
     """converts mass to volume
@@ -301,7 +373,8 @@ def mass2vol(mass, density):
     Returns:
         float: volume in m3
     """
-    return mass/density
+    return mass / density
+
 
 def cyl2vol(diameter, height):
     """converts cylinder to volume
@@ -313,7 +386,8 @@ def cyl2vol(diameter, height):
     Returns:
         float: volume in m3
     """
-    return math.pi*(diameter/2)**2*height
+    return math.pi * (diameter / 2) ** 2 * height
+
 
 def vol2mass(vol, density):
     """converts volume to mass
@@ -325,7 +399,7 @@ def vol2mass(vol, density):
     Returns:
         float: mass in kg
     """
-    return vol*density
+    return vol * density
 
 
 # # calculates the amount of reinforcement bars in the building
@@ -344,7 +418,7 @@ def find_vols(vol, ratio):
     Returns:
         Tuple: (vol_conc, vol_rebar) volume of concrete and rebar respectively
     """
-    vol_conc = vol/(ratio + 1)
+    vol_conc = vol / (ratio + 1)
     vol_rebar = vol - vol_conc
     return vol_conc, vol_rebar
 
@@ -372,144 +446,146 @@ def mat_interpreter(df):
 
     for i, row in df.iterrows():
         if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
-            
-# --------- check if the layer is BEAMS
-            if re.search("beams", row["Layer"], re.IGNORECASE):                 
-                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.0385)
+
+            # --------- check if the layer is BEAMS
+            if re.search("beams", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.0385)
 
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
-                epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
-                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])             
+                gb_ec.append(vol_conc * greenbook_options.concrete[11]["value"])
+                epic_ec.append(vol_conc * epic_options.concrete[12]["value"])
+                ice_ec.append(vol_conc * ice_options.concrete[28]["value"])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row['Mass']-mass_conc)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
-                epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
-                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
-                
+                gb_ec.append(mass_rebar * greenbook_options.rebar[0]["value"])
+                epic_ec.append(mass_rebar * epic_options.rebar[0]["value"])
+                ice_ec.append(mass_rebar * ice_options.rebar[0]["value"])
 
-# --------- Cheack if the layer is COLUMNS
+            # --------- Cheack if the layer is COLUMNS
             elif re.search("columns", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.041)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.041)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
-                epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
-                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
-                
+                gb_ec.append(vol_conc * greenbook_options.concrete[11]["value"])
+                epic_ec.append(vol_conc * epic_options.concrete[12]["value"])
+                ice_ec.append(vol_conc * ice_options.concrete[28]["value"])
+
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row['Mass']-mass_conc)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
-                epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
-                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
+                gb_ec.append(mass_rebar * greenbook_options.rebar[0]["value"])
+                epic_ec.append(mass_rebar * epic_options.rebar[0]["value"])
+                ice_ec.append(mass_rebar * ice_options.rebar[0]["value"])
 
-# --------- Check if the layer is SLAB
+            # --------- Check if the layer is SLAB
             elif re.search("slab", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.013)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.013)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
-                epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
-                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
+                gb_ec.append(vol_conc * greenbook_options.concrete[11]["value"])
+                epic_ec.append(vol_conc * epic_options.concrete[12]["value"])
+                ice_ec.append(vol_conc * ice_options.concrete[28]["value"])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row['Mass']-mass_conc)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
-                epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
-                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
+                gb_ec.append(mass_rebar * greenbook_options.rebar[0]["value"])
+                epic_ec.append(mass_rebar * epic_options.rebar[0]["value"])
+                ice_ec.append(mass_rebar * ice_options.rebar[0]["value"])
 
-# --------- Check if the layer is WALLS
+            # --------- Check if the layer is WALLS
             elif re.search("wall", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.022)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
-                epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
-                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
+                gb_ec.append(vol_conc * greenbook_options.concrete[11]["value"])
+                epic_ec.append(vol_conc * epic_options.concrete[12]["value"])
+                ice_ec.append(vol_conc * ice_options.concrete[28]["value"])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row['Mass']-mass_conc)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
-                epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
-                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
+                gb_ec.append(mass_rebar * greenbook_options.rebar[0]["value"])
+                epic_ec.append(mass_rebar * epic_options.rebar[0]["value"])
+                ice_ec.append(mass_rebar * ice_options.rebar[0]["value"])
 
-# --------- Check if the layer is STAIRS
+            # --------- Check if the layer is STAIRS
             elif re.search("stairs", row["Layer"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row['Net Volume'], 0.022)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row['Mass']-(7850*vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])
-                epic_ec.append(vol_conc*epic_options.concrete[12]['value'])
-                ice_ec.append(vol_conc*ice_options.concrete[28]['value'])
+                gb_ec.append(vol_conc * greenbook_options.concrete[11]["value"])
+                epic_ec.append(vol_conc * epic_options.concrete[12]["value"])
+                ice_ec.append(vol_conc * ice_options.concrete[28]["value"])
 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row['Mass']-mass_conc)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 layer.append(row["Layer"])
-                gb_ec.append(mass_rebar*greenbook_options.rebar[0]['value'])
-                epic_ec.append(mass_rebar*epic_options.rebar[0]['value'])
-                ice_ec.append(mass_rebar*ice_options.rebar[0]['value'])
+                gb_ec.append(mass_rebar * greenbook_options.rebar[0]["value"])
+                epic_ec.append(mass_rebar * epic_options.rebar[0]["value"])
+                ice_ec.append(mass_rebar * ice_options.rebar[0]["value"])
 
         # Appends timber values from layer
-        elif re.search("timber", row["layer"], re.IGNORECASE):
+        elif re.search("timber", row["Layer"], re.IGNORECASE):
             mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
             layer.append(row["Layer"])
-            gb_ec.append(row["Mass"]*greenbook_options.timber[1]['value'])      # timber... assumes there no other materials types
-            epic_ec.append(row["Mass"]*epic_options.timber[1]['value'])
-            ice_ec.append(row["Mass"]*ice_options.timber[1]['value'])
+            gb_ec.append(
+                row["Net Volume"] * greenbook_options.timber[1]["value"]
+            )  # timber... assumes there no other materials types
+            epic_ec.append(row["Net Volume"] * epic_options.timber[1]["value"])
+            ice_ec.append(row["Mass"] * ice_options.timber[1]["value"])
 
         # Appends steel values from layer
-        elif re.search("steel", row["layer"], re.IGNORECASE):
+        elif re.search("steel", row["Layer"], re.IGNORECASE):
             mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
             layer.append(row["Layer"])
-            gb_ec.append(row["Mass"]*greenbook_options.steel[1]['value'])      # timber... assumes there no other materials types
-            epic_ec.append(row["Mass"]*epic_options.steel[1]['value'])
-            ice_ec.append(row["Mass"]*ice_options.steel[1]['value'])
+            gb_ec.append(
+                row["Mass"] * greenbook_options.steel[1]["value"]
+            )  # timber... assumes there no other materials types
+            epic_ec.append(row["Mass"] * epic_options.steel[1]["value"])
+            ice_ec.append(row["Mass"] * ice_options.steel[1]["value"])
     return mat, vol, mass, floor, layer, gb_ec, epic_ec, ice_ec
-

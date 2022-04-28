@@ -3,7 +3,10 @@ from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 
-def table_gen(conc_input, conc_out, steel_input, steel_out, timber_input, timber_output):
+
+def table_gen(
+    conc_input, conc_out, steel_input, steel_out, timber_input, timber_output
+):
     table_header = [
         html.Thead(html.Tr([html.Th("Material Name"), html.Th("Embodied Carbon")]))
     ]
@@ -14,4 +17,4 @@ def table_gen(conc_input, conc_out, steel_input, steel_out, timber_input, timber
 
     table_body = [html.Tbody([row1, row2, row3])]
 
-    return dbc.Table(table_header + table_body, striped=True, bordered=True, hover=True )
+    return dbc.Table(table_header + table_body, striped=True, bordered=True, hover=True)
