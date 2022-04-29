@@ -122,7 +122,8 @@ def bar_update(
                 "Home Story Name": "Level",
             },
         )
-        return gb_fig, epic_fig, ice_fig
+        # return gb_fig, epic_fig, ice_fig
+        return epic_fig, ice_fig
     else:
         raise PreventUpdate
 

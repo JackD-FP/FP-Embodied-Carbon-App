@@ -111,11 +111,17 @@ def label_colours_update(l, type_):
 
         for i, iter in enumerate(l):
             if re.search("concrete", iter, re.IGNORECASE):
-                color_list.append(graph_colors[0])
-            elif re.search("steel", iter, re.IGNORECASE):
-                color_list.append(graph_colors[1])
-            elif re.search("timber", iter, re.IGNORECASE):
-                color_list.append(graph_colors[2])
+                color_list.append("#5463FF")
+
+            elif re.search("STEEL ", iter, re.IGNORECASE):
+                color_list.append("#FFC300")
+
+            elif re.search("TIMBER", iter, re.IGNORECASE):
+                color_list.append("#FF1818")
+
+            elif re.search("reinforcement", iter, re.IGNORECASE):
+                color_list.append("#79B159")
+
         return color_list
 
     else:
@@ -130,6 +136,8 @@ def label_colours_update(l, type_):
             elif re.search("timber", iter, re.IGNORECASE):
                 # color_dict.append(graph_colors[2])
                 color_dict.update({iter: graph_colors[2]})
+            elif re.search("reinforcement Bar", iter, re.IGNORECASE):
+                color_list.update({iter: graph_colors[4]})
 
         return color_dict
 
@@ -423,10 +431,9 @@ def find_vols(vol, ratio):
     return vol_conc, vol_rebar
 
 
-# TODO: add parameters with default values for "gb_ec.append(vol_conc*greenbook_options.concrete[11]['value'])"
-# ATM this is a temp solution,
-# having params with default values would help the function be more flexible
-def mat_interpreter(df):
+def mat_interpreter(
+    df: pd.DataFrame,
+) -> tuple:
     """interprets the materials in the schedule
 
     Args:
@@ -589,3 +596,154 @@ def mat_interpreter(df):
             epic_ec.append(row["Mass"] * epic_options.steel[1]["value"])
             ice_ec.append(row["Mass"] * ice_options.steel[1]["value"])
     return mat, vol, mass, floor, layer, gb_ec, epic_ec, ice_ec
+
+
+def ec_calculator(
+    df: pd.DataFrame,
+    concrete_val: float,
+    rebar_val: float,
+    timber_val: float,
+    steel_val: float,
+    if_ice=False,
+) -> tuple:
+    """interprets the materials in the schedule
+
+    Args:
+        df ( pd dataframe): uploaded schedule
+        if_ice (bool): if the schedule is ice default is False
+
+    Returns:
+        tuple: (mat, vol, mass, floor, layer, ec) tuple of lists of mass, volume, material and floor
+    """
+    mass = []
+    vol = []
+    mat = []
+    floor = []
+    layer = []
+    ec = []
+
+    for i, row in df.iterrows():
+        if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
+
+            # --------- check if the layer is BEAMS
+            if re.search("beams", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.0385)
+
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(vol_conc * concrete_val)
+
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(mass_rebar * rebar_val)
+
+            # --------- Cheack if the layer is COLUMNS
+            elif re.search("columns", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.041)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(vol_conc * concrete_val)
+
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(mass_rebar * rebar_val)
+
+            # --------- Check if the layer is SLAB
+            elif re.search("slab", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.013)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(vol_conc * concrete_val)
+
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(mass_rebar * rebar_val)
+
+            # --------- Check if the layer is WALLS
+            elif re.search("wall", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(vol_conc * concrete_val)
+
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(mass_rebar * rebar_val)
+
+            # --------- Check if the layer is STAIRS
+            elif re.search("stairs", row["Layer"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
+                # add concrete volume
+                mat.append("Concrete")
+                vol.append(vol_conc)
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(vol_conc * concrete_val)
+
+                # add rebar volume
+                mat.append("Reinforcement Bar")
+                vol.append(vol_rebar)
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                floor.append(row["Home Story Name"])
+                layer.append(row["Layer"])
+                ec.append(mass_rebar * rebar_val)
+
+        # Appends timber values from layer
+        elif re.search("timber", row["Layer"], re.IGNORECASE):
+            mat.append(row["Building Materials (All)"])
+            vol.append(row["Net Volume"])
+            mass.append(row["Mass"])
+            floor.append(row["Home Story Name"])
+            layer.append(row["Layer"])
+
+            if if_ice:
+                ec.append(row["Mass"] * timber_val)
+                # timber... assumes there no other materials types
+            else:
+                ec.append(row["Net Volume"] * timber_val)
+
+        # Appends steel values from layer
+        elif re.search("steel", row["Layer"], re.IGNORECASE):
+            mat.append(row["Building Materials (All)"])
+            vol.append(row["Net Volume"])
+            mass.append(row["Mass"])
+            floor.append(row["Home Story Name"])
+            layer.append(row["Layer"])
+            ec.append(
+                row["Mass"] * steel_val
+            )  # steel... assumes there no other materials types
+
+    return mat, vol, mass, floor, layer, ec

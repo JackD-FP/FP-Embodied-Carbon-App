@@ -12,6 +12,7 @@ graph_colors = [
     "#5463FF",
     "#FFC300",
     "#FF1818",
-    "#ececec",
+    "#70C1B3",
     "#79b159",
+    "#42D9C8",
 ]  # graphing colours

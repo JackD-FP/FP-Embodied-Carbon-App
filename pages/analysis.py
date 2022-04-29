@@ -35,6 +35,11 @@ def definition(data):
             pass
 
         df = df.groupby(by=["Materials"], as_index=False).sum()
+        df.loc[:, "Mass"] = df["Mass"].map("{:,.2f}".format)
+        df.loc[:, "Volume"] = df["Volume"].map("{:,.2f}".format)
+        df.loc[:, "Green Book EC"] = df["Green Book EC"].map("{:,.2f}".format)
+        df.loc[:, "EPiC EC"] = df["EPiC EC"].map("{:,.2f}".format)
+        df.loc[:, "ICE EC"] = df["ICE EC"].map("{:,.2f}".format)
 
         return html.Div(
             [
