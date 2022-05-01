@@ -105,13 +105,16 @@ greenbook_card = dbc.Card(
             ],
             className="hstack",
         ),
-        # dmc.Accordion([
-        #     dmc.AccordionItem(
-        #         children=analysis_more_info.gb_more_info,
-        #         label="More Information and Analysis")
-        # ],
-        # id="gb_accordion",
-        # state={"0": False})
+        dmc.Accordion(
+            [
+                dmc.AccordionItem(
+                    children=analysis_more_info.gb_more_info,
+                    label="More Information and Analysis",
+                )
+            ],
+            id="gb_accordion",
+            state={"0": False},
+        ),
     ],
     class_name="my-5 p-4 shadow",
 )
@@ -324,16 +327,16 @@ epic_card = dbc.Card(
             ],
             className="hstack",
         ),
-        # dmc.Accordion(
-        #     [
-        #         dmc.AccordionItem(
-        #             children=analysis_more_info.epic_more_info,
-        #             label="More Information and Analysis",
-        #         )
-        #     ],
-        #     id="gb_accordion",
-        #     state={"0": False},
-        # ),
+        dmc.Accordion(
+            [
+                dmc.AccordionItem(
+                    children=analysis_more_info.epic_more_info,
+                    label="More Information and Analysis",
+                )
+            ],
+            id="gb_accordion",
+            state={"0": False},
+        ),
     ],
     class_name="my-5 p-4 shadow",
 )
@@ -547,16 +550,16 @@ ice_card = dbc.Card(
             ],
             className="hstack",
         ),
-        # dmc.Accordion(
-        #     [
-        #         dmc.AccordionItem(
-        #             children=analysis_more_info.ice_more_info,
-        #             label="More Information and Analysis",
-        #         )
-        #     ],
-        #     id="gb_accordion",
-        #     state={"0": False},
-        # ),
+        dmc.Accordion(
+            [
+                dmc.AccordionItem(
+                    children=analysis_more_info.ice_more_info,
+                    label="More Information and Analysis",
+                )
+            ],
+            id="gb_accordion",
+            state={"0": False},
+        ),
     ],
     class_name="my-5 p-4 shadow",
 )
@@ -669,62 +672,5 @@ def ice_row_update(concrete, rebar, steel, timber, data, gfa):
             gfa_calc,
             fig,
         )
-        # conc_ec = (
-        #     ice_df.loc[ice_df["Sub Category"] == concrete, "Embodied Carbon"]
-        #     .values[0]
-        #     .item()
-        # )
-        # steel_ec = (
-        #     ice_df.loc[ice_df["Sub Category"] == steel, "Embodied Carbon"]
-        #     .values[0]
-        #     .item()
-        # )
-        # timber_ec = (
-        #     ice_df.loc[ice_df["Sub Category"] == timber, "Embodied Carbon"]
-        #     .values[0]
-        #     .item()
-        # )
-
-        # df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
-        # structure_concrete, structure_steel, structure_timber = funcs.find2(
-        #     df_grouped, True
-        # )
-
-        # ec_concrete = conc_ec * sum(structure_concrete)
-        # ec_steel = steel_ec * sum(structure_steel)
-        # ec_timber = timber_ec * sum(structure_timber)
-
-        # ec_list = funcs.em_calc("ice", df, conc_ec, steel_ec, timber_ec)
-        # gfa_ = sum(ec_list) / gfa
-
-        # total = html.Div(
-        #     [
-        #         html.H3("{:,}".format(np.around(sum(ec_list), 2))),
-        #         html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"]),
-        #     ]
-        # )
-
-        # gfa_calc = html.Div(
-        #     [
-        #         html.H3(["{:,} ".format(np.around(gfa_, 2))]),
-        #         html.P([html.Span("kgCO2e/m² ", className="fs-4"), "EC per m²"]),
-        #     ]
-        # )
-
-        # labels = df_grouped["Building Materials (All)"].tolist()
-
-        # label_colors = funcs.label_colours_update(labels, "list")
-        # fig = go.Figure(data=[go.Pie(labels=labels, values=ec_list, hole=0.5)])
-        # fig.update_layout(
-        #     title_text="Structure Embodied Carbon",
-        #     annotations=[
-        #         dict(text="Green Book", x=0.5, y=0.5, font_size=16, showarrow=False)
-        #     ],
-        # )
-        # fig.update_traces(
-        #     hoverinfo="label+percent+value",
-        #     textinfo="percent",
-        #     marker=dict(colors=label_colors),
-        # )
     else:
         raise PreventUpdate
