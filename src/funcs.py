@@ -759,3 +759,18 @@ def ec_calculator(
             )  # steel... assumes there no other materials types
 
     return mat, vol, mass, floor, layer, ec
+
+
+def none_check(is_none):
+    """Checks if is_none is None and returns 0.0 if so
+
+    Args:
+        is_none ( float ): The value to check
+
+    Returns:
+        flaot : The value of is_none if not None, 0.0 if None
+    """
+    if is_none is None:
+        return 0
+    else:
+        return is_none

@@ -842,7 +842,7 @@ def error_update(data):
     Output("gb_benchmark", "children"),
     Input("gfa_input", "value"),
     Input("bld_type", "value"),
-    State("proc_store", "data"),
+    Input("proc_store", "data"),
 )
 def gfa_calc(val, bld_type, data):
     df = pd.read_json(data, orient="split")
@@ -933,9 +933,4 @@ def gfa_calc(val, bld_type, data):
         )
 
     else:
-        return (
-            "Unknown - Input GFA above",
-            "Unknown - Input GFA above",
-            "Unknown - Input GFA above",
-            "",
-        )
+        raise PreventUpdate

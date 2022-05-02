@@ -7,18 +7,14 @@ from operator import index
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from config import graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
-import numpy as np
 
 from src import epic_options, funcs, greenbook_options, ice_options, material_table
-
-gb_df = pd.read_csv("src/Greenbook _reduced.csv")
-epic_df = pd.read_csv("src/epic _reduced.csv")
-ice_df = pd.read_csv("src/ice _reduced.csv")
 
 card01 = html.Div([html.Div(id="card01_table")])
 
@@ -157,363 +153,521 @@ def update_div(gfa_mts, main_data, gfa_data):
             ),  # there is provision for bar graphs but will add that later
             dmc.Divider(class_name="my-3"),
             # ---------- EPIC comparison for card 01 -----------
-            # html.H3("EPiC DB", className="mb-3"),
-            # dmc.Accordion(
-            #     [
-            #         dmc.AccordionItem(
-            #             material_table.table_gen(
-            #                 dbc.Select(
-            #                     options=epic_options.concrete_option,
-            #                     id="epic_comp_concrete",
-            #                     value="Concrete 50 MPa",
-            #                 ),
-            #                 html.P(id="epic_comp_concrete_val"),
-            #                 dbc.Select(
-            #                     options=epic_options.steel_options,
-            #                     id="epic_comp_steel",
-            #                     value="Steel structural steel section",
-            #                 ),
-            #                 html.P(id="epic_comp_steel_val"),
-            #                 dbc.Select(
-            #                     options=epic_options.timber_option,
-            #                     id="epic_comp_timber",
-            #                     value="Glued laminated timber (glulam)",
-            #                 ),
-            #                 html.P(id="epic_comp_timber_val"),
-            #             ),
-            #             label="EPiC DB Material Options ▼",
-            #         ),
-            #     ]
-            # ),
-            # dbc.Row(
-            #     [
-            #         dbc.Col(
-            #             [
-            #                 html.H3(id="epic_comp_total", className="text-center"),
-            #                 html.P(
-            #                     [
-            #                         html.Span(
-            #                             ["kgCO", html.Sup(2), html.Sub("e")],
-            #                             className="fs-4",
-            #                         ),
-            #                         " Total EC",
-            #                     ],
-            #                     className="text-center",
-            #                 ),
-            #             ]
-            #         ),
-            #         dbc.Col(
-            #             [
-            #                 html.H3(id="epic_comp_gfa", className="text-center"),
-            #                 html.P(
-            #                     [
-            #                         html.Span(
-            #                             [
-            #                                 "kgCO",
-            #                                 html.Sup(2),
-            #                                 html.Sub("e"),
-            #                                 "/m",
-            #                                 html.Sup(2),
-            #                             ],
-            #                             className="fs-4",
-            #                         ),
-            #                         " EC per m",
-            #                         html.Sup(2),
-            #                     ],
-            #                     className="text-center",
-            #                 ),
-            #             ]
-            #         ),
-            #     ],
-            #     class_name="my-5",
-            # ),
-            # html.Div(id="epic_pie"),
-            # dmc.Divider(class_name="my-3"),
-            # # ---------- Ice comparison for card 01 -----------
-            # html.H3("ICE DB", className="mb-3"),
-            # dmc.Accordion(
-            #     [
-            #         dmc.AccordionItem(
-            #             material_table.table_gen(
-            #                 dbc.Select(
-            #                     options=ice_options.concrete_options,
-            #                     id="ice_comp_concrete",
-            #                     value="Concrete 40 MPa",
-            #                 ),
-            #                 html.P(id="ice_comp_concrete_val"),
-            #                 dbc.Select(
-            #                     options=ice_options.steel_options,
-            #                     id="ice_comp_steel",
-            #                     value="Steel Section",
-            #                 ),
-            #                 html.P(id="ice_comp_steel_val"),
-            #                 dbc.Select(
-            #                     options=ice_options.timber_options,
-            #                     id="ice_comp_timber",
-            #                     value="Timber Glulam",
-            #                 ),
-            #                 html.P(id="ice_comp_timber_val"),
-            #             ),
-            #             label="ICE DB Material Options ▼",
-            #         )
-            #     ]
-            # ),
-            # dbc.Row(
-            #     [
-            #         dbc.Col(
-            #             [
-            #                 html.H3(id="ice_comp_total", className="text-center"),
-            #                 html.P(
-            #                     [
-            #                         html.Span(
-            #                             ["kgCO", html.Sup(2), html.Sub("e")],
-            #                             className="fs-4",
-            #                         ),
-            #                         " Total EC",
-            #                     ],
-            #                     className="text-center",
-            #                 ),
-            #             ]
-            #         ),
-            #         dbc.Col(
-            #             [
-            #                 html.H3(id="ice_comp_gfa", className="text-center"),
-            #                 html.P(
-            #                     [
-            #                         html.Span(
-            #                             [
-            #                                 "kgCO",
-            #                                 html.Sup(2),
-            #                                 html.Sub("e"),
-            #                                 "/m",
-            #                                 html.Sup(2),
-            #                             ],
-            #                             className="fs-4",
-            #                         ),
-            #                         " EC per m",
-            #                         html.Sup(2),
-            #                     ],
-            #                     className="text-center",
-            #                 ),
-            #             ]
-            #         ),
-            #     ],
-            #     class_name="my-4",
-            # ),
-            # html.Div(id="ice_pie"),
+            html.H3("EPiC DB", className="mb-3"),
+            dmc.Accordion(
+                [
+                    dmc.AccordionItem(
+                        material_table.table_gen(
+                            dbc.Select(
+                                options=epic_options.concrete,
+                                id="epic_comp_concrete",
+                                value=600,
+                            ),
+                            html.P(id="epic_comp_concrete_val"),
+                            dbc.Select(
+                                options=epic_options.rebar,
+                                id="epic_comp_rebar",
+                                value=2.9,
+                            ),
+                            html.P(id="epic_comp_rebar_val"),
+                            dbc.Select(
+                                options=epic_options.steel,
+                                id="epic_comp_steel",
+                                value=2.9,
+                            ),
+                            html.P(id="epic_comp_steel_val"),
+                            dbc.Select(
+                                options=epic_options.timber,
+                                id="epic_comp_timber",
+                                value=1718,
+                            ),
+                            html.P(id="epic_comp_timber_val"),
+                        ),
+                        label="EPiC DB Material Options ▼",
+                    ),
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            html.H3(id="epic_comp_total", className="text-center"),
+                            html.P(
+                                [
+                                    html.Span(
+                                        ["kgCO", html.Sup(2), html.Sub("e")],
+                                        className="fs-4",
+                                    ),
+                                    " Total EC",
+                                ],
+                                className="text-center",
+                            ),
+                        ]
+                    ),
+                    dbc.Col(
+                        [
+                            html.H3(id="epic_comp_gfa", className="text-center"),
+                            html.P(
+                                [
+                                    html.Span(
+                                        [
+                                            "kgCO",
+                                            html.Sup(2),
+                                            html.Sub("e"),
+                                            "/m",
+                                            html.Sup(2),
+                                        ],
+                                        className="fs-4",
+                                    ),
+                                    " EC per m",
+                                    html.Sup(2),
+                                ],
+                                className="text-center",
+                            ),
+                        ]
+                    ),
+                ],
+                class_name="my-5",
+            ),
+            html.Div(id="epic_pie"),
+            dmc.Divider(class_name="my-3"),
+            # ---------- Ice comparison for card 01 -----------
+            html.H3("ICE DB", className="mb-3"),
+            dmc.Accordion(
+                [
+                    dmc.AccordionItem(
+                        material_table.table_gen(
+                            dbc.Select(
+                                options=ice_options.concrete,
+                                id="ice_comp_concrete",
+                                value=413.4943,
+                            ),
+                            html.P(id="ice_comp_concrete_val"),
+                            dbc.Select(
+                                options=ice_options.rebar,
+                                id="ice_comp_rebar",
+                                value=1.99,
+                            ),
+                            html.P(id="ice_comp_rebar_val"),
+                            dbc.Select(
+                                options=ice_options.steel,
+                                id="ice_comp_steel",
+                                value=1.55,
+                            ),
+                            html.P(id="ice_comp_steel_val"),
+                            dbc.Select(
+                                options=ice_options.timber,
+                                id="ice_comp_timber",
+                                value=0.51,
+                            ),
+                            html.P(id="ice_comp_timber_val"),
+                        ),
+                        label="ICE DB Material Options ▼",
+                    )
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            html.H3(id="ice_comp_total", className="text-center"),
+                            html.P(
+                                [
+                                    html.Span(
+                                        ["kgCO", html.Sup(2), html.Sub("e")],
+                                        className="fs-4",
+                                    ),
+                                    " Total EC",
+                                ],
+                                className="text-center",
+                            ),
+                        ]
+                    ),
+                    dbc.Col(
+                        [
+                            html.H3(id="ice_comp_gfa", className="text-center"),
+                            html.P(
+                                [
+                                    html.Span(
+                                        [
+                                            "kgCO",
+                                            html.Sup(2),
+                                            html.Sub("e"),
+                                            "/m",
+                                            html.Sup(2),
+                                        ],
+                                        className="fs-4",
+                                    ),
+                                    " EC per m",
+                                    html.Sup(2),
+                                ],
+                                className="text-center",
+                            ),
+                        ]
+                    ),
+                ],
+                class_name="my-4",
+            ),
+            html.Div(id="ice_pie"),
         ]
         return table_out
 
 
-"""
-    @TODO: refactor the code below to be one callback function
-    There is a lot of repetition in these callbacks. There is a possibility to refactor this into a callback. 
-"""
+#
+#     @TODO: refactor the code below to be one callback function
+#     There is a lot of repetition in these callbacks. There is a possibility to refactor this into a callback.
+
 # ---------------- GREENBOOK CALLBACK ----------------
 @callback(
     Output("gb_comp_concrete_val", "children"),
+    Output("gb_comp_rebar_val", "children"),
     Output("gb_comp_steel_val", "children"),
     Output("gb_comp_timber_val", "children"),
     Output("gb_comp_total", "children"),
     Output("gb_comp_gfa", "children"),
     Output("gb_pie", "children"),
     Input("gb_comp_concrete", "value"),
+    Input("gb_comp_rebar", "value"),
     Input("gb_comp_steel", "value"),
     Input("gb_comp_timber", "value"),
     Input("comp_card01_gfa", "value"),
     State("main_store", "data"),
 )
-def definition(conc_val, steel_val, timber_val, val, data):
+def definition(conc_val, rebar_val, steel_val, timber_val, gfa, data):
     if data is None:
         raise PreventUpdate
     else:
-        if val is None:
+        if gfa is None:
             raise PreventUpdate
         else:
             df = pd.read_json(data, orient="split")
-            df_grouped = df.groupby(
-                by=["Building Materials (All)"], as_index=False
-            ).sum()
-
-            structure_concrete, structure_steel, structure_timber = funcs.find2(
-                df_grouped, False
+            mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
+                df,
+                float(conc_val),
+                float(rebar_val),
+                float(timber_val),
+                float(steel_val),
+                if_ice=False,
             )
 
-            # gb EC calculation
-            conc_ec = gb_df.loc[gb_df["Sub Category"] == conc_val, "Embodied Carbon"]
-            steel_ec = gb_df.loc[gb_df["Sub Category"] == steel_val, "Embodied Carbon"]
-            timber_ec = gb_df.loc[
-                gb_df["Sub Category"] == timber_val, "Embodied Carbon"
-            ]
-
-            gb_concrete = html.P(
-                "{}".format((concrete := conc_ec * sum(structure_concrete)))
-            )
-            gb_steel = html.P("{}".format((steel := steel_ec * sum(structure_steel))))
-            gb_timber = html.P(
-                "{}".format((timber := timber_ec * sum(structure_timber)))
+            df_calc = pd.DataFrame(
+                {
+                    "materials": mat,
+                    "volume": vol,
+                    "mass": mass,
+                    "floor": floor,
+                    "layer": layer,
+                    "ec": ec,
+                }
             )
 
-            labels = [conc_val, steel_val, timber_val]
-            ec_total = concrete + steel + timber
-            values = [concrete, steel, timber]
-            # yummy yummy pie
-            fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)])
+            df_grouped = df_calc.groupby(by=["materials"], as_index=False).sum()
+
+            total = html.Div(
+                [
+                    html.H3("{:,.2f}".format(df_grouped["ec"].sum())),
+                ],
+                style={"display": "block"},
+            )
+
+            gfa_calc = html.Div(
+                [
+                    html.H3(["{:,.2f}".format(np.around(sum(ec) / gfa, 2))]),
+                ],
+                style={"display": "block"},
+            )
+
+            fig = go.Figure(
+                data=[
+                    go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)
+                ]
+            )
+            fig.update_layout(
+                title_text="Structure Embodied Carbon",
+                annotations=[
+                    dict(text="Green Book", x=0.5, y=0.5, font_size=16, showarrow=False)
+                ],
+            )
             fig.update_traces(
                 hoverinfo="label+percent+value",
                 textinfo="percent",
-                marker=dict(colors=graph_colors),
+                marker=dict(
+                    colors=graph_colors,
+                ),
             )
 
             return (
-                gb_concrete,
-                gb_steel,
-                gb_timber,
-                "{}".format(ec_total),
-                "{}".format(ec_total / float(val)),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Concrete", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Reinforcement Bar", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                total,
+                gfa_calc,
                 dcc.Graph(figure=fig),
             )
 
 
-# # ---------------- EPIC CALLBACK ----------------
-# @callback(
-#     Output("epic_comp_concrete_val", "children"),
-#     Output("epic_comp_steel_val", "children"),
-#     Output("epic_comp_timber_val", "children"),
-#     Output("epic_comp_total", "children"),
-#     Output("epic_comp_gfa", "children"),
-#     Output("epic_pie", "children"),
-#     Input("epic_comp_concrete", "value"),
-#     Input("epic_comp_steel", "value"),
-#     Input("epic_comp_timber", "value"),
-#     Input("comp_card01_gfa", "value"),
-#     State("main_store", "data"),
-# )
-# def definition(conc_val, steel_val, timber_val, val, data):
-#     if data is None:
-#         raise PreventUpdate
-#     else:
-#         if val is None:
-#             raise PreventUpdate
-#         else:
-#             df = pd.read_json(data, orient="split")
-#             df_grouped = df.groupby(
-#                 by=["Building Materials (All)"], as_index=False
-#             ).sum()
+# ---------------- EPIC CALLBACK ----------------
+@callback(
+    Output("epic_comp_concrete_val", "children"),
+    Output("epic_comp_rebar_val", "children"),
+    Output("epic_comp_steel_val", "children"),
+    Output("epic_comp_timber_val", "children"),
+    Output("epic_comp_total", "children"),
+    Output("epic_comp_gfa", "children"),
+    Output("epic_pie", "children"),
+    Input("epic_comp_concrete", "value"),
+    Input("epic_comp_rebar", "value"),
+    Input("epic_comp_steel", "value"),
+    Input("epic_comp_timber", "value"),
+    Input("comp_card01_gfa", "value"),
+    State("main_store", "data"),
+)
+def definition(conc_val, rebar_val, steel_val, timber_val, gfa, data):
+    if data is None:
+        raise PreventUpdate
+    else:
+        if gfa is None:
+            raise PreventUpdate
+        else:
+            df = pd.read_json(data, orient="split")
+            mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
+                df,
+                float(conc_val),
+                float(rebar_val),
+                float(timber_val),
+                float(steel_val),
+                if_ice=False,
+            )
 
-#             structure_concrete, structure_steel, structure_timber = funcs.find2(
-#                 df_grouped, False
-#             )
+            df_calc = pd.DataFrame(
+                {
+                    "materials": mat,
+                    "volume": vol,
+                    "mass": mass,
+                    "floor": floor,
+                    "layer": layer,
+                    "ec": ec,
+                }
+            )
 
-#             # epic EC calculation
-#             conc_ec = epic_df.loc[
-#                 epic_df["Sub Category"] == conc_val, "Embodied Carbon"
-#             ].values[0]
-#             steel_ec = epic_df.loc[
-#                 epic_df["Sub Category"] == steel_val, "Embodied Carbon"
-#             ].values[0]
-#             timber_ec = epic_df.loc[
-#                 epic_df["Sub Category"] == timber_val, "Embodied Carbon"
-#             ].values[0]
+            df_grouped = df_calc.groupby(by=["materials"], as_index=False).sum()
 
-#             epic_concrete = html.P(
-#                 "{:,.2f}".format((concrete := conc_ec * sum(structure_concrete)))
-#             )
-#             epic_steel = html.P(
-#                 "{:,.2f}".format((steel := steel_ec * sum(structure_steel)))
-#             )
-#             epic_timber = html.P(
-#                 "{:,.2f}".format((timber := timber_ec * sum(structure_timber)))
-#             )
+            total = html.Div(
+                [
+                    html.H3("{:,.2f}".format(df_grouped["ec"].sum())),
+                ],
+                style={"display": "block"},
+            )
 
-#             labels = [conc_val, steel_val, timber_val]
-#             ec_total = concrete + steel + timber
-#             values = [concrete, steel, timber]
-#             # yummy yummy pie
-#             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)])
-#             fig.update_traces(
-#                 hoverinfo="label+percent+value",
-#                 textinfo="percent",
-#                 marker=dict(colors=graph_colors),
-#             )
+            gfa_calc = html.Div(
+                [
+                    html.H3(["{:,.2f}".format(np.around(sum(ec) / gfa, 2))]),
+                ],
+                style={"display": "block"},
+            )
 
-#             return (
-#                 epic_concrete,
-#                 epic_steel,
-#                 epic_timber,
-#                 "{:,.2f}".format(ec_total),
-#                 "{:,.2f}".format(ec_total / float(val)),
-#                 dcc.Graph(figure=fig),
-#             )
+            fig = go.Figure(
+                data=[
+                    go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)
+                ]
+            )
+            fig.update_layout(
+                title_text="Structure Embodied Carbon",
+                annotations=[
+                    dict(text="EPiC DB", x=0.5, y=0.5, font_size=16, showarrow=False)
+                ],
+            )
+            fig.update_traces(
+                hoverinfo="label+percent+value",
+                textinfo="percent",
+                marker=dict(
+                    colors=graph_colors,
+                ),
+            )
+
+            return (
+                html.P(
+                    "{:,.2f}".format(
+                        funcs.none_check(
+                            df_grouped.loc[
+                                df_grouped["materials"] == "Concrete", "ec"
+                            ].values[0]
+                        )
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Reinforcement Bar", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                total,
+                gfa_calc,
+                dcc.Graph(figure=fig),
+            )
 
 
-# # ---------------- ICE CALLBACK ----------------
-# @callback(
-#     Output("ice_comp_concrete_val", "children"),
-#     Output("ice_comp_steel_val", "children"),
-#     Output("ice_comp_timber_val", "children"),
-#     Output("ice_comp_total", "children"),
-#     Output("ice_comp_gfa", "children"),
-#     Output("ice_pie", "children"),
-#     Input("ice_comp_concrete", "value"),
-#     Input("ice_comp_steel", "value"),
-#     Input("ice_comp_timber", "value"),
-#     Input("comp_card01_gfa", "value"),
-#     State("main_store", "data"),
-# )
-# def definition(conc_val, steel_val, timber_val, val, data):
-#     if data is None:
-#         raise PreventUpdate
-#     else:
-#         if val is None:
-#             raise PreventUpdate
-#         else:
-#             df = pd.read_json(data, orient="split")
-#             df_grouped = df.groupby(
-#                 by=["Building Materials (All)"], as_index=False
-#             ).sum()
+# ---------------- ICE CALLBACK ----------------
+@callback(
+    Output("ice_comp_concrete_val", "children"),
+    Output("ice_comp_rebar_val", "children"),
+    Output("ice_comp_steel_val", "children"),
+    Output("ice_comp_timber_val", "children"),
+    Output("ice_comp_total", "children"),
+    Output("ice_comp_gfa", "children"),
+    Output("ice_pie", "children"),
+    Input("ice_comp_concrete", "value"),
+    Input("ice_comp_rebar", "value"),
+    Input("ice_comp_steel", "value"),
+    Input("ice_comp_timber", "value"),
+    Input("comp_card01_gfa", "value"),
+    State("main_store", "data"),
+)
+def definition(conc_val, rebar_val, steel_val, timber_val, gfa, data):
+    if data is None:
+        raise PreventUpdate
+    else:
+        if gfa is None:
+            raise PreventUpdate
+        else:
+            df = pd.read_json(data, orient="split")
+            mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
+                df,
+                float(conc_val),
+                float(rebar_val),
+                float(timber_val),
+                float(steel_val),
+                if_ice=True,
+            )
 
-#             structure_concrete, structure_steel, structure_timber = funcs.find2(
-#                 df_grouped, True
-#             )
+            df_calc = pd.DataFrame(
+                {
+                    "materials": mat,
+                    "volume": vol,
+                    "mass": mass,
+                    "floor": floor,
+                    "layer": layer,
+                    "ec": ec,
+                }
+            )
 
-#             # ice EC calculation
-#             conc_ec = ice_df.loc[
-#                 ice_df["Sub Category"] == conc_val, "Embodied Carbon"
-#             ].values[0]
-#             steel_ec = ice_df.loc[
-#                 ice_df["Sub Category"] == steel_val, "Embodied Carbon"
-#             ].values[0]
-#             timber_ec = ice_df.loc[
-#                 ice_df["Sub Category"] == timber_val, "Embodied Carbon"
-#             ].values[0]
+            df_grouped = df_calc.groupby(by=["materials"], as_index=False).sum()
 
-#             ice_concrete = html.P(
-#                 "{:,.2f}".format((concrete := conc_ec * sum(structure_concrete)))
-#             )
-#             ice_steel = html.P(
-#                 "{:,.2f}".format((steel := steel_ec * sum(structure_steel)))
-#             )
-#             ice_timber = html.P(
-#                 "{:,.2f}".format((timber := timber_ec * sum(structure_timber)))
-#             )
+            total = html.Div(
+                [
+                    html.H3("{:,.2f}".format(df_grouped["ec"].sum())),
+                ],
+                style={"display": "block"},
+            )
 
-#             labels = [conc_val, steel_val, timber_val]
-#             ec_total = concrete + steel + timber
-#             values = [concrete, steel, timber]
-#             # yummy yummy pie
-#             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.5)])
-#             fig.update_traces(
-#                 hoverinfo="label+percent+value",
-#                 textinfo="percent",
-#                 marker=dict(colors=graph_colors),
-#             )
+            gfa_calc = html.Div(
+                [
+                    html.H3(["{:,.2f}".format(np.around(sum(ec) / gfa, 2))]),
+                ],
+                style={"display": "block"},
+            )
 
-#             return (
-#                 ice_concrete,
-#                 ice_steel,
-#                 ice_timber,
-#                 "{:,.2f}".format(ec_total),
-#                 "{:,.2f}".format(ec_total / float(val)),
-#                 dcc.Graph(figure=fig),
-#             )
+            fig = go.Figure(
+                data=[
+                    go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)
+                ]
+            )
+            fig.update_layout(
+                title_text="Structure Embodied Carbon",
+                annotations=[
+                    dict(text="ICE DB", x=0.5, y=0.5, font_size=16, showarrow=False)
+                ],
+            )
+            fig.update_traces(
+                hoverinfo="label+percent+value",
+                textinfo="percent",
+                marker=dict(
+                    colors=graph_colors,
+                ),
+            )
+
+            return (
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Concrete", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Reinforcement Bar", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                html.P(
+                    "{:,.2f}".format(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
+                        ].values[0]
+                    ),
+                    className="text-center",
+                ),
+                total,
+                gfa_calc,
+                dcc.Graph(figure=fig),
+            )
