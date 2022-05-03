@@ -427,25 +427,6 @@ def definition(conc_val, rebar_val, steel_val, timber_val, gfa, data, is_ice=Fal
                 ],
                 style={"display": "block"},
             )
-
-            # fig = go.Figure(
-            #     data=[
-            #         go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)
-            #     ]
-            # )
-            # fig.update_layout(
-            #     title_text="Structure Embodied Carbon",
-            #     annotations=[
-            #         dict(text="ICE DB", x=0.5, y=0.5, font_size=16, showarrow=False)
-            #     ],
-            # )
-            # fig.update_traces(
-            #     hoverinfo="label+percent+value",
-            #     textinfo="percent",
-            #     marker=dict(
-            #         colors=graph_colors,
-            #     ),
-            # )
             fig = px.pie(
                 df_calc,
                 values=df_calc["ec"],

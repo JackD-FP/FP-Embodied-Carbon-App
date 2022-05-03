@@ -569,37 +569,5 @@ def card3_layout(gfa, conc_val, rebar_val, steel_val, timber_val, data, is_ice=F
                 ),
                 className="text-center",
             ),
-            # html.P(
-            #     "{:,.2f}".format(
-            #         df_grouped.loc[df_grouped["materials"] == "Concrete", "ec"].values[
-            #             0
-            #         ]
-            #     ),
-            #     className="text-center",
-            # ),
-            # html.P(
-            #     "{:,.2f}".format(
-            #         df_grouped.loc[
-            #             df_grouped["materials"] == "Reinforcement Bar", "ec"
-            #         ].values[0]
-            #     ),
-            #     className="text-center",
-            # ),
-            # html.P(
-            #     "{:,.2f}".format(
-            #         df_grouped.loc[
-            #             df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
-            #         ].values[0]
-            #     ),
-            #     className="text-center",
-            # ),
-            # html.P(
-            #     "{:,.2f}".format(
-            #         df_grouped.loc[
-            #             df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
-            #         ].values[0]
-            #     ),
-            #     className="text-center",
-            # ),
             dcc.Graph(figure=fig),
         )
