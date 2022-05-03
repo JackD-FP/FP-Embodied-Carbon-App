@@ -6,7 +6,7 @@ from dash import Input, Output, State, callback, html
 
 # from dash.exceptions import PreventUpdate
 # from plotly.subplots import make_subplots
-from src import comparison_cards_01, comparison_cards_02  # comparison_cards_03
+from src import comparison_cards_01, comparison_cards_02, comparison_cards_03
 
 layout = html.Div(
     [
@@ -43,17 +43,17 @@ layout = html.Div(
                             width=4,
                         ),
                         # ---------- card 03 -----------
-                        # dbc.Col(
-                        #     [
-                        #         dbc.Card(
-                        #             [  # card 03
-                        #                 comparison_cards_03.card03,
-                        #             ],
-                        #             class_name="shadow p-4",
-                        #         )
-                        #     ],
-                        #     width=4,
-                        # ),
+                        dbc.Col(
+                            [
+                                dbc.Card(
+                                    [  # card 03
+                                        comparison_cards_03.card03,
+                                    ],
+                                    class_name="shadow p-4",
+                                )
+                            ],
+                            width=4,
+                        ),
                     ]
                 )
             ],

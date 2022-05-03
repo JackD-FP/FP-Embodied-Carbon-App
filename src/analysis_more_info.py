@@ -107,7 +107,13 @@ def bar_update(
         labels = df_new["Floor Level"].unique()
         df = df_new.groupby(["Floor Level", "Materials"], as_index=False).sum()
 
-        label_colors = funcs.label_colours_update(labels, "dict")
+        # label_colors = funcs.label_colours_update(labels, "dict")
+        label_colors = {
+            "Concrete": "#5463ff",
+            "Reinforcement Bar": "#ffc300",
+            "STEEL - STRUCTURAL": "#79b159",
+            "TIMBER - STRUCTURAL": "#74d7f7",
+        }
 
         gb_fig = px.bar(
             df,

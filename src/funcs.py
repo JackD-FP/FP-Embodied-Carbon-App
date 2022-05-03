@@ -129,15 +129,15 @@ def label_colours_update(l, type_):
         for i, iter in enumerate(l):
             if re.search("concrete", iter, re.IGNORECASE):
                 # color_dict.append(graph_colors[0])
-                color_dict.update({iter: graph_colors[0]})
+                color_dict.update({iter: "#5463FF"})
             elif re.search("steel", iter, re.IGNORECASE):
                 # color_dict.append(graph_colors[1])
-                color_dict.update({iter: graph_colors[1]})
+                color_dict.update({iter: "#FFC300"})
             elif re.search("timber", iter, re.IGNORECASE):
                 # color_dict.append(graph_colors[2])
-                color_dict.update({iter: graph_colors[2]})
+                color_dict.update({iter: "#FF1818"})
             elif re.search("reinforcement Bar", iter, re.IGNORECASE):
-                color_list.update({iter: graph_colors[4]})
+                color_list.update({iter: "#70C1B3"})
 
         return color_dict
 
@@ -770,7 +770,8 @@ def none_check(is_none):
     Returns:
         flaot : The value of is_none if not None, 0.0 if None
     """
-    if is_none is None:
+
+    if len(is_none) == 0:
         return 0
     else:
-        return is_none
+        return is_none.values[0]

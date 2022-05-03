@@ -8,7 +8,7 @@ import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.graph_objects as go
-from config import config
+from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
@@ -277,12 +277,25 @@ def make_graphs(data):
                 ),
             ],
         )
-        # fig.update_traces(hoverinfo='label+percent+value', textinfo='percent', marker=dict(colors=graph_colors))
         fig.update_traces(
             hoverinfo="label+percent+value",
             textinfo="percent",
-            marker=dict(colors=label_colors),
+            marker=dict(
+                colors=[
+                    "#5463FF",
+                    "#FFC300",
+                    "#FF1818",
+                    "#70C1B3",
+                    "#79b159",
+                    "#42D9C8",
+                ]
+            ),
         )
+        # fig.update_traces(
+        #     hoverinfo="label+percent+value",
+        #     textinfo="percent",
+        #     marker=dict(colors=label_colors),
+        # )
 
         # drop embodied carbon if it exist
         if "Embodied Carbon" in df.columns:
@@ -322,15 +335,6 @@ def make_graphs(data):
                         ]
                     ),
                     style_header={"fontWeight": "bold"},
-                ),
-                dbc.Card(
-                    [
-                        html.H3("Test Tble"),
-                        dbc.Table.from_dataframe(
-                            df_new.head(15), striped=True, bordered=True, hover=True
-                        ),
-                    ],
-                    class_name="my-5 p-4 shadow",
                 ),
                 dbc.Card(
                     [

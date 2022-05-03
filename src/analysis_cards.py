@@ -16,6 +16,7 @@ import plotly.graph_objects as go
 from config import config, graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
+import plotly.express as px
 
 from src import analysis_more_info, epic_options, funcs, greenbook_options, ice_options
 
@@ -136,99 +137,9 @@ greenbook_card = dbc.Card(
     State("gfa_store", "data"),
 )
 def gb_row_update(concrete, rebar, steel, timber, data, gfa):
-    if gfa is not None or gfa != 0:
-        df = pd.read_json(data, orient="split")
-
-        mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
-            df, float(concrete), float(rebar), float(timber), float(steel), if_ice=False
-        )
-        df_calc = pd.DataFrame(
-            {
-                "materials": mat,
-                "volume": vol,
-                "mass": mass,
-                "floor": floor,
-                "layer": layer,
-                "ec": ec,
-            }
-        )
-        df_grouped = df_calc.groupby(by=["materials"], as_index=False).sum()
-
-        total = html.Div(
-            [
-                html.H3("{:,.2f}".format(df_grouped["ec"].sum())),
-                html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"]),
-            ],
-            style={"display": "block"},
-        )
-
-        gfa_calc = html.Div(
-            [
-                html.H3(["{:,.2f}".format(np.around(sum(ec) / gfa, 2))]),
-                html.P([html.Span("kgCO2e/m² ", className="fs-4"), "EC per m²"]),
-            ],
-            style={"display": "block"},
-        )
-
-        labels = df_grouped["materials"].tolist()
-
-        # label_colors = funcs.label_colours_update(labels, "list")
-        fig = go.Figure(
-            data=[go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)]
-        )
-        fig.update_layout(
-            title_text="Structure Embodied Carbon",
-            annotations=[
-                dict(text="Green Book", x=0.5, y=0.5, font_size=16, showarrow=False)
-            ],
-        )
-        fig.update_traces(
-            hoverinfo="label+percent+value",
-            textinfo="percent",
-            marker=dict(
-                colors=graph_colors,
-            ),
-        )
-
-        return (
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[df_grouped["materials"] == "Concrete", "ec"].values[
-                        0
-                    ]
-                ),
-                className="text-center",
-            ),
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "Reinforcement Bar", "ec"
-                    ].values[0]
-                ),
-                className="text-center",
-            ),
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
-                    ].values[0]
-                ),
-                className="text-center",
-            ),
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
-                    ].values[0]
-                ),
-                className="text-center",
-            ),
-            total,
-            gfa_calc,
-            fig,
-        )
-    else:
-        raise PreventUpdate
+    return analysis_cards_layout(
+        concrete, rebar, steel, timber, data, gfa, is_ice=False
+    )
 
 
 # ------------------------------EPiC Card--------------------------------------
@@ -358,97 +269,9 @@ epic_card = dbc.Card(
     State("gfa_store", "data"),
 )
 def epic_row_update(concrete, rebar, steel, timber, data, gfa):
-    if gfa is not None or gfa != 0:
-        df = pd.read_json(data, orient="split")
-
-        mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
-            df, float(concrete), float(rebar), float(timber), float(steel), if_ice=False
-        )
-        df_calc = pd.DataFrame(
-            {
-                "materials": mat,
-                "volume": vol,
-                "mass": mass,
-                "floor": floor,
-                "layer": layer,
-                "ec": ec,
-            }
-        )
-
-        df_grouped = df_calc.groupby(by=["materials"], as_index=False).sum()
-
-        total = html.Div(
-            [
-                html.H3("{:,.2f}".format(df_grouped["ec"].sum())),
-                html.P([html.Span("kgCO2e ", className="fs-4"), "Total EC"]),
-            ],
-            style={"display": "block"},
-        )
-
-        gfa_calc = html.Div(
-            [
-                html.H3(["{:,.2f}".format(np.around(sum(ec) / gfa, 2))]),
-                html.P([html.Span("kgCO2e/m² ", className="fs-4"), "EC per m²"]),
-            ],
-            style={"display": "block"},
-        )
-
-        fig = go.Figure(
-            data=[go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)]
-        )
-        fig.update_layout(
-            title_text="Structure Embodied Carbon",
-            annotations=[
-                dict(text="Green Book", x=0.5, y=0.5, font_size=16, showarrow=False)
-            ],
-        )
-        fig.update_traces(
-            hoverinfo="label+percent+value",
-            textinfo="percent",
-            marker=dict(
-                colors=graph_colors,
-            ),
-        )
-
-        return (
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[df_grouped["materials"] == "Concrete", "ec"].values[
-                        0
-                    ]
-                ),
-                className="text-center",
-            ),
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "Reinforcement Bar", "ec"
-                    ].values[0]
-                ),
-                className="text-center",
-            ),
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
-                    ].values[0]
-                ),
-                className="text-center",
-            ),
-            html.P(
-                "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
-                    ].values[0]
-                ),
-                className="text-center",
-            ),
-            total,
-            gfa_calc,
-            fig,
-        )
-    else:
-        raise PreventUpdate
+    return analysis_cards_layout(
+        concrete, rebar, steel, timber, data, gfa, is_ice=False
+    )
 
 
 # ------------------------------ice database Card--------------------------------------
@@ -581,11 +404,20 @@ ice_card = dbc.Card(
     State("gfa_store", "data"),
 )
 def ice_row_update(concrete, rebar, steel, timber, data, gfa):
+    return analysis_cards_layout(concrete, rebar, steel, timber, data, gfa, is_ice=True)
+
+
+def analysis_cards_layout(concrete, rebar, steel, timber, data, gfa, is_ice=False):
     if gfa is not None or gfa != 0:
         df = pd.read_json(data, orient="split")
 
         mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
-            df, float(concrete), float(rebar), float(timber), float(steel), if_ice=True
+            df,
+            float(concrete),
+            float(rebar),
+            float(timber),
+            float(steel),
+            if_ice=is_ice,
         )
         df_calc = pd.DataFrame(
             {
@@ -615,56 +447,58 @@ def ice_row_update(concrete, rebar, steel, timber, data, gfa):
             style={"display": "block"},
         )
 
-        labels = df_grouped["materials"].tolist()
-
-        # label_colors = funcs.label_colours_update(labels, "list")
-        fig = go.Figure(
-            data=[go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)]
-        )
-        fig.update_layout(
-            title_text="Structure Embodied Carbon",
-            annotations=[
-                dict(text="Green Book", x=0.5, y=0.5, font_size=16, showarrow=False)
-            ],
-        )
-        fig.update_traces(
-            hoverinfo="label+percent+value",
-            textinfo="percent",
-            marker=dict(
-                colors=graph_colors,
-            ),
+        fig = px.pie(
+            df_calc,
+            values=df_calc["ec"],
+            names=df_calc["materials"],
+            color=df_calc["materials"],
+            hole=0.5,
+            color_discrete_map={
+                "Concrete": "#5463ff",
+                "Reinforcement Bar": "#ffc300",
+                "STEEL - STRUCTURAL": "#79b159",
+                "TIMBER - STRUCTURAL": "#74d7f7",
+            },
         )
 
         return (
             html.P(
                 "{:,.2f}".format(
-                    df_grouped.loc[df_grouped["materials"] == "Concrete", "ec"].values[
-                        0
-                    ]
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Concrete", "ec"
+                        ]  # .values[0]
+                    )
                 ),
                 className="text-center",
             ),
             html.P(
                 "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "Reinforcement Bar", "ec"
-                    ].values[0]
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Reinforcement Bar", "ec"
+                        ]  # .values[0]
+                    )
                 ),
                 className="text-center",
             ),
             html.P(
                 "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
-                    ].values[0]
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
+                        ]  # .values[0]
+                    )
                 ),
                 className="text-center",
             ),
             html.P(
                 "{:,.2f}".format(
-                    df_grouped.loc[
-                        df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
-                    ].values[0]
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
+                        ]  # .values[0]
+                    )
                 ),
                 className="text-center",
             ),

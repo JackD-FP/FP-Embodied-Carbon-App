@@ -8,6 +8,7 @@ import dash_mantine_components as dmc
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 from config import graph_colors
 from dash import Input, Output, State, callback, dcc, html
 
@@ -19,7 +20,6 @@ from src import (
     material_table,
     uploader,
 )
-from src.comparison_cards_01 import epic_df, gb_df, ice_df
 
 card03 = html.Div(
     [
@@ -85,10 +85,17 @@ def card3_content_update(
         )
     else:
         df = pd.read_json(data, orient="split")
-        _df = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
+        mat, vol, mass, floor, layer, gb_ec, epic_ec, ice_ec = funcs.mat_interpreter(df)
+        df_calc = pd.DataFrame(
+            {
+                "materials": mat,
+                "volume": vol,
+                "mass": mass,
+            }
+        )
+        _df = df_calc.groupby(by=["materials"], as_index=False).sum()
         tmp = _df.select_dtypes(include=["float64"])
         _df.loc[:, tmp.columns] = np.around(tmp, 2)
-        _df = _df.filter(items=["Building Materials (All)", "Mass", "Net Volume"])
 
         return html.Div(
             [
@@ -110,32 +117,40 @@ def card3_content_update(
                     required=True,
                 ),
                 dmc.Divider(class_name="my-3"),
-                # ----------- Green book comparison for CARD 2 ----------
+                # ----------- Green book comparison for CARD 3 ----------
                 html.H3("Green Book DB", className="mb-3"),
                 dmc.Accordion(
                     [
                         dmc.AccordionItem(
                             material_table.table_gen(
                                 dbc.Select(
-                                    options=greenbook_options.concrete_options,
+                                    options=greenbook_options.concrete,
                                     id="gb_card3_concrete",
-                                    value="Concrete 50 MPa ",
+                                    value=643,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
                                 html.Div(id="gb_card3_concrete_val"),
                                 dbc.Select(
-                                    options=greenbook_options.steel_options,
+                                    options=greenbook_options.rebar,
+                                    id="gb_card3_rebar",
+                                    value=2.900,
+                                    persistence=True,
+                                    persistence_type="session",
+                                ),
+                                html.Div(id="gb_card3_rebar_val"),
+                                dbc.Select(
+                                    options=greenbook_options.steel,
                                     id="gb_card3_steel",
-                                    value="Steel Universal Section",
+                                    value=2.61,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
                                 html.Div(id="gb_card3_steel_val"),
                                 dbc.Select(
-                                    options=greenbook_options.timber_options,
+                                    options=greenbook_options.timber,
                                     id="gb_card3_timber",
-                                    value="Glue-Laminated Timber (Glu-lam)",
+                                    value=718,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
@@ -188,33 +203,41 @@ def card3_content_update(
                     className="my-5",
                 ),
                 html.Div(id="card3_gb_pie"),
-                dmc.Divider(class_name="my-4"),
-                # ----------- EPiC comparison for CARD 2 ----------
+                dmc.Divider(class_name="my-3"),
+                #  # ----------- EPiC comparison for CARD 3 ----------
                 html.H3("EPiC DB", className="mb-3"),
                 dmc.Accordion(
                     [
                         dmc.AccordionItem(
                             material_table.table_gen(
                                 dbc.Select(
-                                    options=epic_options.concrete_option,
+                                    options=epic_options.concrete,
                                     id="epic_card3_concrete",
-                                    value="Concrete 50 MPa",
+                                    value=600,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
                                 html.Div(id="epic_card3_concrete_val"),
                                 dbc.Select(
-                                    options=epic_options.steel_options,
+                                    options=epic_options.rebar,
+                                    id="epic_card3_rebar",
+                                    value=2.9,
+                                    persistence=True,
+                                    persistence_type="session",
+                                ),
+                                html.Div(id="epic_card3_rebar_val"),
+                                dbc.Select(
+                                    options=epic_options.steel,
                                     id="epic_card3_steel",
-                                    value="Steel structural steel section",
+                                    value=2.9,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
                                 html.Div(id="epic_card3_steel_val"),
                                 dbc.Select(
-                                    options=epic_options.timber_option,
+                                    options=epic_options.timber,
                                     id="epic_card3_timber",
-                                    value="Glued laminated timber (glulam)",
+                                    value=1718,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
@@ -270,32 +293,40 @@ def card3_content_update(
                 ),
                 html.Div(id="card3_epic_pie"),
                 dmc.Divider(class_name="my-3"),
-                # ----------- ICE comparison for CARD 2 ----------
+                # # ----------- ICE comparison for CARD 3 ----------
                 html.H3("ICE DB", className="mb-3"),
                 dmc.Accordion(
                     [
                         dmc.AccordionItem(
                             material_table.table_gen(
                                 dbc.Select(
-                                    options=ice_options.concrete_options,
+                                    options=ice_options.concrete,
                                     id="ice_card3_concrete",
-                                    value="Concrete 40 MPa",
+                                    value=413.4943,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
                                 html.Div(id="ice_card3_concrete_val"),
                                 dbc.Select(
-                                    options=ice_options.steel_options,
+                                    options=ice_options.rebar,
+                                    id="ice_card3_rebar",
+                                    value=1.99,
+                                    persistence=True,
+                                    persistence_type="session",
+                                ),
+                                html.Div(id="ice_card3_rebar_val"),
+                                dbc.Select(
+                                    options=ice_options.steel,
                                     id="ice_card3_steel",
-                                    value="Steel Section",
+                                    value=1.55,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
                                 html.Div(id="ice_card3_steel_val"),
                                 dbc.Select(
-                                    options=ice_options.timber_options,
+                                    options=ice_options.timber,
                                     id="ice_card3_timber",
-                                    value="Timber Glulam",
+                                    value=0.51,
                                     persistence=True,
                                     persistence_type="session",
                                 ),
@@ -357,69 +388,19 @@ def card3_content_update(
     Output("gb_card3_total", "children"),
     Output("gb_card3_gfa", "children"),
     Output("gb_card3_concrete_val", "children"),
+    Output("gb_card3_rebar_val", "children"),
     Output("gb_card3_steel_val", "children"),
     Output("gb_card3_timber_val", "children"),
     Output("card3_gb_pie", "children"),
     Input("comp_card3_gfa", "value"),
     Input("gb_card3_concrete", "value"),
+    Input("gb_card3_rebar", "value"),
     Input("gb_card3_steel", "value"),
     Input("gb_card3_timber", "value"),
     State("card03_store", "data"),
 )
-def card3_total_gfa_update(val, conc_val, steel_val, timber_val, data):
-    if val is None:
-        unknown_total_gfa = html.H3(["Unknown", html.P("Input GFA above")])
-        unknown = html.P("Unknown")
-        return unknown_total_gfa, unknown_total_gfa, unknown, unknown, unknown
-    else:
-        df = pd.read_json(data, orient="split")
-        df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
-
-        structure_concrete, structure_steel, structure_timber = funcs.find2(
-            df_grouped, False
-        )
-
-        # green book EC calculation
-        conc_ec = gb_df.loc[
-            gb_df["Sub Category"] == conc_val, "Embodied Carbon"
-        ].values[0]
-        steel_ec = gb_df.loc[
-            gb_df["Sub Category"] == steel_val, "Embodied Carbon"
-        ].values[0]
-        timber_ec = gb_df.loc[
-            gb_df["Sub Category"] == timber_val, "Embodied Carbon"
-        ].values[0]
-
-        gb_concrete = html.P(
-            "{:,.2f}".format((concrete := conc_ec * sum(structure_concrete)))
-        )
-        gb_steel = html.P("{:,.2f}".format((steel := steel_ec * sum(structure_steel))))
-        gb_timber = html.P(
-            "{:,.2f}".format((timber := timber_ec * sum(structure_timber)))
-        )
-
-        labels = [conc_val, steel_val, timber_val]
-        total = concrete + steel + timber
-        total_per_m2 = total / float(val)
-        values_pie = [concrete, steel, timber]
-
-        # Generate Pie graph
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values_pie, hole=0.5)])
-        fig.update_traces(
-            hoverinfo="label+percent+value",
-            textinfo="percent",
-            marker=dict(colors=graph_colors),
-        )
-        pie_child = dcc.Graph(figure=fig)
-
-        return (
-            html.H3("{:,}".format(np.around(total, 2))),
-            html.H3("{:,}".format(np.around(total_per_m2, 2))),
-            gb_concrete,
-            gb_steel,
-            gb_timber,
-            pie_child,
-        )
+def card3_total_gfa_update(gfa, conc_val, rebar_val, steel_val, timber_val, data):
+    return card3_layout(gfa, conc_val, rebar_val, steel_val, timber_val, data)
 
 
 # Epic callback
@@ -427,71 +408,19 @@ def card3_total_gfa_update(val, conc_val, steel_val, timber_val, data):
     Output("epic_card3_total", "children"),
     Output("epic_card3_gfa", "children"),
     Output("epic_card3_concrete_val", "children"),
+    Output("epic_card3_rebar_val", "children"),
     Output("epic_card3_steel_val", "children"),
     Output("epic_card3_timber_val", "children"),
     Output("card3_epic_pie", "children"),
     Input("comp_card3_gfa", "value"),
     Input("epic_card3_concrete", "value"),
+    Input("epic_card3_rebar", "value"),
     Input("epic_card3_steel", "value"),
     Input("epic_card3_timber", "value"),
     State("card03_store", "data"),
 )
-def card3_total_gfa_update(val, conc_val, steel_val, timber_val, data):
-    if val is None:
-        unknown_total_gfa = html.H3(["Unknown", html.P("Input GFA above")])
-        unknown = html.P("Unknown")
-        return unknown_total_gfa, unknown_total_gfa, unknown, unknown, unknown
-    else:
-        df = pd.read_json(data, orient="split")
-        df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
-
-        structure_concrete, structure_steel, structure_timber = funcs.find2(
-            df_grouped, False
-        )
-
-        # ice EC calculation
-        conc_ec = epic_df.loc[
-            epic_df["Sub Category"] == conc_val, "Embodied Carbon"
-        ].values[0]
-        steel_ec = epic_df.loc[
-            epic_df["Sub Category"] == steel_val, "Embodied Carbon"
-        ].values[0]
-        timber_ec = epic_df.loc[
-            epic_df["Sub Category"] == timber_val, "Embodied Carbon"
-        ].values[0]
-
-        epic_concrete = html.P(
-            "{:,.2f}".format((concrete := conc_ec * sum(structure_concrete)))
-        )
-        epic_steel = html.P(
-            "{:,.2f}".format((steel := steel_ec * sum(structure_steel)))
-        )
-        epic_timber = html.P(
-            "{:,.2f}".format((timber := timber_ec * sum(structure_timber)))
-        )
-
-        labels = [conc_val, steel_val, timber_val]
-        total = concrete + steel + timber
-        total_per_m2 = total / float(val)
-        values_pie = [concrete, steel, timber]
-
-        # Generate Pie graph
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values_pie, hole=0.5)])
-        fig.update_traces(
-            hoverinfo="label+percent+value",
-            textinfo="percent",
-            marker=dict(colors=graph_colors),
-        )
-        pie_child = dcc.Graph(figure=fig)
-
-        return (
-            html.H3("{:,}".format(total)),
-            html.H3("{:,}".format(np.around(total_per_m2, 2))),
-            epic_concrete,
-            epic_steel,
-            epic_timber,
-            pie_child,
-        )
+def card3_total_gfa_update(gfa, conc_val, rebar_val, steel_val, timber_val, data):
+    return card3_layout(gfa, conc_val, rebar_val, steel_val, timber_val, data)
 
 
 # ice callback
@@ -499,66 +428,178 @@ def card3_total_gfa_update(val, conc_val, steel_val, timber_val, data):
     Output("ice_card3_total", "children"),
     Output("ice_card3_gfa", "children"),
     Output("ice_card3_concrete_val", "children"),
+    Output("ice_card3_rebar_val", "children"),
     Output("ice_card3_steel_val", "children"),
     Output("ice_card3_timber_val", "children"),
     Output("card3_ice_pie", "children"),
     Input("comp_card3_gfa", "value"),
     Input("ice_card3_concrete", "value"),
+    Input("ice_card3_rebar", "value"),
     Input("ice_card3_steel", "value"),
     Input("ice_card3_timber", "value"),
     State("card03_store", "data"),
 )
-def card3_total_gfa_update(val, conc_val, steel_val, timber_val, data):
-    if val is None:
+def card3_total_gfa_update(gfa, conc_val, rebar_val, steel_val, timber_val, data):
+    return card3_layout(
+        gfa, conc_val, rebar_val, steel_val, timber_val, data, is_ice=True
+    )
+
+
+def card3_layout(gfa, conc_val, rebar_val, steel_val, timber_val, data, is_ice=False):
+    if gfa is None:
         unknown_total_gfa = html.H3(["Unknown", html.P("Input GFA above")])
         unknown = html.P("Unknown")
-        return unknown_total_gfa, unknown_total_gfa, unknown, unknown, unknown
+        return (
+            unknown_total_gfa,
+            unknown_total_gfa,
+            unknown,
+            unknown,
+            unknown,
+            unknown,
+            unknown,
+        )
     else:
         df = pd.read_json(data, orient="split")
-        df_grouped = df.groupby(by=["Building Materials (All)"], as_index=False).sum()
-
-        structure_concrete, structure_steel, structure_timber = funcs.find2(
-            df_grouped, True
+        mat, vol, mass, floor, layer, ec = funcs.ec_calculator(
+            df,
+            float(conc_val),
+            float(rebar_val),
+            float(timber_val),
+            float(steel_val),
+            if_ice=is_ice,
         )
 
-        # ice EC calculation
-        conc_ec = ice_df.loc[
-            ice_df["Sub Category"] == conc_val, "Embodied Carbon"
-        ].values[0]
-        steel_ec = ice_df.loc[
-            ice_df["Sub Category"] == steel_val, "Embodied Carbon"
-        ].values[0]
-        timber_ec = ice_df.loc[
-            ice_df["Sub Category"] == timber_val, "Embodied Carbon"
-        ].values[0]
-
-        ice_concrete = html.P(
-            "{:,.2f}".format((concrete := conc_ec * sum(structure_concrete)))
-        )
-        ice_steel = html.P("{:,.2f}".format((steel := steel_ec * sum(structure_steel))))
-        ice_timber = html.P(
-            "{:,.2f}".format((timber := timber_ec * sum(structure_timber)))
+        df_calc = pd.DataFrame(
+            {
+                "materials": mat,
+                "volume": vol,
+                "mass": mass,
+                "floor": floor,
+                "layer": layer,
+                "ec": ec,
+            }
         )
 
-        labels = [conc_val, steel_val, timber_val]
-        total = concrete + steel + timber
-        total_per_m2 = total / float(val)
-        values_pie = [concrete, steel, timber]
+        df_grouped = df_calc.groupby(by=["materials"], as_index=False).sum()
 
-        # Generate Pie graph
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values_pie, hole=0.5)])
-        fig.update_traces(
-            hoverinfo="label+percent+value",
-            textinfo="percent",
-            marker=dict(colors=graph_colors),
+        total = html.Div(
+            [
+                html.H3("{:,.2f}".format(df_grouped["ec"].sum())),
+            ],
+            style={"display": "block"},
         )
-        pie_child = dcc.Graph(figure=fig)
+
+        gfa_calc = html.Div(
+            [
+                html.H3(["{:,.2f}".format(np.around(sum(ec) / gfa, 2))]),
+            ],
+            style={"display": "block"},
+        )
+
+        # fig = go.Figure(
+        #     data=[go.Pie(labels=df_calc["materials"], values=df_calc["ec"], hole=0.5)]
+        # )
+        # fig.update_layout(
+        #     title_text="Structure Embodied Carbon",
+        #     annotations=[
+        #         dict(text="Green Book", x=0.5, y=0.5, font_size=16, showarrow=False)
+        #     ],
+        # )
+        # fig.update_traces(
+        #     hoverinfo="label+percent+value",
+        #     textinfo="percent",
+        #     marker=dict(
+        #         colors=graph_colors,
+        #     ),
+        # )
+        fig = px.pie(
+            df_calc,
+            values=df_calc["ec"],
+            names=df_calc["materials"],
+            color=df_calc["materials"],
+            hole=0.5,
+            color_discrete_map={
+                "Concrete": "#5463ff",
+                "Reinforcement Bar": "#ffc300",
+                "STEEL - STRUCTURAL": "#79b159",
+                "TIMBER - STRUCTURAL": "#74d7f7",
+            },
+        )
 
         return (
-            html.H3("{:,}".format(np.around(total, 2))),
-            html.H3("{:,}".format(np.around(total_per_m2, 2))),
-            ice_concrete,
-            ice_steel,
-            ice_timber,
-            pie_child,
+            total,
+            gfa_calc,
+            html.P(
+                "{:,.2f}".format(
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Concrete", "ec"
+                        ]  # .values[0]
+                    )
+                ),
+                className="text-center",
+            ),
+            html.P(
+                "{:,.2f}".format(
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "Reinforcement Bar", "ec"
+                        ]  # .values[0]
+                    )
+                ),
+                className="text-center",
+            ),
+            html.P(
+                "{:,.2f}".format(
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
+                        ]  # .values[0]
+                    )
+                ),
+                className="text-center",
+            ),
+            html.P(
+                "{:,.2f}".format(
+                    funcs.none_check(
+                        df_grouped.loc[
+                            df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
+                        ]  # .values[0]
+                    )
+                ),
+                className="text-center",
+            ),
+            # html.P(
+            #     "{:,.2f}".format(
+            #         df_grouped.loc[df_grouped["materials"] == "Concrete", "ec"].values[
+            #             0
+            #         ]
+            #     ),
+            #     className="text-center",
+            # ),
+            # html.P(
+            #     "{:,.2f}".format(
+            #         df_grouped.loc[
+            #             df_grouped["materials"] == "Reinforcement Bar", "ec"
+            #         ].values[0]
+            #     ),
+            #     className="text-center",
+            # ),
+            # html.P(
+            #     "{:,.2f}".format(
+            #         df_grouped.loc[
+            #             df_grouped["materials"] == "STEEL - STRUCTURAL", "ec"
+            #         ].values[0]
+            #     ),
+            #     className="text-center",
+            # ),
+            # html.P(
+            #     "{:,.2f}".format(
+            #         df_grouped.loc[
+            #             df_grouped["materials"] == "TIMBER - STRUCTURAL", "ec"
+            #         ].values[0]
+            #     ),
+            #     className="text-center",
+            # ),
+            dcc.Graph(figure=fig),
         )
