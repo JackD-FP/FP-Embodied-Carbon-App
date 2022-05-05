@@ -197,6 +197,10 @@ layout = html.Div(
                 "margin": "auto",
             },
         ),
+        html.Iframe(
+            src="https://speckle.xyz/embed?stream=f0e060c011&commit=9860ee1446",
+            style={"width": "100%", "height": "500px"},
+        ),
     ]
 )
 
