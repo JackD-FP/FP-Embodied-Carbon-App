@@ -26,6 +26,44 @@ layout = html.Div(
             At Fitzpatrick and Partners, we believe this is the way to help\
             our industry move forward and achieve a better and sustainable tomorrow."
                 ),
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.H5(
+                                    "Download Example Schedule File:",
+                                    className="display-5 mt-5 fs-4",
+                                    style={"textAlign": "center"},
+                                ),
+                                dbc.Button(
+                                    "Example Schedule.xlsx",
+                                    id="example2_btn",
+                                    outline=True,
+                                    color="primary",
+                                    className="my-3 d-block mx-auto",
+                                    style={"display": "block", "margin": "Auto"},
+                                ),
+                            ]
+                        ),
+                        dbc.Col(
+                            [
+                                html.H5(
+                                    "Download Example Archicad Template File:",
+                                    className="display-5 mt-5 fs-4",
+                                    style={"textAlign": "center"},
+                                ),
+                                dbc.Button(
+                                    "Example Archicad Template.yml",
+                                    id="download2_btn",
+                                    outline=True,
+                                    color="primary",
+                                    className="my-3 d-block mx-auto",
+                                    style={"display": "block", "margin": "Auto"},
+                                ),
+                            ]
+                        ),
+                    ],
+                ),
                 html.H3("Setting up ArchiCAD Schedule", className="display-4, mt-5"),
                 html.Hr(className="mb-5"),
                 html.P(
@@ -197,10 +235,6 @@ layout = html.Div(
                 "margin": "auto",
             },
         ),
-        html.Iframe(
-            src="https://speckle.xyz/embed?stream=f0e060c011&commit=9860ee1446",
-            style={"width": "100%", "height": "500px"},
-        ),
     ]
 )
 
@@ -208,9 +242,10 @@ layout = html.Div(
 @callback(
     Output("download", "data"),
     Input("download_btn", "n_clicks"),
+    Input("download2_btn", "n_clicks"),
     prevent_initial_call=True,
 )
-def func(n_clicks):
+def func(n, n2):
     return dcc.send_file(
         "./assets/Structure Schedule Template.xml",
     )
@@ -219,9 +254,10 @@ def func(n_clicks):
 @callback(
     Output("exmaple", "data"),
     Input("example_btn", "n_clicks"),
+    Input("example2_btn", "n_clicks"),
     prevent_initial_call=True,
 )
-def func(n_clicks):
+def download_schedule(n, n2):
     return dcc.send_file(
         "./example_schedule.xls",
     )

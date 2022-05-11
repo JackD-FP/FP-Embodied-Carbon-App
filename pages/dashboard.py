@@ -248,8 +248,6 @@ def make_graphs(data):
         )
         fig.update_layout(
             title_text="Structure Embodied Carbon",
-            # Add annotations in the center of the donut pies.
-            # TODO: swap out gb_sum etc etc for the new rebar accommodated values.
             annotations=[
                 dict(text="Greenbook", x=0.12, y=0.50, font_size=16, showarrow=False),
                 dict(
@@ -276,27 +274,34 @@ def make_graphs(data):
                     showarrow=False,
                 ),
             ],
-        )
+        ),
         fig.update_traces(
-            hoverinfo="label+percent+value",
+            hoverinfo="label+value",
             textinfo="percent",
-            marker=dict(
-                colors=[
-                    "#5463FF",
-                    "#FFC300",
-                    "#FF1818",
-                    "#70C1B3",
-                    "#79b159",
-                    "#42D9C8",
-                ]
-            ),
+            marker=graph_colors,
         )
         # fig.update_traces(
         #     hoverinfo="label+percent+value",
         #     textinfo="percent",
-        #     marker=dict(colors=label_colors),
+        #     marker=dict(
+        #         colors=[
+        # "#FF595E",
+        # "#FF924C",
+        # "#FFCA3A",
+        # "#FFC300",
+        #         ]
+        #     ),
+        #     # marker=dict(
+        #     #     colors=[
+        #     #         "#5463FF",
+        #     #         "#FFC300",
+        #     #         "#FF1818",
+        #     #         "#70C1B3",
+        #     #         "#79b159",
+        #     #         "#42D9C8",
+        #     # #     ]
+        #     # ),
         # )
-
         # drop embodied carbon if it exist
         if "Embodied Carbon" in df.columns:
             df = df.drop(["Embodied Carbon"], axis=1)
@@ -342,29 +347,29 @@ def make_graphs(data):
                         dbc.Table.from_dataframe(
                             df_new_grouped, striped=True, bordered=True, hover=True
                         ),
-                        html.Div(
-                            [
-                                html.H5("GFA of Design:", className="mt-3"),
-                                dbc.Input(
-                                    id="gfa_input",
-                                    placeholder="What's the gross floor area (gfa)?",
-                                    className="w-25",
-                                    type="number",
-                                    debounce=True,
-                                    persistence=True,
-                                    persistence_type="session",
-                                    required=True,
-                                ),
-                                html.H5("BCA Building Type:", className="mt-3"),
-                                dbc.Select(
-                                    id="bld_type",
-                                    value="5_a_grade",
-                                    options=building_type_option.building_type,
-                                    className="w-25",
-                                ),
-                            ],
-                            className="my-5",
-                        ),
+                        # html.Div(
+                        #     [
+                        #         html.H5("GFA of Design:", className="mt-3"),
+                        #         dbc.Input(
+                        #             id="gfa_input",
+                        #             placeholder="What's the gross floor area (gfa)?",
+                        #             className="w-25",
+                        #             type="number",
+                        #             debounce=True,
+                        #             persistence=True,
+                        #             persistence_type="session",
+                        #             required=True,
+                        #         ),
+                        #         html.H5("BCA Building Type:", className="mt-3"),
+                        #         dbc.Select(
+                        #             id="bld_type",
+                        #             value="5_a_grade",
+                        #             options=building_type_option.building_type,
+                        #             className="w-25",
+                        #         ),
+                        #     ],
+                        #     className="my-5",
+                        # ),
                         dbc.Container(
                             [
                                 dbc.Row(
@@ -493,6 +498,49 @@ def make_graphs(data):
                                                         html.P(
                                                             "Design's Benchmark",
                                                             className="text-center",
+                                                        ),
+                                                        html.Div(
+                                                            [
+                                                                dbc.Row(
+                                                                    [
+                                                                        dbc.Col(
+                                                                            [
+                                                                                html.H5(
+                                                                                    "GFA of Design:",
+                                                                                    className="mt-3",
+                                                                                ),
+                                                                                dbc.Input(
+                                                                                    id="gfa_input",
+                                                                                    placeholder="What's the gross floor area (gfa)?",
+                                                                                    type="number",
+                                                                                    debounce=True,
+                                                                                    persistence=True,
+                                                                                    persistence_type="session",
+                                                                                    required=True,
+                                                                                ),
+                                                                            ],
+                                                                        ),
+                                                                        dbc.Col(
+                                                                            [
+                                                                                html.H5(
+                                                                                    "BCA Building Type:",
+                                                                                    className="mt-3",
+                                                                                ),
+                                                                                dbc.Select(
+                                                                                    id="bld_type",
+                                                                                    value="5_a_grade",
+                                                                                    options=building_type_option.building_type,
+                                                                                ),
+                                                                            ]
+                                                                        ),
+                                                                    ]
+                                                                )
+                                                            ],
+                                                            className="my-5",
+                                                            style={
+                                                                "paddingLeft": "2rem",
+                                                                "paddingRight": "2rem",
+                                                            },
                                                         ),
                                                         html.P(
                                                             "Benchmark Score",
@@ -841,8 +889,8 @@ def error_update(data):
 
 @callback(
     Output("gb_gfa", "children"),
-    Output("epic_gfa", "children"),
-    Output("ice_gfa", "children"),
+    # Output("epic_gfa", "children"),
+    # Output("ice_gfa", "children"),
     Output("gb_benchmark", "children"),
     Input("gfa_input", "value"),
     Input("bld_type", "value"),
@@ -931,8 +979,6 @@ def gfa_calc(val, bld_type, data):
 
         return (
             gb_gfa_out,
-            epic_gfa_out,
-            ice_gfa_out,
             html.Div(benchmark(gfa_val[0], bld_type)),
         )
 

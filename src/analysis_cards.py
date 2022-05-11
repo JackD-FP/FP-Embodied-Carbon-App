@@ -12,11 +12,11 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 from config import config, graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
-import plotly.express as px
 
 from src import analysis_more_info, epic_options, funcs, greenbook_options, ice_options
 
@@ -34,7 +34,21 @@ table_header = [
 row1 = html.Tr(
     [
         html.Td(
-            dbc.Select(options=greenbook_options.concrete, id="row_concrete", value=643)
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.P("Concrete Selection:"),
+                        width=3,
+                    ),
+                    dbc.Col(
+                        dbc.Select(
+                            options=greenbook_options.concrete,
+                            id="row_concrete",
+                            value=643,
+                        ),
+                    ),
+                ]
+            ),
         ),
         html.Td(
             html.Div(
@@ -46,7 +60,23 @@ row1 = html.Tr(
 row2 = html.Tr(
     [
         html.Td(
-            dbc.Select(options=greenbook_options.rebar, id="row_rebar", value=2.900)
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            html.P("Reinforcement Bar:"),
+                            width=3,
+                        ),
+                        dbc.Col(
+                            dbc.Select(
+                                options=greenbook_options.rebar,
+                                id="row_rebar",
+                                value=2.900,
+                            )
+                        ),
+                    ]
+                ),
+            ]
         ),
         html.Td(id="row_rebar_value"),
     ]
@@ -54,7 +84,28 @@ row2 = html.Tr(
 row3 = html.Tr(
     [
         html.Td(
-            dbc.Select(options=greenbook_options.steel, id="row_steel", value=2.61)
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.P("Structural Steel :"),
+                            ],
+                            width=3,
+                        ),
+                        dbc.Col(
+                            [
+                                dbc.Select(
+                                    options=greenbook_options.steel,
+                                    id="row_steel",
+                                    value=2.61,
+                                )
+                            ]
+                        ),
+                    ]
+                ),
+            ],
+            # dbc.Select(options=greenbook_options.steel, id="row_steel", value=2.61)
         ),
         html.Td(id="row_steel_value"),
     ]
@@ -62,7 +113,28 @@ row3 = html.Tr(
 row4 = html.Tr(
     [
         html.Td(
-            dbc.Select(options=greenbook_options.timber, id="row_timber", value=718)
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.P("Structural Timber :"),
+                            ],
+                            width=3,
+                        ),
+                        dbc.Col(
+                            [
+                                dbc.Select(
+                                    options=greenbook_options.timber,
+                                    id="row_timber",
+                                    value=718,
+                                )
+                            ]
+                        ),
+                    ]
+                ),
+            ],
+            # dbc.Select(options=greenbook_options.timber, id="row_timber", value=718)
         ),
         html.Td(id="row_timber_value"),
     ]
@@ -149,11 +221,18 @@ table_header = [
 row1 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=epic_options.concrete,
-                id="epic_row_concrete",
-                value=600,
-            )
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Concrete Selection:"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=epic_options.concrete,
+                            id="epic_row_concrete",
+                            value=600,
+                        )
+                    ),
+                ]
+            ),
         ),
         html.Td(
             html.Div(
@@ -165,10 +244,17 @@ row1 = html.Tr(
 row2 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=epic_options.rebar,
-                id="epic_row_rebar",
-                value=2.9,
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Reinforcement Bar:"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=epic_options.rebar,
+                            id="epic_row_rebar",
+                            value=2.9,
+                        )
+                    ),
+                ]
             )
         ),
         html.Td(id="epic_row_rebar_value"),
@@ -177,27 +263,42 @@ row2 = html.Tr(
 row3 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=epic_options.timber,
-                id="epic_row_timber",
-                value=1718,
-            )
-        ),
-        html.Td(id="epic_row_timber_value"),
-    ]
-)
-row4 = html.Tr(
-    [
-        html.Td(
-            dbc.Select(
-                options=epic_options.steel,
-                id="epic_row_steel",
-                value=2.9,
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Structural Steel :"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=epic_options.steel,
+                            id="epic_row_steel",
+                            value=2.9,
+                        )
+                    ),
+                ]
             )
         ),
         html.Td(id="epic_row_steel_value"),
     ]
 )
+row4 = html.Tr(
+    [
+        html.Td(
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Structural Timber :"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=epic_options.timber,
+                            id="epic_row_timber",
+                            value=1718,
+                        )
+                    ),
+                ]
+            ),
+        ),
+        html.Td(id="epic_row_timber_value"),
+    ]
+)
+
 
 table_body = [html.Tbody([row1, row2, row3, row4])]
 
@@ -282,11 +383,18 @@ table_header = [
 row1 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=ice_options.concrete,
-                id="ice_row_concrete",
-                value=413.4943,
-            )
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Concrete Selection:"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=ice_options.concrete,
+                            id="ice_row_concrete",
+                            value=413.4943,
+                        )
+                    ),
+                ]
+            ),
         ),
         html.Td(
             html.Div(
@@ -298,11 +406,18 @@ row1 = html.Tr(
 row2 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=ice_options.rebar,
-                id="ice_row_rebar",
-                value=1.99,
-            )
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Reinforcement Bar:"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=ice_options.rebar,
+                            id="ice_row_rebar",
+                            value=1.99,
+                        )
+                    ),
+                ]
+            ),
         ),
         html.Td(
             html.Div(
@@ -314,10 +429,17 @@ row2 = html.Tr(
 row3 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=ice_options.steel,
-                id="ice_row_steel",
-                value=1.55,
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Structural Steel :"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=ice_options.steel,
+                            id="ice_row_steel",
+                            value=1.55,
+                        )
+                    ),
+                ]
             )
         ),
         html.Td(id="ice_row_steel_value"),
@@ -326,11 +448,18 @@ row3 = html.Tr(
 row4 = html.Tr(
     [
         html.Td(
-            dbc.Select(
-                options=ice_options.timber_options,
-                id="ice_row_timber",
-                value=0.51,
-            )
+            dbc.Row(
+                [
+                    dbc.Col(html.P("Structural Timber :"), width=3),
+                    dbc.Col(
+                        dbc.Select(
+                            options=ice_options.timber,
+                            id="ice_row_timber",
+                            value=0.51,
+                        )
+                    ),
+                ]
+            ),
         ),
         html.Td(id="ice_row_timber_value"),
     ]
