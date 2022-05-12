@@ -25,7 +25,7 @@ layout = html.Div(
         html.P(
             "The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. \
         It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of materials are necessary for structural stability, \
-        the answer is less obvious. We should all strive to minimise our design’s embodied carbon, however, not compromise with structural stability and design excellence.\
+        the answer is less obvious. We should all strive to minimise our design's embodied carbon, however, not compromise with structural stability and design excellence.\
         The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the later. \
         It can also help identify what floor is causing the issue if a redesign or alteration is required.\
         This app free and open source for anyone. At Fitzpatrick and Partners, \
@@ -189,20 +189,20 @@ def make_graphs(data):
 
         embodied_carbon_dict = {
             "Materials": df_mat,
-            "Green Book (kgCO2e)": gb_ec,
-            "EPiC EC (kgCO2e)": epic_ec,
-            "ICE EC (kgCO2e)": ice_ec,
+            "Green Book (kgCO²e)": gb_ec,
+            "EPiC EC (kgCO²e)": epic_ec,
+            "ICE EC (kgCO²e)": ice_ec,
         }
 
         ec_df = pd.DataFrame(embodied_carbon_dict)
 
-        ec_df.loc[:, "Green Book (kgCO2e)"] = ec_df["Green Book (kgCO2e)"].map(
+        ec_df.loc[:, "Green Book (kgCO²e)"] = ec_df["Green Book (kgCO²e)"].map(
             "{:,.2f}".format
         )
-        ec_df.loc[:, "EPiC EC (kgCO2e)"] = ec_df["EPiC EC (kgCO2e)"].map(
+        ec_df.loc[:, "EPiC EC (kgCO²e)"] = ec_df["EPiC EC (kgCO²e)"].map(
             "{:,.2f}".format
         )
-        ec_df.loc[:, "ICE EC (kgCO2e)"] = ec_df["ICE EC (kgCO2e)"].map("{:,.2f}".format)
+        ec_df.loc[:, "ICE EC (kgCO²e)"] = ec_df["ICE EC (kgCO²e)"].map("{:,.2f}".format)
 
         label_colors = funcs.label_colours_update(df_new_grouped, "list")
 
@@ -250,58 +250,46 @@ def make_graphs(data):
             title_text="Structure Embodied Carbon",
             annotations=[
                 dict(text="Greenbook", x=0.12, y=0.50, font_size=16, showarrow=False),
-                dict(
-                    text="{:,.2f} kgCO2e".format(gb_sum),
-                    x=0,
-                    y=0.1,
-                    font_size=32,
-                    showarrow=False,
-                ),
+                # dict(
+                #     text="{:,.2f} kgCO²e".format(gb_sum),
+                #     x=0,
+                #     y=0.1,
+                #     font_size=32,
+                #     showarrow=False,
+                # ),
                 dict(text="EPiC", x=0.50, y=0.50, font_size=16, showarrow=False),
-                dict(
-                    text="{:,.2f} kgCO2e".format(epic_sum),
-                    x=0.5,
-                    y=0.1,
-                    font_size=32,
-                    showarrow=False,
-                ),
+                # dict(
+                #     text="{:,.2f} kgCO²e".format(epic_sum),
+                #     x=0.5,
+                #     y=0.1,
+                #     font_size=32,
+                #     showarrow=False,
+                # ),
                 dict(text="ICE", x=0.87, y=0.50, font_size=16, showarrow=False),
-                dict(
-                    text="{:,.2f} kgCO2e".format(ice_sum),
-                    x=1,
-                    y=0.1,
-                    font_size=32,
-                    showarrow=False,
-                ),
+                # dict(
+                #     text="{:,.2f} kgCO²e".format(ice_sum),
+                #     x=1,
+                #     y=0.1,
+                #     font_size=32,
+                #     showarrow=False,
+                # ),
             ],
         ),
         fig.update_traces(
             hoverinfo="label+value",
             textinfo="percent",
-            marker=graph_colors,
+            marker=dict(
+                colors=[
+                    "#5463FF",
+                    "#FFC300",
+                    "#FF1818",
+                    "#70C1B3",
+                    "#79b159",
+                    "#42D9C8",
+                ]
+            ),
         )
-        # fig.update_traces(
-        #     hoverinfo="label+percent+value",
-        #     textinfo="percent",
-        #     marker=dict(
-        #         colors=[
-        # "#FF595E",
-        # "#FF924C",
-        # "#FFCA3A",
-        # "#FFC300",
-        #         ]
-        #     ),
-        #     # marker=dict(
-        #     #     colors=[
-        #     #         "#5463FF",
-        #     #         "#FFC300",
-        #     #         "#FF1818",
-        #     #         "#70C1B3",
-        #     #         "#79b159",
-        #     #         "#42D9C8",
-        #     # #     ]
-        #     # ),
-        # )
+
         # drop embodied carbon if it exist
         if "Embodied Carbon" in df.columns:
             df = df.drop(["Embodied Carbon"], axis=1)
@@ -859,9 +847,46 @@ def make_graphs(data):
                         ),
                         dcc.Graph(
                             figure=fig,
-                            style={"height": "75vh"},
+                            style={"height": "50vh"},
                             className="mt-3",
                             config=config,
+                        ),
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    html.H3(
+                                        [
+                                            "{:,.2f}".format(gb_sum),
+                                            html.P(
+                                                "kgCO²ₑ", className="fs-5 display-6"
+                                            ),
+                                        ],
+                                        style={"textAlign": "center"},
+                                    )
+                                ),
+                                dbc.Col(
+                                    html.H3(
+                                        [
+                                            "{:,.2f}".format(epic_sum),
+                                            html.P(
+                                                "kgCO²ₑ", className="fs-5 display-6"
+                                            ),
+                                        ],
+                                        style={"textAlign": "center"},
+                                    )
+                                ),
+                                dbc.Col(
+                                    html.H3(
+                                        [
+                                            "{:,.2f}".format(ice_sum),
+                                            html.P(
+                                                "kgCO²ₑ", className="fs-5 display-6"
+                                            ),
+                                        ],
+                                        style={"textAlign": "center"},
+                                    )
+                                ),
+                            ]
                         ),
                     ],
                     class_name="my-5 p-4 shadow",
