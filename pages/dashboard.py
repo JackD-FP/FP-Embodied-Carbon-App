@@ -150,7 +150,7 @@ def make_graphs(data):
     elif data is not None:
         df_ = pd.read_json(data, orient="split")
         df_o = df_.reset_index()
-        gb_ec, epic_ec, ice_ec = em_calc(df_o)  # makes df for greenbook db
+        gb_ec, epic_ec, ice_ec = em_calc(df_o)  # To create database of all the ec
 
         df = df_.groupby(by=["Building Materials (All)"], as_index=False).sum()
         df_mat = df["Building Materials (All)"].tolist()
@@ -169,6 +169,7 @@ def make_graphs(data):
                 "ICE EC": iceec,
             }
         )
+        # df_new.to_csv("temp-df-store.csv", index=False)
 
         gb_sum = df_new["Green Book EC"].sum()
         epic_sum = df_new["EPiC EC"].sum()
@@ -912,100 +913,100 @@ def error_update(data):
     return funcs.upload_alert(df)
 
 
-@callback(
-    Output("gb_gfa", "children"),
-    # Output("epic_gfa", "children"),
-    # Output("ice_gfa", "children"),
-    Output("gb_benchmark", "children"),
-    Input("gfa_input", "value"),
-    Input("bld_type", "value"),
-    Input("proc_store", "data"),
-)
-def gfa_calc(val, bld_type, data):
-    df = pd.read_json(data, orient="split")
-    # gb_ec, epic_ec, ice_ec = em_calc(df)
-    # df_grouped = df.groupby(by=['Building Materials'], as_index=False).sum()
+# @callback(
+#     Output("gb_gfa", "children"),
+#     # Output("epic_gfa", "children"),
+#     # Output("ice_gfa", "children"),
+#     Output("gb_benchmark", "children"),
+#     Input("gfa_input", "value"),
+#     Input("bld_type", "value"),
+#     Input("proc_store", "data"),
+# )
+# def gfa_calc(val, bld_type, data):
+#     df = pd.read_json(data, orient="split")
+#     # gb_ec, epic_ec, ice_ec = em_calc(df)
+#     # df_grouped = df.groupby(by=['Building Materials'], as_index=False).sum()
 
-    if val is not None:
+#     if val is not None:
 
-        gfa_val = [
-            df["Green Book EC"].sum() / val,
-            df["EPiC EC"].sum() / val,
-            df["ICE EC"].sum() / val,
-        ]
+#         gfa_val = [
+#             df["Green Book EC"].sum() / val,
+#             df["EPiC EC"].sum() / val,
+#             df["ICE EC"].sum() / val,
+#         ]
 
-        gb_gfa_out = "{:,}".format(np.around(gfa_val[0], 2))
-        epic_gfa_out = "{:,}".format(np.around(gfa_val[1], 2))
-        ice_gfa_out = "{:,}".format(np.around(gfa_val[2], 2))
+#         gb_gfa_out = "{:,}".format(np.around(gfa_val[0], 2))
+#         epic_gfa_out = "{:,}".format(np.around(gfa_val[1], 2))
+#         ice_gfa_out = "{:,}".format(np.around(gfa_val[2], 2))
 
-        def benchmark(Embodied_Carbon, Building_Type):
-            if Building_Type == "2_premium":
-                if Embodied_Carbon <= 1450 and Embodied_Carbon >= 1160:
-                    return funcs.progress_bar(3, Embodied_Carbon, 1160, 1450)
-                elif Embodied_Carbon <= 1160 and Embodied_Carbon >= 870:
-                    return funcs.progress_bar(4, Embodied_Carbon, 870, 1160)
-                elif Embodied_Carbon <= 870:
-                    return funcs.progress_bar(5, Embodied_Carbon, 0, 870)
-                else:
-                    return html.Div("Improvement Required", className="text-center")
+#         def benchmark(Embodied_Carbon, Building_Type):
+#             if Building_Type == "2_premium":
+#                 if Embodied_Carbon <= 1450 and Embodied_Carbon >= 1160:
+#                     return funcs.progress_bar(3, Embodied_Carbon, 1160, 1450)
+#                 elif Embodied_Carbon <= 1160 and Embodied_Carbon >= 870:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 870, 1160)
+#                 elif Embodied_Carbon <= 870:
+#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 870)
+#                 else:
+#                     return html.Div("Improvement Required", className="text-center")
 
-            elif Building_Type == "2_multi-res":
-                if Embodied_Carbon <= 990 and Embodied_Carbon >= 790:
-                    return funcs.progress_bar(3, Embodied_Carbon, 790, 990)
-                elif Embodied_Carbon <= 790 and Embodied_Carbon >= 590:
-                    return funcs.progress_bar(4, Embodied_Carbon, 590, 790)
-                elif Embodied_Carbon <= 590:
-                    return funcs.progress_bar(5, Embodied_Carbon, 0, 590)
-                else:
-                    return html.Div("Improvement Required", className="text-center")
+#             elif Building_Type == "2_multi-res":
+#                 if Embodied_Carbon <= 990 and Embodied_Carbon >= 790:
+#                     return funcs.progress_bar(3, Embodied_Carbon, 790, 990)
+#                 elif Embodied_Carbon <= 790 and Embodied_Carbon >= 590:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 590, 790)
+#                 elif Embodied_Carbon <= 590:
+#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 590)
+#                 else:
+#                     return html.Div("Improvement Required", className="text-center")
 
-            elif Building_Type == "5_premium":
-                if Embodied_Carbon <= 1500 and Embodied_Carbon >= 1200:
-                    return funcs.progress_bar(3, Embodied_Carbon, 1200, 1500)
-                elif Embodied_Carbon <= 1200 and Embodied_Carbon >= 900:
-                    return funcs.progress_bar(4, Embodied_Carbon, 900, 1200)
-                elif Embodied_Carbon <= 900:
-                    return funcs.progress_bar(5, Embodied_Carbon, 0, 900)
-                else:
-                    return html.Div("Improvement Required", className="text-center")
+#             elif Building_Type == "5_premium":
+#                 if Embodied_Carbon <= 1500 and Embodied_Carbon >= 1200:
+#                     return funcs.progress_bar(3, Embodied_Carbon, 1200, 1500)
+#                 elif Embodied_Carbon <= 1200 and Embodied_Carbon >= 900:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 900, 1200)
+#                 elif Embodied_Carbon <= 900:
+#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 900)
+#                 else:
+#                     return html.Div("Improvement Required", className="text-center")
 
-            elif Building_Type == "5_a_grade":
-                if Embodied_Carbon <= 800 and Embodied_Carbon >= 640:
-                    return funcs.progress_bar(3, Embodied_Carbon, 640, 800)
-                elif Embodied_Carbon <= 640 and Embodied_Carbon >= 480:
-                    return funcs.progress_bar(4, Embodied_Carbon, 480, 640)
-                elif Embodied_Carbon <= 480:
-                    return funcs.progress_bar(5, Embodied_Carbon, 0, 480)
-                    # stars_append(5)
-                else:
-                    return html.Div("Improvement Required", className="text-center")
+#             elif Building_Type == "5_a_grade":
+#                 if Embodied_Carbon <= 800 and Embodied_Carbon >= 640:
+#                     return funcs.progress_bar(3, Embodied_Carbon, 640, 800)
+#                 elif Embodied_Carbon <= 640 and Embodied_Carbon >= 480:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 480, 640)
+#                 elif Embodied_Carbon <= 480:
+#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 480)
+#                     # stars_append(5)
+#                 else:
+#                     return html.Div("Improvement Required", className="text-center")
 
-            elif Building_Type == "6_regional":
-                if Embodied_Carbon <= 2150 and Embodied_Carbon >= 1750:
-                    return funcs.progress_bar(3, Embodied_Carbon, 1750, 2150)
-                elif Embodied_Carbon <= 1720 and Embodied_Carbon >= 1250:
-                    return funcs.progress_bar(4, Embodied_Carbon, 1250, 1720)
-                elif Embodied_Carbon <= 1290:
-                    return funcs.progress_bar(4, Embodied_Carbon, 0, 1290)
-                else:
-                    return html.Div("Improvement Required", className="text-center")
+#             elif Building_Type == "6_regional":
+#                 if Embodied_Carbon <= 2150 and Embodied_Carbon >= 1750:
+#                     return funcs.progress_bar(3, Embodied_Carbon, 1750, 2150)
+#                 elif Embodied_Carbon <= 1720 and Embodied_Carbon >= 1250:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 1250, 1720)
+#                 elif Embodied_Carbon <= 1290:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 0, 1290)
+#                 else:
+#                     return html.Div("Improvement Required", className="text-center")
 
-            elif Building_Type == "5_sub_regional":
-                if Embodied_Carbon <= 1220 and Embodied_Carbon >= 970:
-                    return funcs.progress_bar(3, Embodied_Carbon, 970, 1220)
-                elif Embodied_Carbon <= 970 and Embodied_Carbon >= 730:
-                    return funcs.progress_bar(4, Embodied_Carbon, 730, 970)
-                elif Embodied_Carbon <= 730:
-                    return funcs.progress_bar(5, Embodied_Carbon, 0, 730)
-                else:
-                    return html.Div("Improvement Required", className="text-center")
+#             elif Building_Type == "5_sub_regional":
+#                 if Embodied_Carbon <= 1220 and Embodied_Carbon >= 970:
+#                     return funcs.progress_bar(3, Embodied_Carbon, 970, 1220)
+#                 elif Embodied_Carbon <= 970 and Embodied_Carbon >= 730:
+#                     return funcs.progress_bar(4, Embodied_Carbon, 730, 970)
+#                 elif Embodied_Carbon <= 730:
+#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 730)
+#                 else:
+#                     return html.Div("Improvement Required", className="text-center")
 
-        # html.Div(benchmark(gfa_val[0],bld_type))
+#         # html.Div(benchmark(gfa_val[0],bld_type))
 
-        return (
-            gb_gfa_out,
-            html.Div(benchmark(gfa_val[0], bld_type)),
-        )
+#         return (
+#             gb_gfa_out,
+#             html.Div(benchmark(gfa_val[0], bld_type)),
+#         )
 
-    else:
-        raise PreventUpdate
+#     else:
+#         raise PreventUpdate

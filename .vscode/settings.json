@@ -8,9 +8,9 @@
     //"python.linting.pylintEnabled": true,
     //"python.linting.enabled": true,
     "workbench.colorCustomizations": {
-        "titleBar.activeBackground": "#3adbd8",
+        "titleBar.activeBackground": "#4bff5a",
         "titleBar.activeForeground": "#000000",
-        "terminal.background": "#042326"
+        "terminal.background": "#002403"
         
     }
 }

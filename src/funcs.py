@@ -431,7 +431,7 @@ def find_vols(vol, ratio):
     return vol_conc, vol_rebar
 
 
-def mat_interpreter(
+def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE CODE
     df: pd.DataFrame,
     gb_conc=greenbook_options.concrete[11]["value"],
     epic_conc=epic_options.concrete[12]["value"],
@@ -458,7 +458,7 @@ def mat_interpreter(
     vol = []
     mat = []
     floor = []
-    layer = []
+    element = []
     gb_ec = []
     epic_ec = []
     ice_ec = []
@@ -475,7 +475,7 @@ def mat_interpreter(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Beam")
                 gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -485,7 +485,7 @@ def mat_interpreter(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Beam")
                 gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -498,7 +498,7 @@ def mat_interpreter(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Column")
                 gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -508,7 +508,7 @@ def mat_interpreter(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Column")
                 gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -521,7 +521,7 @@ def mat_interpreter(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Slab")
                 gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -531,7 +531,7 @@ def mat_interpreter(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Slab")
                 gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -544,7 +544,7 @@ def mat_interpreter(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Wall")
                 gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -554,7 +554,7 @@ def mat_interpreter(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Wall")
                 gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -567,7 +567,7 @@ def mat_interpreter(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Stairs")
                 gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -577,7 +577,7 @@ def mat_interpreter(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append("Stairs")
                 gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -588,7 +588,9 @@ def mat_interpreter(
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
-            layer.append(row["Layer"])
+            element.append(
+                element_check(row["Layer"])
+            )  # TODO: add function to define what element is being used
             gb_ec.append(
                 row["Net Volume"] * gb_timber
             )  # timber... assumes there no other materials types
@@ -601,13 +603,38 @@ def mat_interpreter(
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
-            layer.append(row["Layer"])
+            element.append(
+                element_check(row["Layer"])
+            )  # TODO: add function to define what element is being used
             gb_ec.append(
                 row["Mass"] * gb_steel
             )  # timber... assumes there no other materials types
             epic_ec.append(row["Mass"] * epic_steel)
             ice_ec.append(row["Mass"] * ice_steel)
-    return mat, vol, mass, floor, layer, gb_ec, epic_ec, ice_ec
+    return mat, vol, mass, floor, element, gb_ec, epic_ec, ice_ec
+
+
+def element_check(layer: str) -> str:
+    """finds ands returns the correct building ele
+
+    Args:
+        layer ( String ): string that contains the building element
+
+    Returns:
+        String : string of the element
+    """
+    if re.search("columns", layer, re.IGNORECASE):
+        return "Column"
+    elif re.search("beam", layer, re.IGNORECASE):
+        return "Beam"
+    elif re.search("slab", layer, re.IGNORECASE):
+        return "Slab"
+    elif re.search("wall", layer, re.IGNORECASE):
+        return "Wall"
+    elif re.search("stairs", layer, re.IGNORECASE):
+        return "Stairs"
+    else:  # if no match is found
+        return "Unknown"
 
 
 def ec_calculator(
@@ -631,7 +658,7 @@ def ec_calculator(
     vol = []
     mat = []
     floor = []
-    layer = []
+    element = []
     ec = []
 
     for i, row in df.iterrows():
@@ -646,7 +673,7 @@ def ec_calculator(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(vol_conc * concrete_val)
 
                 # add rebar volume
@@ -654,7 +681,7 @@ def ec_calculator(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(mass_rebar * rebar_val)
 
             # --------- Cheack if the layer is COLUMNS
@@ -665,7 +692,7 @@ def ec_calculator(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(vol_conc * concrete_val)
 
                 # add rebar volume
@@ -673,7 +700,7 @@ def ec_calculator(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(mass_rebar * rebar_val)
 
             # --------- Check if the layer is SLAB
@@ -684,7 +711,7 @@ def ec_calculator(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(vol_conc * concrete_val)
 
                 # add rebar volume
@@ -692,7 +719,7 @@ def ec_calculator(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(mass_rebar * rebar_val)
 
             # --------- Check if the layer is WALLS
@@ -703,7 +730,7 @@ def ec_calculator(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(vol_conc * concrete_val)
 
                 # add rebar volume
@@ -711,7 +738,7 @@ def ec_calculator(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(mass_rebar * rebar_val)
 
             # --------- Check if the layer is STAIRS
@@ -722,7 +749,7 @@ def ec_calculator(
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(vol_conc * concrete_val)
 
                 # add rebar volume
@@ -730,7 +757,7 @@ def ec_calculator(
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
-                layer.append(row["Layer"])
+                element.append(row["Layer"])
                 ec.append(mass_rebar * rebar_val)
 
         # Appends timber values from layer
@@ -739,7 +766,7 @@ def ec_calculator(
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
-            layer.append(row["Layer"])
+            element.append(row["Layer"])
 
             if if_ice:
                 ec.append(row["Mass"] * timber_val)
@@ -753,12 +780,12 @@ def ec_calculator(
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
-            layer.append(row["Layer"])
+            element.append(row["Layer"])
             ec.append(
                 row["Mass"] * steel_val
             )  # steel... assumes there no other materials types
 
-    return mat, vol, mass, floor, layer, ec
+    return mat, vol, mass, floor, element, ec
 
 
 def none_check(is_none):
