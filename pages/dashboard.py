@@ -1,6 +1,6 @@
 # saving this because of the ^3 (m³)
-
 import re
+from logging.config import stopListening
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -12,11 +12,20 @@ from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import building_type_option, funcs, uploader
+from src import building_type_option, dashboard_cards, funcs, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
+
+
+def create_table(x):
+    columns, values = x.columns, x.values
+    header = [html.Tr([html.Th(col) for col in columns])]
+    rows = [html.Tr([html.Td(cell) for cell in row]) for row in values]
+    table = [html.Thead(header), html.Tbody(rows)]
+    return table
+
 
 layout = html.Div(
     [
@@ -156,11 +165,11 @@ def make_graphs(data):
         df_mat = df["Building Materials (All)"].tolist()
 
         # new calculations for carbon intensity
-        mat, vol, mass, floor, layer, gbec, epicec, iceec = funcs.mat_interpreter(df_)
+        mat, vol, mass, floor, element, gbec, epicec, iceec = funcs.mat_interpreter(df_)
         df_new = pd.DataFrame(
             {
                 "Floor Level": floor,
-                "Layer": layer,
+                "Element": element,
                 "Materials": mat,
                 "Mass": mass,
                 "Volume": vol,
@@ -175,7 +184,10 @@ def make_graphs(data):
         epic_sum = df_new["EPiC EC"].sum()
         ice_sum = df_new["ICE EC"].sum()
 
-        df_new_grouped = df_new.groupby(by=["Materials"], as_index=False).sum()
+        df_new_grouped = df_new.groupby(
+            by=["Element", "Materials"],
+            as_index=False,
+        ).sum()
         # there should be a better way to do this
         # TODO: make this one line or something
         df_new_grouped.loc[:, "Mass"] = df_new_grouped["Mass"].map("{:,.2f}".format)
@@ -204,8 +216,6 @@ def make_graphs(data):
             "{:,.2f}".format
         )
         ec_df.loc[:, "ICE EC (kgCO²e)"] = ec_df["ICE EC (kgCO²e)"].map("{:,.2f}".format)
-
-        label_colors = funcs.label_colours_update(df_new_grouped, "list")
 
         fig = make_subplots(
             rows=1,
@@ -279,16 +289,16 @@ def make_graphs(data):
         fig.update_traces(
             hoverinfo="label+value",
             textinfo="percent",
-            marker=dict(
-                colors=[
-                    "#5463FF",
-                    "#FFC300",
-                    "#FF1818",
-                    "#70C1B3",
-                    "#79b159",
-                    "#42D9C8",
-                ]
-            ),
+            # marker=dict(
+            #     colors=[
+            #         "#5463FF",
+            #         "#FFC300",
+            #         "#FF1818",
+            #         "#70C1B3",
+            #         "#79b159",
+            #         "#42D9C8",
+            #     ]
+            # ),
         )
 
         # drop embodied carbon if it exist
@@ -333,519 +343,11 @@ def make_graphs(data):
                 dbc.Card(
                     [
                         html.H3("Embodied Carbon(EC) calculation"),
-                        dbc.Table.from_dataframe(
-                            df_new_grouped, striped=True, bordered=True, hover=True
-                        ),
-                        # html.Div(
-                        #     [
-                        #         html.H5("GFA of Design:", className="mt-3"),
-                        #         dbc.Input(
-                        #             id="gfa_input",
-                        #             placeholder="What's the gross floor area (gfa)?",
-                        #             className="w-25",
-                        #             type="number",
-                        #             debounce=True,
-                        #             persistence=True,
-                        #             persistence_type="session",
-                        #             required=True,
-                        #         ),
-                        #         html.H5("BCA Building Type:", className="mt-3"),
-                        #         dbc.Select(
-                        #             id="bld_type",
-                        #             value="5_a_grade",
-                        #             options=building_type_option.building_type,
-                        #             className="w-25",
-                        #         ),
-                        #     ],
-                        #     className="my-5",
+                        dmc.Table(create_table(df_new_grouped)),
+                        # dbc.Table.from_dataframe(
+                        #     df_new_grouped, striped=True, bordered=True, hover=True
                         # ),
-                        dbc.Container(
-                            [
-                                dbc.Row(
-                                    [
-                                        dbc.Col(
-                                            [
-                                                # Green Book Column
-                                                html.H5(
-                                                    "Green Book DB",
-                                                    className="my-4 display-6 text-center",
-                                                    style={"marginLeft": "2rem"},
-                                                ),
-                                                dmc.Divider(
-                                                    style={
-                                                        "marginLeft": "2rem",
-                                                        "marginRight": "2rem",
-                                                    }
-                                                ),
-                                                html.Div(
-                                                    [
-                                                        dmc.Tooltip(
-                                                            wrapLines=True,
-                                                            width=208,
-                                                            withArrow=True,
-                                                            transition="fade",
-                                                            transitionDuration=200,
-                                                            label=funcs.total_ec_comparison(
-                                                                gb_sum,
-                                                                epic_sum,
-                                                                ice_sum,
-                                                                "EPiC DB",
-                                                                "ICE DB",
-                                                            ),
-                                                            children=[
-                                                                dbc.Row(
-                                                                    [
-                                                                        dbc.Col(
-                                                                            html.H3(
-                                                                                "{:,}".format(
-                                                                                    np.around(
-                                                                                        gb_sum,
-                                                                                        2,
-                                                                                    )
-                                                                                ),
-                                                                                className="text-end",
-                                                                            )
-                                                                        ),
-                                                                        dbc.Col(
-                                                                            html.P(
-                                                                                [
-                                                                                    html.Span(
-                                                                                        [
-                                                                                            "kgCO",
-                                                                                            html.Sup(
-                                                                                                2
-                                                                                            ),
-                                                                                            html.Sub(
-                                                                                                "e"
-                                                                                            ),
-                                                                                        ],
-                                                                                        className="fs-4",
-                                                                                    ),
-                                                                                    " Total EC",
-                                                                                ]
-                                                                            ),
-                                                                            className="text-start",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                            ],
-                                                            style={"display": "block"},
-                                                        ),
-                                                    ],
-                                                    style={
-                                                        "marginTop": "3rem",
-                                                        "marginBottom": "3rem",
-                                                    },
-                                                ),
-                                                dmc.Divider(
-                                                    style={
-                                                        "marginLeft": "2rem",
-                                                        "marginRight": "2rem",
-                                                    }
-                                                ),
-                                                # GFA calc for green book
-                                                html.Div(
-                                                    [
-                                                        dbc.Row(
-                                                            [
-                                                                dbc.Col(
-                                                                    [
-                                                                        html.H3(
-                                                                            id="gb_gfa",
-                                                                            className="text-end",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                                dbc.Col(
-                                                                    [
-                                                                        html.P(
-                                                                            [
-                                                                                html.Span(
-                                                                                    [
-                                                                                        "kgCO",
-                                                                                        html.Sup(
-                                                                                            2
-                                                                                        ),
-                                                                                        html.Sub(
-                                                                                            "e"
-                                                                                        ),
-                                                                                        "/m",
-                                                                                        html.Sup(
-                                                                                            2
-                                                                                        ),
-                                                                                    ],
-                                                                                    className="fs-4",
-                                                                                )
-                                                                            ],
-                                                                            id="gb_p",
-                                                                            className="text-start",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                            ]
-                                                        ),
-                                                        html.P(
-                                                            "Design's Benchmark",
-                                                            className="text-center",
-                                                        ),
-                                                        html.Div(
-                                                            [
-                                                                dbc.Row(
-                                                                    [
-                                                                        dbc.Col(
-                                                                            [
-                                                                                html.H5(
-                                                                                    "GFA of Design:",
-                                                                                    className="mt-3",
-                                                                                ),
-                                                                                dbc.Input(
-                                                                                    id="gfa_input",
-                                                                                    placeholder="What's the gross floor area (gfa)?",
-                                                                                    type="number",
-                                                                                    debounce=True,
-                                                                                    persistence=True,
-                                                                                    persistence_type="session",
-                                                                                    required=True,
-                                                                                ),
-                                                                            ],
-                                                                        ),
-                                                                        dbc.Col(
-                                                                            [
-                                                                                html.H5(
-                                                                                    "BCA Building Type:",
-                                                                                    className="mt-3",
-                                                                                ),
-                                                                                dbc.Select(
-                                                                                    id="bld_type",
-                                                                                    value="5_a_grade",
-                                                                                    options=building_type_option.building_type,
-                                                                                ),
-                                                                            ]
-                                                                        ),
-                                                                    ]
-                                                                )
-                                                            ],
-                                                            className="my-5",
-                                                            style={
-                                                                "paddingLeft": "2rem",
-                                                                "paddingRight": "2rem",
-                                                            },
-                                                        ),
-                                                        html.P(
-                                                            "Benchmark Score",
-                                                            className="text-center mt-5 ",
-                                                        ),
-                                                        html.Div(id="gb_benchmark"),
-                                                    ],
-                                                    style={
-                                                        "marginTop": "3rem",
-                                                        "marginBottom": "3rem",
-                                                    },
-                                                ),
-                                            ],
-                                            className="bg-light py-5 px-3",
-                                        ),
-                                        dbc.Col(
-                                            [
-                                                # EPiC Column
-                                                html.H5(
-                                                    "EPIC DB",
-                                                    className="my-4 display-6 text-center",
-                                                    style={"marginLeft": "2rem"},
-                                                ),
-                                                dmc.Divider(
-                                                    style={
-                                                        "marginLeft": "2rem",
-                                                        "marginRight": "2rem",
-                                                    }
-                                                ),
-                                                html.Div(
-                                                    [
-                                                        dmc.Tooltip(
-                                                            wrapLines=True,
-                                                            width=240,
-                                                            withArrow=True,
-                                                            transition="fade",
-                                                            transitionDuration=200,
-                                                            label=funcs.total_ec_comparison(
-                                                                epic_sum,
-                                                                gb_sum,
-                                                                ice_sum,
-                                                                "Green Book DB",
-                                                                "ICE DB",
-                                                            ),
-                                                            children=[
-                                                                dbc.Row(
-                                                                    [
-                                                                        dbc.Col(
-                                                                            html.H3(
-                                                                                "{:,}".format(
-                                                                                    np.around(
-                                                                                        epic_sum,
-                                                                                        2,
-                                                                                    )
-                                                                                ),
-                                                                                className="text-end",
-                                                                            )
-                                                                        ),
-                                                                        dbc.Col(
-                                                                            html.P(
-                                                                                [
-                                                                                    html.Span(
-                                                                                        [
-                                                                                            "kgCO",
-                                                                                            html.Sup(
-                                                                                                2
-                                                                                            ),
-                                                                                            html.Sub(
-                                                                                                "e"
-                                                                                            ),
-                                                                                        ],
-                                                                                        className="fs-4",
-                                                                                    ),
-                                                                                    " Total EC",
-                                                                                ]
-                                                                            ),
-                                                                            className="text-start",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                            ],
-                                                            style={"display": "block"},
-                                                        ),
-                                                    ],
-                                                    style={
-                                                        "marginTop": "3rem",
-                                                        "marginBottom": "3rem",
-                                                    },
-                                                ),
-                                                dmc.Divider(
-                                                    style={
-                                                        "marginLeft": "2rem",
-                                                        "marginRight": "2rem",
-                                                    }
-                                                ),
-                                                # GFA calc for epic
-                                                html.Div(
-                                                    [
-                                                        dbc.Row(
-                                                            [
-                                                                dbc.Col(
-                                                                    [
-                                                                        html.H3(
-                                                                            id="epic_gfa",
-                                                                            className="text-end",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                                dbc.Col(
-                                                                    [
-                                                                        html.P(
-                                                                            [
-                                                                                html.Span(
-                                                                                    [
-                                                                                        "kgCO",
-                                                                                        html.Sup(
-                                                                                            2
-                                                                                        ),
-                                                                                        html.Sub(
-                                                                                            "e"
-                                                                                        ),
-                                                                                        "/m",
-                                                                                        html.Sup(
-                                                                                            2
-                                                                                        ),
-                                                                                    ],
-                                                                                    className="fs-4",
-                                                                                )
-                                                                            ],
-                                                                            id="epic_p",
-                                                                            className="text-start",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                            ]
-                                                        ),
-                                                        html.P(
-                                                            "Design's Benchmark",
-                                                            className="text-center",
-                                                        ),
-                                                        dmc.Tooltip(
-                                                            label="No Benchmark scores available for EPIC",
-                                                            transition="fade",
-                                                            transitionDuration=300,
-                                                            transitionTimingFunction="ease",
-                                                            children=[
-                                                                html.P(
-                                                                    "No Benchmark Score",
-                                                                    className="text-center mt-5 ",
-                                                                ),
-                                                            ],
-                                                            style={"display": "block"},
-                                                        ),
-                                                    ],
-                                                    style={
-                                                        "marginTop": "3rem",
-                                                        "marginBottom": "3rem",
-                                                    },
-                                                ),
-                                            ],
-                                            className="py-5 px-3",
-                                        ),
-                                        dbc.Col(
-                                            [
-                                                # ICE column epic
-                                                html.H5(
-                                                    "ICE DB",
-                                                    className="my-4 display-6 text-center",
-                                                    style={"marginLeft": "2rem"},
-                                                ),
-                                                dmc.Divider(
-                                                    style={
-                                                        "marginLeft": "2rem",
-                                                        "marginRight": "2rem",
-                                                    }
-                                                ),
-                                                html.Div(
-                                                    [
-                                                        dmc.Tooltip(
-                                                            wrapLines=True,
-                                                            width=256,
-                                                            withArrow=True,
-                                                            transition="fade",
-                                                            transitionDuration=200,
-                                                            label=funcs.total_ec_comparison(
-                                                                ice_sum,
-                                                                gb_sum,
-                                                                epic_sum,
-                                                                "Green Book DB",
-                                                                "EPiC DB",
-                                                            ),
-                                                            children=[
-                                                                dbc.Row(
-                                                                    [
-                                                                        dbc.Col(
-                                                                            html.H3(
-                                                                                "{:,}".format(
-                                                                                    np.around(
-                                                                                        ice_sum,
-                                                                                        2,
-                                                                                    )
-                                                                                ),
-                                                                                className="text-end",
-                                                                            )
-                                                                        ),
-                                                                        dbc.Col(
-                                                                            html.P(
-                                                                                [
-                                                                                    html.Span(
-                                                                                        [
-                                                                                            "kgCO",
-                                                                                            html.Sup(
-                                                                                                2
-                                                                                            ),
-                                                                                            html.Sub(
-                                                                                                "e"
-                                                                                            ),
-                                                                                        ],
-                                                                                        className="fs-4",
-                                                                                    ),
-                                                                                    " Total EC",
-                                                                                ]
-                                                                            ),
-                                                                            className="text-start",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                            ],
-                                                            style={"display": "block"},
-                                                        ),
-                                                    ],
-                                                    style={
-                                                        "marginTop": "3rem",
-                                                        "marginBottom": "3rem",
-                                                    },
-                                                ),
-                                                dmc.Divider(
-                                                    style={
-                                                        "marginLeft": "2rem",
-                                                        "marginRight": "2rem",
-                                                    }
-                                                ),
-                                                # GFA calc for ice
-                                                html.Div(
-                                                    [
-                                                        dbc.Row(
-                                                            [
-                                                                dbc.Col(
-                                                                    [
-                                                                        html.H3(
-                                                                            id="ice_gfa",
-                                                                            className="text-end",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                                dbc.Col(
-                                                                    [
-                                                                        html.P(
-                                                                            [
-                                                                                html.Span(
-                                                                                    [
-                                                                                        "kgCO",
-                                                                                        html.Sup(
-                                                                                            2
-                                                                                        ),
-                                                                                        html.Sub(
-                                                                                            "e"
-                                                                                        ),
-                                                                                        "/m",
-                                                                                        html.Sup(
-                                                                                            2
-                                                                                        ),
-                                                                                    ],
-                                                                                    className="fs-4",
-                                                                                )
-                                                                            ],
-                                                                            id="ice_p",
-                                                                            className="text-start",
-                                                                        ),
-                                                                    ]
-                                                                ),
-                                                            ]
-                                                        ),
-                                                        html.P(
-                                                            "Design's Benchmark",
-                                                            className="text-center ",
-                                                        ),
-                                                        dmc.Tooltip(
-                                                            label="No Benchmark scores available for ICE",
-                                                            transition="fade",
-                                                            transitionDuration=300,
-                                                            transitionTimingFunction="ease",
-                                                            children=[
-                                                                html.P(
-                                                                    "No Benchmark Score",
-                                                                    className="text-center mt-5 ",
-                                                                ),
-                                                            ],
-                                                            style={"display": "block"},
-                                                        ),
-                                                    ],
-                                                    style={
-                                                        "marginTop": "3rem",
-                                                        "marginBottom": "3rem",
-                                                    },
-                                                ),
-                                            ],
-                                            className="bg-light py-5 px-3",
-                                        ),
-                                    ],
-                                    className="my-5",
-                                ),
-                            ],
-                            fluid=True,
-                            className="gap-5",
-                        ),
+                        dashboard_cards.cards,
                         dcc.Graph(
                             figure=fig,
                             style={"height": "50vh"},
@@ -890,7 +392,8 @@ def make_graphs(data):
                             ]
                         ),
                     ],
-                    class_name="my-5 p-4 shadow",
+                    class_name="my-5 shadow",
+                    style={"padding": "4rem"},
                 ),
             ]
         )
