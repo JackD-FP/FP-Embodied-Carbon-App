@@ -9,3 +9,10 @@ building_type = [
     {"label": "Class 6 Retail - Regional", "value": "6_regional"},
     {"label": "Class 5 Retail - Sub Regional", "value": "5_sub_regional"},
 ]
+
+leti_type = [
+    {"label": "Small House", "value": "sh"},
+    {"label": "Medium House", "value": "mh"},
+    {"label": "Schools", "value": "school"},
+    {"label": "Commercial Offices", "value": "co"},
+]

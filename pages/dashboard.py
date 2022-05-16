@@ -1,6 +1,6 @@
 # saving this because of the ^3 (m³)
 import re
-from logging.config import stopListening
+from time import clock_settime
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -18,12 +18,40 @@ gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
 
+# dmc.Table(create_table(df_new_grouped))
+
+
+def create_data(x, label):
+    x = x.drop(["Element"], axis=1)
+    values = x.values
+    rows = [html.Tr([html.Td(cell) for cell in row]) for row in values]
+    row_label = html.Tr([html.Td(label, rowSpan=len(x) + 1)])
+    return [row_label] + rows
+
 
 def create_table(x):
-    columns, values = x.columns, x.values
+    # columns, values = x.columns, x.values
+    x.rename(
+        columns={
+            "Mass": "Mass (kg)",
+            "Volume": "Volume (m³)",
+            "Green Book EC": "Green Book EC (kgCO²e)",
+            "Epic EC": "Epic EC (kgCO²e)",
+            "Ice EC": "Ice EC (kgCO²e)",
+        },
+        inplace=True,
+    )
+    columns = x.columns
     header = [html.Tr([html.Th(col) for col in columns])]
-    rows = [html.Tr([html.Td(cell) for cell in row]) for row in values]
+    beam = create_data(x.loc[x["Element"] == "Beam"], "Beam")
+    column = create_data(x.loc[x["Element"] == "Column"], "Column")
+    slab = create_data(x.loc[x["Element"] == "Slab"], "Slab")
+    walls = create_data(x.loc[x["Element"] == "Wall"], "Wall")
+    stair = create_data(x.loc[x["Element"] == "Stair"], "Stair")
+
+    rows = column + beam + slab + walls + stair
     table = [html.Thead(header), html.Tbody(rows)]
+
     return table
 
 
@@ -343,10 +371,10 @@ def make_graphs(data):
                 dbc.Card(
                     [
                         html.H3("Embodied Carbon(EC) calculation"),
-                        dmc.Table(create_table(df_new_grouped)),
-                        # dbc.Table.from_dataframe(
-                        #     df_new_grouped, striped=True, bordered=True, hover=True
-                        # ),
+                        dmc.Table(
+                            create_table(df_new_grouped),
+                            highlightOnHover=True,
+                        ),
                         dashboard_cards.cards,
                         dcc.Graph(
                             figure=fig,
