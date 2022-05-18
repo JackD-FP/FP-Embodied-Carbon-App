@@ -35,9 +35,9 @@ def create_table(x):
         columns={
             "Mass": "Mass (kg)",
             "Volume": "Volume (m³)",
-            "Green Book EC": "Green Book EC (kgCO²e)",
-            "Epic EC": "Epic EC (kgCO²e)",
-            "Ice EC": "Ice EC (kgCO²e)",
+            "Green Book EC": "Green Book EC (kgCO₂e)",
+            "Epic EC": "Epic EC (kgCO₂e)",
+            "Ice EC": "Ice EC (kgCO₂e)",
         },
         inplace=True,
     )
@@ -230,20 +230,20 @@ def make_graphs(data):
 
         embodied_carbon_dict = {
             "Materials": df_mat,
-            "Green Book (kgCO²e)": gb_ec,
-            "EPiC EC (kgCO²e)": epic_ec,
-            "ICE EC (kgCO²e)": ice_ec,
+            "Green Book (kgCO₂e)": gb_ec,
+            "EPiC EC (kgCO₂e)": epic_ec,
+            "ICE EC (kgCO₂e)": ice_ec,
         }
 
         ec_df = pd.DataFrame(embodied_carbon_dict)
 
-        ec_df.loc[:, "Green Book (kgCO²e)"] = ec_df["Green Book (kgCO²e)"].map(
+        ec_df.loc[:, "Green Book (kgCO₂e)"] = ec_df["Green Book (kgCO₂e)"].map(
             "{:,.2f}".format
         )
-        ec_df.loc[:, "EPiC EC (kgCO²e)"] = ec_df["EPiC EC (kgCO²e)"].map(
+        ec_df.loc[:, "EPiC EC (kgCO₂e)"] = ec_df["EPiC EC (kgCO₂e)"].map(
             "{:,.2f}".format
         )
-        ec_df.loc[:, "ICE EC (kgCO²e)"] = ec_df["ICE EC (kgCO²e)"].map("{:,.2f}".format)
+        ec_df.loc[:, "ICE EC (kgCO₂e)"] = ec_df["ICE EC (kgCO₂e)"].map("{:,.2f}".format)
 
         fig = make_subplots(
             rows=1,
@@ -289,29 +289,29 @@ def make_graphs(data):
             title_text="Structure Embodied Carbon",
             annotations=[
                 dict(text="Greenbook", x=0.12, y=0.50, font_size=16, showarrow=False),
-                # dict(
-                #     text="{:,.2f} kgCO²e".format(gb_sum),
-                #     x=0,
-                #     y=0.1,
-                #     font_size=32,
-                #     showarrow=False,
-                # ),
+                dict(
+                    text="{:,.2f} kgCO₂e".format(gb_sum),
+                    x=0,
+                    y=0.1,
+                    font_size=24,
+                    showarrow=False,
+                ),
                 dict(text="EPiC", x=0.50, y=0.50, font_size=16, showarrow=False),
-                # dict(
-                #     text="{:,.2f} kgCO²e".format(epic_sum),
-                #     x=0.5,
-                #     y=0.1,
-                #     font_size=32,
-                #     showarrow=False,
-                # ),
+                dict(
+                    text="{:,.2f} kgCO₂e".format(epic_sum),
+                    x=0.5,
+                    y=0.1,
+                    font_size=24,
+                    showarrow=False,
+                ),
                 dict(text="ICE", x=0.87, y=0.50, font_size=16, showarrow=False),
-                # dict(
-                #     text="{:,.2f} kgCO²e".format(ice_sum),
-                #     x=1,
-                #     y=0.1,
-                #     font_size=32,
-                #     showarrow=False,
-                # ),
+                dict(
+                    text="{:,.2f} kgCO₂e".format(ice_sum),
+                    x=1,
+                    y=0.1,
+                    font_size=24,
+                    showarrow=False,
+                ),
             ],
         ),
         fig.update_traces(
@@ -382,43 +382,43 @@ def make_graphs(data):
                             className="mt-3",
                             config=config,
                         ),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    html.H3(
-                                        [
-                                            "{:,.2f}".format(gb_sum),
-                                            html.P(
-                                                "kgCO²ₑ", className="fs-5 display-6"
-                                            ),
-                                        ],
-                                        style={"textAlign": "center"},
-                                    )
-                                ),
-                                dbc.Col(
-                                    html.H3(
-                                        [
-                                            "{:,.2f}".format(epic_sum),
-                                            html.P(
-                                                "kgCO²ₑ", className="fs-5 display-6"
-                                            ),
-                                        ],
-                                        style={"textAlign": "center"},
-                                    )
-                                ),
-                                dbc.Col(
-                                    html.H3(
-                                        [
-                                            "{:,.2f}".format(ice_sum),
-                                            html.P(
-                                                "kgCO²ₑ", className="fs-5 display-6"
-                                            ),
-                                        ],
-                                        style={"textAlign": "center"},
-                                    )
-                                ),
-                            ]
-                        ),
+                        # dbc.Row(
+                        #     [
+                        #         dbc.Col(
+                        #             html.H3(
+                        #                 [
+                        #                     "{:,.2f}".format(gb_sum),
+                        #                     html.P(
+                        #                         "kgCO₂ₑ", className="fs-5 display-6"
+                        #                     ),
+                        #                 ],
+                        #                 style={"textAlign": "center"},
+                        #             )
+                        #         ),
+                        #         dbc.Col(
+                        #             html.H3(
+                        #                 [
+                        #                     "{:,.2f}".format(epic_sum),
+                        #                     html.P(
+                        #                         "kgCO₂ₑ", className="fs-5 display-6"
+                        #                     ),
+                        #                 ],
+                        #                 style={"textAlign": "center"},
+                        #             )
+                        #         ),
+                        #         dbc.Col(
+                        #             html.H3(
+                        #                 [
+                        #                     "{:,.2f}".format(ice_sum),
+                        #                     html.P(
+                        #                         "kgCO₂ₑ", className="fs-5 display-6"
+                        #                     ),
+                        #                 ],
+                        #                 style={"textAlign": "center"},
+                        #             )
+                        #         ),
+                        #     ]
+                        # ),
                     ],
                     class_name="my-5 shadow",
                     style={"padding": "4rem"},
@@ -442,102 +442,3 @@ def filename_update(data):
 def error_update(data):
     df = pd.read_json(data, orient="split")
     return funcs.upload_alert(df)
-
-
-# @callback(
-#     Output("gb_gfa", "children"),
-#     # Output("epic_gfa", "children"),
-#     # Output("ice_gfa", "children"),
-#     Output("gb_benchmark", "children"),
-#     Input("gfa_input", "value"),
-#     Input("bld_type", "value"),
-#     Input("proc_store", "data"),
-# )
-# def gfa_calc(val, bld_type, data):
-#     df = pd.read_json(data, orient="split")
-#     # gb_ec, epic_ec, ice_ec = em_calc(df)
-#     # df_grouped = df.groupby(by=['Building Materials'], as_index=False).sum()
-
-#     if val is not None:
-
-#         gfa_val = [
-#             df["Green Book EC"].sum() / val,
-#             df["EPiC EC"].sum() / val,
-#             df["ICE EC"].sum() / val,
-#         ]
-
-#         gb_gfa_out = "{:,}".format(np.around(gfa_val[0], 2))
-#         epic_gfa_out = "{:,}".format(np.around(gfa_val[1], 2))
-#         ice_gfa_out = "{:,}".format(np.around(gfa_val[2], 2))
-
-#         def benchmark(Embodied_Carbon, Building_Type):
-#             if Building_Type == "2_premium":
-#                 if Embodied_Carbon <= 1450 and Embodied_Carbon >= 1160:
-#                     return funcs.progress_bar(3, Embodied_Carbon, 1160, 1450)
-#                 elif Embodied_Carbon <= 1160 and Embodied_Carbon >= 870:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 870, 1160)
-#                 elif Embodied_Carbon <= 870:
-#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 870)
-#                 else:
-#                     return html.Div("Improvement Required", className="text-center")
-
-#             elif Building_Type == "2_multi-res":
-#                 if Embodied_Carbon <= 990 and Embodied_Carbon >= 790:
-#                     return funcs.progress_bar(3, Embodied_Carbon, 790, 990)
-#                 elif Embodied_Carbon <= 790 and Embodied_Carbon >= 590:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 590, 790)
-#                 elif Embodied_Carbon <= 590:
-#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 590)
-#                 else:
-#                     return html.Div("Improvement Required", className="text-center")
-
-#             elif Building_Type == "5_premium":
-#                 if Embodied_Carbon <= 1500 and Embodied_Carbon >= 1200:
-#                     return funcs.progress_bar(3, Embodied_Carbon, 1200, 1500)
-#                 elif Embodied_Carbon <= 1200 and Embodied_Carbon >= 900:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 900, 1200)
-#                 elif Embodied_Carbon <= 900:
-#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 900)
-#                 else:
-#                     return html.Div("Improvement Required", className="text-center")
-
-#             elif Building_Type == "5_a_grade":
-#                 if Embodied_Carbon <= 800 and Embodied_Carbon >= 640:
-#                     return funcs.progress_bar(3, Embodied_Carbon, 640, 800)
-#                 elif Embodied_Carbon <= 640 and Embodied_Carbon >= 480:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 480, 640)
-#                 elif Embodied_Carbon <= 480:
-#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 480)
-#                     # stars_append(5)
-#                 else:
-#                     return html.Div("Improvement Required", className="text-center")
-
-#             elif Building_Type == "6_regional":
-#                 if Embodied_Carbon <= 2150 and Embodied_Carbon >= 1750:
-#                     return funcs.progress_bar(3, Embodied_Carbon, 1750, 2150)
-#                 elif Embodied_Carbon <= 1720 and Embodied_Carbon >= 1250:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 1250, 1720)
-#                 elif Embodied_Carbon <= 1290:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 0, 1290)
-#                 else:
-#                     return html.Div("Improvement Required", className="text-center")
-
-#             elif Building_Type == "5_sub_regional":
-#                 if Embodied_Carbon <= 1220 and Embodied_Carbon >= 970:
-#                     return funcs.progress_bar(3, Embodied_Carbon, 970, 1220)
-#                 elif Embodied_Carbon <= 970 and Embodied_Carbon >= 730:
-#                     return funcs.progress_bar(4, Embodied_Carbon, 730, 970)
-#                 elif Embodied_Carbon <= 730:
-#                     return funcs.progress_bar(5, Embodied_Carbon, 0, 730)
-#                 else:
-#                     return html.Div("Improvement Required", className="text-center")
-
-#         # html.Div(benchmark(gfa_val[0],bld_type))
-
-#         return (
-#             gb_gfa_out,
-#             html.Div(benchmark(gfa_val[0], bld_type)),
-#         )
-
-#     else:
-#         raise PreventUpdate

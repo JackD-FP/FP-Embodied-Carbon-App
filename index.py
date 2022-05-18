@@ -13,11 +13,6 @@ from flask import Flask
 from pages import analysis, comparison, dashboard, documentation
 from src import save_modal
 
-# from server import app
-
-if not os.path.exists("image"):  # why do i have this?
-    os.mkdir("image")  # was I suppose to do something with this?＼（〇_ｏ）／
-
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
 
@@ -93,7 +88,7 @@ sidebar = html.Div(
                             href="/pages/analysis",
                             id="analysis",
                             active="exact",
-                            disabled=True,
+                            # disabled=True,
                         ),
                     ],
                 ),
@@ -305,21 +300,21 @@ def render_page_content(pathname):
     )
 
 
-@app.callback(
-    Output("analysis", "disabled"),
-    Input("main_store", "data"),
-    Input("gfa_store", "data"),
-)
-def analysis_update(main_store, gfa_store):
-    if main_store is not None:
-        df = pd.read_json(main_store, orient="split")
-        nan_check = sum(df.isna().sum().tolist())
-        if nan_check > 0 or gfa_store is None or gfa_store == "":
-            return True
-        else:
-            return False
-    else:
-        PreventUpdate
+# @app.callback(
+#     Output("analysis", "disabled"),
+#     Input("main_store", "data"),
+#     Input("gfa_store", "data"),
+# )
+# def analysis_update(main_store, gfa_store):
+#     if main_store is not None:
+#         df = pd.read_json(main_store, orient="split")
+#         nan_check = sum(df.isna().sum().tolist())
+#         if nan_check > 0 or gfa_store is None or gfa_store == "":
+#             return True
+#         else:
+#             return False
+#     else:
+#         PreventUpdate
 
 
 app.layout = html.Div(

@@ -50,7 +50,7 @@ def sum_layer(x):
             className="fs-4",
         ),
         html.P(
-            ["kgCO²e", html.Span(" Total EC")],
+            ["kgCO₂e", html.Span(" Total EC")],
         ),
     ]
 
@@ -87,9 +87,11 @@ def gb_benchmark_update():
         ),
         html.H3(id="gb_benchmark", className="fs-4 text-center"),
         html.P(
-            ["kgCO²e", html.Span(" Total EC")],
-            className="text-center",
+            ["kgCO₂e per m²"],
+            className="text-center mb-0",
         ),
+        html.P(" Area in NLA", className="text-center bg-light mb-5"),
+        html.Div(id="gb_benchmark_result"),
     ]
     return children
 
@@ -126,18 +128,13 @@ def ice_benchmark_update():
         ),
         html.H3(id="ice_benchmark", className="fs-4 text-center"),
         html.P(
-            ["kgCO²e", html.Span(" Total EC")],
-            className="text-center mb-5",
+            ["kgCO₂e per m²"],
+            className="text-center mb-0",
         ),
+        html.P("Area in GIA", className="text-center bg-light mb-5"),
         html.Div(id="ice_benchmark_result"),
     ]
-
     return children
-
-
-def leti(bld_type):
-    leti = {"sh": 500, "mh": 500, "school": 600, "co": 600}
-    return leti.get(bld_type, 0)
 
 
 # ---- Callbacks ----
@@ -166,31 +163,60 @@ def cards_update(data):
         return gb, epic, ice, gb_benchmark, ice_benchmark
 
 
+# Green Book callback
 @callback(
     Output("gb_nla", "error"),
     Output("gb_benchmark", "children"),
+    Output("gb_benchmark_result", "children"),
     Input("gb_nla", "value"),
+    Input("gb_building_type", "value"),
+    State("gb_building_type", "data"),
     State("proc_store", "data"),
 )
-def gb_benchmarks_update(gb_val, data):
-    if gb_val is None or gb_val == "" or gb_val == 0:
-        return "NLA cannot be empty or 0", "No Value"
+def gb_benchmarks_update(gb_nla, gb_value, gb_label, data):
+    if gb_nla is None or gb_nla == "" or gb_nla == 0:
+        return "NLA cannot be empty or 0", "No Value", "No Value"
     else:
+        label = [x["label"] for x in gb_label if x["value"] == gb_value]
+        gb_template = [
+            html.H3(
+                [
+                    "For ",
+                    html.Strong("{}".format(label[0])),
+                    ", the benchmark score is",
+                ],
+                className="display-6 fs-5 mb-5 text-center",
+            ),
+        ]
         df = pd.read_json(data, orient="split")
         gb_sum = df["Green Book EC"].sum()
-        gb_benchmark = gb_sum / gb_val
-        return False, "{:,}".format(np.around(gb_benchmark, 2))
+        gb_benchmark = gb_sum / gb_nla
+
+        children = gb_template + [
+            building_type_option.gb_benchmark_calc(gb_value, gb_benchmark),
+            html.P(
+                building_type_option.gb_benchmark_optimum(gb_value, gb_benchmark),
+                className="display-6 fs-5 text-center my-5",
+            ),
+        ]
+        return (
+            False,
+            "{:,}".format(np.around(gb_benchmark, 2)),
+            children,
+        )
 
 
+# ICE callback
 @callback(
     Output("ice_gia", "error"),
     Output("ice_benchmark", "children"),
     Output("ice_benchmark_result", "children"),
     Input("ice_gia", "value"),
     Input("ice_building_type", "value"),
+    State("ice_building_type", "data"),
     State("proc_store", "data"),
 )
-def gb_benchmarks_update(val, val_bld, data):
+def gb_benchmarks_update(val, val_bld, label_bld, data):
     if val is None or val == "" or val == 0:
         return (
             "NLA cannot be empty or 0",
@@ -198,43 +224,64 @@ def gb_benchmarks_update(val, val_bld, data):
             "No Value",
         )
     else:
+        label = [x["label"] for x in label_bld if x["value"] == val_bld]
+        template = [
+            html.H5(
+                [html.Strong("LETI"), "'s Climate Emegency Design Guide requires"],
+                className="display-6 fs-5 text-center",
+            ),
+            html.Span(
+                [
+                    html.H5(
+                        [
+                            html.Strong("{}".format(label[0])),
+                            " to be less than < ",
+                            html.Strong(
+                                "{}".format(building_type_option.leti(val_bld))
+                            ),
+                        ],
+                        className="display-6 fs-5 text-center mb-5",
+                    )
+                ]
+            ),
+        ]
 
         df = pd.read_json(data, orient="split")
         ice_sum = df["ICE EC"].sum()
         ice_benchmark = ice_sum / val
 
-        if ice_benchmark / leti(val_bld) >= 1:
+        if ice_benchmark < building_type_option.leti(
+            val_bld
+        ):  # if ice_benchmark is less than leti
+            message = "Your benchmark is lower than the LETI's Climate Emergency Design Guide requirement"
             child = [
-                dmc.ThemeIcon(
-                    DashIconify(icon="mdi:check-circle", width=30),
-                    radius="xl",
-                    size="xl",
+                dmc.Alert(
+                    message,
+                    title="Success!",
                     color="green",
-                    variant="light",
-                ),
-                html.P(
-                    "LETI requirement has been met and is less than {} kgCO²e".format(
-                        leti(val_bld)
-                    )
-                ),
+                    icon=[
+                        DashIconify(
+                            icon="mdi:check-circle-outline", color="green", width=30
+                        )
+                    ],
+                )
             ]
-        else:
+            return (False, "{:,}".format(np.around(ice_benchmark, 2)), template + child)
+        else:  # if ice_benchmark is MORE than leti
+            message = "Your benchmark is greater than the LETI benchmark"
             child = [
-                dmc.ThemeIcon(
-                    DashIconify(icon="mdi:alert-circle", width=30),
-                    radius="xl",
-                    size="xl",
-                    color="green",
-                    variant="light",
-                ),
-                html.P(
-                    "LETI requirement IS NOT met and is MORE than {} kgCO²e".format(
-                        leti(val_bld)
-                    )
-                ),
+                dmc.Alert(
+                    message,
+                    title="Alert!",
+                    color="yellow",
+                    icon=[
+                        DashIconify(
+                            icon="mdi:alert-circle-outline", color="red", width=30
+                        )
+                    ],
+                )
             ]
-
-        return (False, "{:,}".format(np.around(ice_benchmark, 2)), child)
+            return (False, "{:,}".format(np.around(ice_benchmark, 2)), template + child)
 
 
 # ---- Generate The Cards for Dashboard ----
