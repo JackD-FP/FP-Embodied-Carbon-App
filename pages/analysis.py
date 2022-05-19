@@ -7,7 +7,7 @@
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import Input, Output, callback, dcc, html
-from src import analysis_cards
+from src import analysis_cards, analysis_cards2
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 
@@ -45,9 +45,10 @@ def definition(data):
             [
                 html.H3("Structure Schedule"),
                 dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
-                analysis_cards.greenbook_card,
-                analysis_cards.epic_card,
-                analysis_cards.ice_card,
+                analysis_cards2.greenbook_layout,
+                # analysis_cards.greenbook_card,
+                # analysis_cards.epic_card,
+                # analysis_cards.ice_card,
             ]
         )
 

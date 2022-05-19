@@ -180,10 +180,12 @@ def gb_benchmarks_update(gb_nla, gb_value, gb_label, data):
         label = [x["label"] for x in gb_label if x["value"] == gb_value]
         gb_template = [
             html.H3(
-                [
-                    "For ",
+                [   
+                    "TFC's ",
+                    html.Strong("Green Book DB"),
+                    " benchmark for ",
                     html.Strong("{}".format(label[0])),
-                    ", the benchmark score is",
+                    ", is",
                 ],
                 className="display-6 fs-5 mb-5 text-center",
             ),

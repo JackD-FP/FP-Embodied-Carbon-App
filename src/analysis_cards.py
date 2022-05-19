@@ -18,7 +18,14 @@ from config import config, graph_colors
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
-from src import analysis_more_info, epic_options, funcs, greenbook_options, ice_options
+from src import (
+    analysis_more_info,
+    epic_options,
+    funcs,
+    greenbook_options,
+    ice_options,
+    analysis_class,
+)
 
 # from pages.dashboard import em_calc, gfa_calc
 
@@ -141,6 +148,8 @@ row4 = html.Tr(
 )
 
 table_body = [html.Tbody([row1, row2, row3, row4])]
+# row = analysis_class.analysis_rows(mat_id="row_timber_value")
+# table_body = [html.Tbody(row.row_generate())]
 
 greenbook_card = dbc.Card(
     [
