@@ -1,16 +1,19 @@
 import dash_bootstrap_components as dbc
 import pandas as pd
+import numpy as np
+import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, html, State
 from dash.exceptions import PreventUpdate
-from src import analysis_cards, analysis_cards2, class_Lib
+from src import analysis_card_gb, analysis_cards, greenbook_options
 
 # gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 
 layout = html.Div(
     [
+        dcc.Store(id="gb_store"),
         html.H1("Analysis", className="display-2 mb-5 "),
         html.Hr(),
-        html.Div(id="gb"),
+        html.Div(analysis_card_gb.gb_layout),
         html.Div(id="epic"),
         html.Div(id="ice"),
     ],
@@ -18,76 +21,183 @@ layout = html.Div(
 )
 
 
-@callback(
-    Output("gb", "children"),
-    Output("epic", "children"),
-    Output("ice", "children"),
-    Input("proc_store", "modified_timestamp"),
-    Input("nla_store", "modified_timestamp"),
-    Input("gia_store", "modified_timestamp"),
-    State("proc_store", "data"),
-    State("nla_store", "data"),
-    State("gia_store", "data"),
-)
-def gb_update(mts, nla_mts, gia_mts, data, nla_data, gia):
-    if mts is None or nla_mts is None or gia_mts is None:
-        raise PreventUpdate
-    else:
-        df = pd.read_json(data, orient="split")
-        gb = class_Lib.gen_cards(df, "Green Book EC", "gb_tab", "gb_content", nla_data)
-        epic = class_Lib.gen_cards(df, "EPiC EC", "epic_tab", "epic_content")
-        ice = class_Lib.gen_cards(df, "ICE EC", "ice_tab", "ice_content", gia)
+# def cards(name, total, benchmark, tab_id, tab_content_id):
+#     return dbc.Card(
+#         [
+#             html.H3(name, className="display-6"),
+#             dmc.Divider(class_name="mb-5"),
+#             dmc.SimpleGrid(
+#                 cols=2,
+#                 children=[
+#                     dmc.Col(
+#                         [
+#                             dmc.SimpleGrid(
+#                                 children=[
+#                                     dmc.Col(
+#                                         children=[
+#                                             html.H4(
+#                                                 "{:,}".format(total),
+#                                                 className="text-center",
+#                                             ),
+#                                             html.P(
+#                                                 [
+#                                                     "kgCO₂e",
+#                                                     dmc.Text("Total EC", color="gray"),
+#                                                 ],
+#                                                 className="text-center",
+#                                             ),
+#                                         ]
+#                                     ),
+#                                     dmc.Col(
+#                                         children=[
+#                                             html.H4(
+#                                                 "{:,}".format(benchmark),
+#                                                 className="text-center",
+#                                             ),
+#                                             html.P(
+#                                                 [
+#                                                     "kgCO₂e per m²",
+#                                                     dmc.Text(
+#                                                         "Building Benchmark",
+#                                                         color="gray",
+#                                                     ),
+#                                                 ],
+#                                                 className="text-center",
+#                                             ),
+#                                         ]
+#                                     ),
+#                                 ],
+#                                 cols=2,
+#                                 class_name="mb-5",
+#                             ),
+#                             # span=6,
+#                             dbc.Tabs(
+#                                 id=tab_id,
+#                                 active_tab="Beams",
+#                                 children=[
+#                                     dbc.Tab(label="Beams"),
+#                                     dbc.Tab(label="Columns"),
+#                                     dbc.Tab(label="Slabs"),
+#                                     dbc.Tab(label="Walls"),
+#                                     dbc.Tab(label="Stairs"),
+#                                 ],
+#                             ),
+#                             # content for tab divs
+#                             html.Div(id=tab_content_id),
+#                             # tab_div(self.tab_content),
+#                         ]
+#                     ),
+#                     dmc.Col(html.Div("potato")),
+#                 ],
+#             ),
+#         ],
+#         class_name="my-5 p-4 shadow",
+#     )
 
-        return gb.card(), epic.card(), ice.card()
+
+# def row_gen(mat_name, value):
+#     row = html.Tr(
+#         [
+#             html.Td(
+#                 [
+#                     dmc.Grid(
+#                         children=[
+#                             dmc.Col(
+#                                 dmc.Text(
+#                                     mat_name,
+#                                     weight=500,
+#                                     color="gray",
+#                                 ),
+#                                 span=3,
+#                             ),
+#                             dmc.Col(
+#                                 dbc.Select(
+#                                     options=greenbook_options.concrete, persistence=True
+#                                 ),
+#                                 span=9,
+#                             ),
+#                         ],
+#                         align="center",
+#                     ),
+#                 ],
+#                 className="px-3 w-75",
+#             ),
+#             html.Td(value, className="px-3 align-middle"),
+#         ]
+#     )
+#     return row
 
 
-# greenbook_layout = html.Div(id="gb")
-# epic_layout = html.Div(id="epic")
-# ice_layout = html.Div(id="ice")
+# def tab_contents(value):
+#     header = [
+#         html.Thead(
+#             html.Tr(
+#                 [
+#                     html.Th("Materials"),
+#                     html.Th("Embodied Carbon"),
+#                 ]
+#             )
+#         )
+#     ]
+#     row1 = row_gen("Concrete", value)
+#     return dbc.Tab(header + [row1])
+
 
 # @callback(
-#     Output("table_div", "children"),
-#     Input("proc_store", "data"),
+#     Output("gb", "children"),
+#     Output("epic", "children"),
+#     Output("ice", "children"),
+#     Input("proc_store", "modified_timestamp"),
+#     Input("nla_store", "modified_timestamp"),
+#     Input("gia_store", "modified_timestamp"),
+#     State("proc_store", "data"),
+#     State("nla_store", "data"),
+#     State("gia_store", "data"),
 # )
-# def definition(data):
-#     if data is not None:
+# def gb_update(mts, nla_mts, gia_mts, data, nla_data, gia):
+#     if mts is None or nla_mts is None or gia_mts is None:
+#         raise PreventUpdate
+#     else:
 #         df = pd.read_json(data, orient="split")
-#         if "Embodied Carbon" in df.columns:
-#             df = df.drop(["Embodied Carbon"], axis=1)
-#         else:
-#             pass
 
-#         df = df.groupby(by=["Materials"], as_index=False).sum()
-#         df.loc[:, "Mass"] = df["Mass"].map("{:,.2f}".format)
-#         df.loc[:, "Volume"] = df["Volume"].map("{:,.2f}".format)
-#         df.loc[:, "Green Book EC"] = df["Green Book EC"].map("{:,.2f}".format)
-#         df.loc[:, "EPiC EC"] = df["EPiC EC"].map("{:,.2f}".format)
-#         df.loc[:, "ICE EC"] = df["ICE EC"].map("{:,.2f}".format)
-
-#         return html.Div(
-#             [
-#                 html.H3("Structure Schedule"),
-#                 dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
-#                 analysis_cards2.greenbook_layout,
-#                 analysis_cards2.epic_layout,
-#                 analysis_cards2.ice_layout,
-#                 # analysis_cards.greenbook_card,
-#                 # analysis_cards.epic_card,
-#                 # analysis_cards.ice_card,
-#             ]
+#         gb_card = cards(
+#             name := "Green Book EC",
+#             gb_total := np.around(df[name].sum(), 2),
+#             np.around(gb_total / nla_data),
+#             "gb_tab",
+#             "gb_content",
 #         )
 
-#     elif data is None:
-#         dbc.Alert(  # not sure why this is not working
-#             [
-#                 html.H1("UPLOAD you schule"),
-#                 html.Hr(),
-#                 html.P(
-#                     "please upload your structure schedule in the dashboard page",
-#                     className="h4",
-#                 ),
-#                 html.P("Happy designing! 😁"),
-#             ],
-#             is_open=True,
-#             dismissable=True,
-#         ),
+#         return gb_card, "test", "test"
+
+
+# @callback(
+#     Output("gb_content", "children"),
+#     Input("gb_tab", "active_tab"),
+#     State("proc_store", "data"),
+# )
+# def tab_content_update(active, data):
+#     if data is None:
+#         raise PreventUpdate
+#     else:
+#         df = pd.read_json(data, orient="split")
+
+#         if active == "Beams":
+#             return tab_contents("asdasdasd")
+#         elif active == "Columns":
+#             return tab_contents("qwerqwe")
+#         elif active == "Slabs":
+#             return tab_contents("asdfasdf")
+#         elif active == "Walls":
+#             return tab_contents("zxcvzxcv")
+#         elif active == "Stairs":
+#             return tab_contents("uiopuio")
+
+#         # content = {
+#         #     "Beams": tab_contents(0.6),
+#         #     "Columns": html.P("asdf"),
+#         #     "Sabs": html.P("zxcv"),
+#         #     "Walls": html.P("qwerqwe"),
+#         #     "Stairs": html.P("tyuityui"),
+#         # }
+#         # return content.get(active)

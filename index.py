@@ -11,7 +11,7 @@ from dash.exceptions import PreventUpdate
 from flask import Flask
 
 from pages import analysis, comparison, dashboard, documentation
-from src import save_modal, class_Lib
+from src import analysis_lib, save_modal
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -161,7 +161,7 @@ def save_2_main(data):
 )
 def proc_store_update(data):
     if data is not None:
-        bld_data = class_Lib.data(data)
+        bld_data = analysis_lib.data(data)
         return data
     else:
         PreventUpdate

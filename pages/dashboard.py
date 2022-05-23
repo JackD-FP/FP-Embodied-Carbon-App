@@ -12,7 +12,7 @@ from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import building_type_option, dashboard_cards, funcs, uploader, class_Lib
+from src import analysis_lib, building_type_option, dashboard_cards, funcs, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
