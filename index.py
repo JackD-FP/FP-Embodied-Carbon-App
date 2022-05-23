@@ -11,7 +11,7 @@ from dash.exceptions import PreventUpdate
 from flask import Flask
 
 from pages import analysis, comparison, dashboard, documentation
-from src import save_modal
+from src import save_modal, class_Lib
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -107,63 +107,6 @@ sidebar = html.Div(
             style={"marginTop": "3rem", "fontSize": "1.5rem"},
             className="display-6",
         ),
-        html.Hr(className="mt-5"),
-        html.P(
-            [
-                html.I(className="bi bi-cone-striped"),
-                "save session is still under construction",
-                html.I(className="bi bi-cone-striped"),
-            ],
-            className="text-center text-secondary fs-6",
-        ),
-        html.H5("Files", className="mb-3 display-6 fs-3"),
-        html.P(
-            "Save your session locally or share your project with everyone.",
-            className="text-secondary",
-        ),
-        dbc.Nav(
-            [
-                dbc.NavItem(
-                    dbc.NavLink(
-                        "Save Session",
-                        href="#",
-                        id="save_session",
-                        active=True,
-                        className="border border-1 rounded-3 border-primary mb-3",
-                    ),
-                ),
-                dbc.DropdownMenu(
-                    label="Load Session",
-                    children=[
-                        dbc.DropdownMenuItem("test 1"),
-                        dbc.DropdownMenuItem("test 2"),
-                        dbc.DropdownMenuItem("test 3"),
-                    ],
-                    nav=True,
-                    className="flex-grow-1 mb-3",
-                ),
-            ],
-            vertical=True,
-        ),
-        save_modal.save_modal,
-        dbc.Button(
-            [
-                html.Div(
-                    [
-                        html.Span(className="bi bi-share-fill"),
-                        html.Span("Share", style={"marginLeft": "0.5rem"}),
-                    ],
-                    style={"display": "block"},
-                ),
-            ],
-            className="mb-3",
-        ),
-        html.P(
-            "Sharing Projects helps Architects \
-            compare embodied carbon with other projects and make \
-            benchmark scores more accurate",
-            className="text-secondary",
-        ),
         dmc.Affix(
             dmc.Tooltip(
                 label="Send some feedback!",
@@ -218,6 +161,7 @@ def save_2_main(data):
 )
 def proc_store_update(data):
     if data is not None:
+        bld_data = class_Lib.data(data)
         return data
     else:
         PreventUpdate
@@ -252,11 +196,35 @@ def project_name_update(value):
 
 # save gfa value
 @app.callback(
-    Output("gfa_store", "data"),
-    Input("gfa_input", "value"),
+    Output("nla_store", "data"),
+    Output("gb_bld_type_store", "data"),
+    Input("temp_gb_nla", "modified_timestamp"),
+    Input("temp_gb_blt_type", "modified_timestamp"),
+    State("temp_gb_nla", "data"),
+    State("temp_gb_blt_type", "data"),
 )
-def gfa_store_update(value):
-    return value
+def gfa_store_update(
+    nla_mts,
+    blt_mts,
+    nla,
+    blt_type,
+):
+    if nla_mts is None or blt_mts is None:
+        raise PreventUpdate
+    else:
+        return nla, blt_type
+
+
+@app.callback(
+    Output("gia_store", "data"),
+    Input("temp_ice_gia", "modified_timestamp"),
+    State("temp_ice_gia", "data"),
+)
+def gia_store_update(gia_mts, gia):
+    if gia_mts is None:
+        raise PreventUpdate
+    else:
+        return gia
 
 
 # routing stuff also 404 page
@@ -319,12 +287,15 @@ def render_page_content(pathname):
 
 app.layout = html.Div(
     [
-        dcc.Store(id="proc_store", storage_type="session"),
-        dcc.Store(
-            id="main_store", storage_type="session"
-        ),  # stores the current schedule
-        dcc.Store(id="gfa_store", storage_type="session"),  # stores gfa
-        dcc.Store(id="project_name", storage_type="session"),  # Stores project name
+        dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
+        dcc.Store(id="main_store", storage_type="session"),  # unedited data
+        # Green Book dashboard
+        dcc.Store(id="nla_store", storage_type="session"),
+        dcc.Store(id="gb_bld_type_store", storage_type="session"),
+        # ICE GIA
+        dcc.Store(id="gia_store", storage_type="session"),
+        #
+        dcc.Store(id="project_name", storage_type="session"),
         dcc.Store(
             id="card02_store", storage_type="session"
         ),  # Stores card 2 upload data

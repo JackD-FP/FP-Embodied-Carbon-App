@@ -15,12 +15,28 @@ building_type = [
     {"label": "Class 6 Retail - Sub Regional", "value": "6_sub_regional"},
 ]
 
+gb_types = {
+    "2_premium": "Class 2 Residential - Premium(>25m)",
+    "2_multi-res": "Class 2 - Multi-residential",
+    "5_premium": "Class 5 Office - Premium",
+    "5_a_grade": "Class 5 Office - A Grade",
+    "6_regional": "Class 6 Retail - Regional",
+    "6_sub_regional": "Class 6 Retail - Sub Regional",
+}
+
 leti_type = [
     {"label": "Small House", "value": "sh"},
     {"label": "Medium House", "value": "mh"},
     {"label": "Schools", "value": "school"},
     {"label": "Commercial Offices", "value": "co"},
 ]
+
+leti_option = {
+    "sh": "Small House",
+    "mh": "Medium House",
+    "school": "Schools",
+    "co": "Commercial Offices",
+}
 
 
 def leti(bld_type):

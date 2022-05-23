@@ -61,23 +61,49 @@ def gb_benchmark_update():
             [
                 dmc.Col(
                     [
-                        dmc.NumberInput(
-                            label="NLA of the building",
-                            description="NLA is the Net Lettable Area of the building",
+                        # dmc.NumberInput(
+                        #     label="NLA of the building",
+                        #     description="NLA is the Net Lettable Area of the building",
+                        #     value=10000.0,
+                        #     id="gb_nla",
+                        # )
+                        html.Strong("NLA of the Building"),
+                        dmc.Text(
+                            "NLA is the Net Lettable Area of the building",
+                            size="xs",
+                            color="dimmed",
+                        ),
+                        dbc.Input(
+                            type="number",
+                            min=1,
+                            debounce=True,
+                            persistence=True,
                             value=10000.0,
                             id="gb_nla",
-                        )
+                        ),
                     ],
                 ),
                 dmc.Col(
                     [
-                        dmc.Select(
-                            label="BCA Building Type:",
-                            description="Classification of the building under NCC",
-                            placeholder="Select one",
+                        # dmc.Select(
+                        #     label="BCA Building Type:",
+                        #     description="Classification of the building under NCC",
+                        #     placeholder="Select one",
+                        #     id="gb_building_type",
+                        #     value="5_a_grade",
+                        #     data=building_type_option.building_type,
+                        # ),
+                        html.Strong("BCA Building Type:"),
+                        dmc.Text(
+                            "Classification of the building under NCC",
+                            size="xs",
+                            color="dimmed",
+                        ),
+                        dbc.Select(
                             id="gb_building_type",
+                            options=building_type_option.building_type,
                             value="5_a_grade",
-                            data=building_type_option.building_type,
+                            persistence=True,
                         ),
                     ],
                 ),
@@ -102,23 +128,49 @@ def ice_benchmark_update():
             [
                 dmc.Col(
                     [
-                        dmc.NumberInput(
-                            label="GIA of the building",
-                            description="GIA is the Gross Internal Area of the building",
+                        # dmc.NumberInput(
+                        #     label="GIA of the building",
+                        #     description="GIA is the Gross Internal Area of the building",
+                        #     value=10000.0,
+                        #     id="ice_gia",
+                        # )
+                        html.Strong("GIA of the Building"),
+                        dmc.Text(
+                            "GIA is the Gross Internal Area of the building",
+                            size="xs",
+                            color="dimmed",
+                        ),
+                        dbc.Input(
+                            type="number",
+                            min=1,
+                            debounce=True,
+                            persistence=True,
                             value=10000.0,
                             id="ice_gia",
-                        )
+                        ),
                     ],
                 ),
                 dmc.Col(
                     [
-                        dmc.Select(
-                            label="LETI Building Type:",
-                            description="LETI building type classification",
-                            placeholder="Select one",
+                        # dmc.Select(
+                        #     label="LETI Building Type:",
+                        #     description="LETI building type classification",
+                        #     placeholder="Select one",
+                        #     id="ice_building_type",
+                        #     value="co",
+                        #     data=building_type_option.leti_type,
+                        # ),
+                        html.Strong("BCA Building Type:"),
+                        dmc.Text(
+                            "LETI building type classification",
+                            size="xs",
+                            color="dimmed",
+                        ),
+                        dbc.Select(
                             id="ice_building_type",
+                            options=building_type_option.leti_type,
                             value="co",
-                            data=building_type_option.leti_type,
+                            persistence=True,
                         ),
                     ],
                 ),
@@ -138,6 +190,8 @@ def ice_benchmark_update():
 
 
 # ---- Callbacks ----
+
+
 @callback(
     Output("gb_generate_sum", "children"),
     Output("epic_generate_sum", "children"),
@@ -170,37 +224,47 @@ def cards_update(data):
     Output("gb_benchmark_result", "children"),
     Input("gb_nla", "value"),
     Input("gb_building_type", "value"),
-    State("gb_building_type", "data"),
     State("proc_store", "data"),
 )
-def gb_benchmarks_update(gb_nla, gb_value, gb_label, data):
+def gb_benchmarks_update(gb_nla, gb_value, data):
     if gb_nla is None or gb_nla == "" or gb_nla == 0:
         return "NLA cannot be empty or 0", "No Value", "No Value"
     else:
-        label = [x["label"] for x in gb_label if x["value"] == gb_value]
-        gb_template = [
-            html.H3(
-                [   
-                    "TFC's ",
-                    html.Strong("Green Book DB"),
-                    " benchmark for ",
-                    html.Strong("{}".format(label[0])),
-                    ", is",
-                ],
-                className="display-6 fs-5 mb-5 text-center",
-            ),
-        ]
+        # Gets Label of selection for variable
+        label = building_type_option.gb_types[gb_value]
+
         df = pd.read_json(data, orient="split")
         gb_sum = df["Green Book EC"].sum()
         gb_benchmark = gb_sum / gb_nla
 
-        children = gb_template + [
+        children = [
+            html.H3(
+                [
+                    "The Foot Print Company Requires ",
+                    html.Strong("{}".format(label)),
+                    " to be less than",
+                    html.Strong(
+                        " < {} kgCO₂e per m²".format(
+                            building_type_option.gb_benchmark(gb_value)["5 star"]
+                        ),
+                    ),
+                    " for 5 stars",
+                ],
+                className="display-6 fs-5 mb-3 text-center",
+            ),
+            html.H3(
+                ["Currect rating is:"],
+                className="display-6 fs-5 mb-5 text-center",
+            ),
             building_type_option.gb_benchmark_calc(gb_value, gb_benchmark),
             html.P(
                 building_type_option.gb_benchmark_optimum(gb_value, gb_benchmark),
                 className="display-6 fs-5 text-center my-5",
             ),
+            dcc.Store(id="temp_gb_nla", data=gb_nla),
+            dcc.Store(id="temp_gb_blt_type", data=gb_value),
         ]
+
         return (
             False,
             "{:,}".format(np.around(gb_benchmark, 2)),
@@ -215,10 +279,9 @@ def gb_benchmarks_update(gb_nla, gb_value, gb_label, data):
     Output("ice_benchmark_result", "children"),
     Input("ice_gia", "value"),
     Input("ice_building_type", "value"),
-    State("ice_building_type", "data"),
     State("proc_store", "data"),
 )
-def gb_benchmarks_update(val, val_bld, label_bld, data):
+def gb_benchmarks_update(val, val_bld, data):
     if val is None or val == "" or val == 0:
         return (
             "NLA cannot be empty or 0",
@@ -226,8 +289,10 @@ def gb_benchmarks_update(val, val_bld, label_bld, data):
             "No Value",
         )
     else:
-        label = [x["label"] for x in label_bld if x["value"] == val_bld]
+        # label = [x["label"] for x in label_bld if x["value"] == val_bld]
+        label = building_type_option.leti_option[val_bld]
         template = [
+            dcc.Store(id="temp_ice_gia", data=val),
             html.H5(
                 [html.Strong("LETI"), "'s Climate Emegency Design Guide requires"],
                 className="display-6 fs-5 text-center",
@@ -236,11 +301,9 @@ def gb_benchmarks_update(val, val_bld, label_bld, data):
                 [
                     html.H5(
                         [
-                            html.Strong("{}".format(label[0])),
+                            html.Strong("{}".format(label)),
                             " to be less than < ",
-                            html.Strong(
-                                "{}".format(building_type_option.leti(val_bld))
-                            ),
+                            html.Strong("{}".format(label)),
                         ],
                         className="display-6 fs-5 text-center mb-5",
                     )
@@ -281,7 +344,7 @@ def gb_benchmarks_update(val, val_bld, label_bld, data):
                             icon="mdi:alert-circle-outline", color="red", width=30
                         )
                     ],
-                )
+                ),
             ]
             return (False, "{:,}".format(np.around(ice_benchmark, 2)), template + child)
 

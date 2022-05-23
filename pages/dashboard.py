@@ -12,7 +12,7 @@ from config import config, graph_colors
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import building_type_option, dashboard_cards, funcs, uploader
+from src import building_type_option, dashboard_cards, funcs, uploader, class_Lib
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -206,6 +206,7 @@ def make_graphs(data):
                 "ICE EC": iceec,
             }
         )
+
         # df_new.to_csv("temp-df-store.csv", index=False)
 
         gb_sum = df_new["Green Book EC"].sum()
@@ -382,43 +383,6 @@ def make_graphs(data):
                             className="mt-3",
                             config=config,
                         ),
-                        # dbc.Row(
-                        #     [
-                        #         dbc.Col(
-                        #             html.H3(
-                        #                 [
-                        #                     "{:,.2f}".format(gb_sum),
-                        #                     html.P(
-                        #                         "kgCO₂ₑ", className="fs-5 display-6"
-                        #                     ),
-                        #                 ],
-                        #                 style={"textAlign": "center"},
-                        #             )
-                        #         ),
-                        #         dbc.Col(
-                        #             html.H3(
-                        #                 [
-                        #                     "{:,.2f}".format(epic_sum),
-                        #                     html.P(
-                        #                         "kgCO₂ₑ", className="fs-5 display-6"
-                        #                     ),
-                        #                 ],
-                        #                 style={"textAlign": "center"},
-                        #             )
-                        #         ),
-                        #         dbc.Col(
-                        #             html.H3(
-                        #                 [
-                        #                     "{:,.2f}".format(ice_sum),
-                        #                     html.P(
-                        #                         "kgCO₂ₑ", className="fs-5 display-6"
-                        #                     ),
-                        #                 ],
-                        #                 style={"textAlign": "center"},
-                        #             )
-                        #         ),
-                        #     ]
-                        # ),
                     ],
                     class_name="my-5 shadow",
                     style={"padding": "4rem"},

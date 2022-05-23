@@ -20,11 +20,11 @@ from dash.exceptions import PreventUpdate
 
 from src import (
     analysis_more_info,
+    class_Lib,
     epic_options,
     funcs,
     greenbook_options,
     ice_options,
-    analysis_class,
 )
 
 # from pages.dashboard import em_calc, gfa_calc
