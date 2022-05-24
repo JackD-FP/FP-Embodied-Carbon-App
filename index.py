@@ -75,7 +75,7 @@ sidebar = html.Div(
                     "Dashboard", href="/pages/dashboard", id="dashboard", active="exact"
                 ),
                 dmc.Tooltip(
-                    label="Make sure upload has no errors and GFA is not empty",
+                    label="Make sure upload has no errors and NLA or GIA is not empty",
                     wrapLines=True,
                     width=220,
                     withArrow=True,
@@ -161,7 +161,7 @@ def save_2_main(data):
 )
 def proc_store_update(data):
     if data is not None:
-        bld_data = analysis_lib.data(data)
+        # bld_data = analysis_lib.data(data)
         return data
     else:
         PreventUpdate

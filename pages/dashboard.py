@@ -371,7 +371,7 @@ def make_graphs(data):
                 ),
                 dbc.Card(
                     [
-                        html.H3("Embodied Carbon(EC) calculation"),
+                        html.H3("Embodied Carbon (EC) calculation"),
                         dmc.Table(
                             create_table(df_new_grouped),
                             highlightOnHover=True,
