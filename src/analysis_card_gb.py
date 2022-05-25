@@ -1,3 +1,10 @@
+"""
+TODO:
+    - Classes have been implemented incase there is a need for extra functionality
+        - There is a possibility for to add a sum() for each beam/column/slab/wall/stairs element
+    
+"""
+
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
@@ -10,7 +17,12 @@ from src import greenbook_options
 gb_layout = [
     dbc.Card(
         [
-            dcc.Store(id="gb_store"),
+            dcc.Store(id="gb_store", storage_type="session"),
+            dcc.Store(id="beam_store", storage_type="session"),
+            dcc.Store(id="col_store", storage_type="session"),
+            dcc.Store(id="slab_store", storage_type="session"),
+            dcc.Store(id="wall_store", storage_type="session"),
+            dcc.Store(id="stair_store", storage_type="session"),
             html.H3("Green Book DB"),
             dmc.Divider(class_name="mb-5"),
             dmc.SimpleGrid(
@@ -97,11 +109,10 @@ gb_layout = [
                                 ],
                             ),
                             # content for tab divs
-                            html.Div(id="gb_tab_content", className="p-5"),
-                            # tab_div(self.tab_content),
+                            html.Div(id="gb_tab_content", className="m-5"),
                         ]
                     ),
-                    dmc.Col(html.Div("potato")),
+                    dmc.Col(html.Div(id="gb_analysis_pie")),
                 ],
             ),
         ],
@@ -133,80 +144,71 @@ class table:
         self.steel_val = steel
         self.timber_val = timber
 
+    def table_gen(self):
+        table_head = [
+            html.Thead(
+                html.Tr(
+                    [
+                        html.Th("Materials"),
+                        html.Th("Embodied Carbon"),
+                    ]
+                )
+            )
+        ]
+        options = [
+            self.concrete_options,
+            self.rebar_options,
+            self.steel_options,
+            self.timber_options,
+        ]
+        mat_val = [
+            self.conc_val,
+            self.rebar_val,
+            self.steel_val,
+            self.timber_val,
+        ]
+        labels = [
+            {"name": "Concrete", "value": 643},
+            {"name": "Reinforcement Bar", "value": 2.340},
+            {"name": "Structural Steel", "value": 2.9},
+            {"name": "Structural Timber", "value": 718},
+        ]
+        rows = []
 
-def table_gen(
-    id,
-    concrete_options,
-    rebar_options,
-    steel_options,
-    timber_options,
-    concrete=0,
-    rebar=0,
-    steel=0,
-    timber=0,
-):
-    table_head = [
-        html.Thead(
-            html.Tr(
+        for i, options in enumerate(options):
+            mat_row = html.Tr(
                 [
-                    html.Th("Materials"),
-                    html.Th("Embodied Carbon"),
+                    html.Td(
+                        dbc.Row(
+                            [
+                                dbc.Col(children=dmc.Text(labels[i]["name"])),
+                                dbc.Col(
+                                    children=dbc.Select(
+                                        id="sel-{}-{}".format(
+                                            self.id, labels[i]["name"].replace(" ", "-")
+                                        ),
+                                        options=options,
+                                        value=labels[i]["value"],
+                                        persistence=True,
+                                    )
+                                ),
+                            ]
+                        )
+                    ),
+                    html.Td(
+                        mat_val[i],
+                        id="val-{}-{}".format(
+                            self.id, labels[i]["name"].replace(" ", "-")
+                        ),
+                    ),
                 ]
             )
-        )
-    ]
-    options = [
-        concrete_options,
-        rebar_options,
-        steel_options,
-        timber_options,
-    ]
-    mat_val = [
-        concrete,
-        rebar,
-        steel,
-        timber,
-    ]
-    labels = [
-        {"name": "Concrete", "value": 643},
-        {"name": "Reinforcement Bar", "value": 2.340},
-        {"name": "Structural Steel", "value": 2.9},
-        {"name": "Structural Timber", "value": 718},
-    ]
-    rows = []
 
-    for i, options in enumerate(options):
-        mat_row = html.Tr(
-            [
-                html.Td(
-                    dbc.Row(
-                        [
-                            dbc.Col(children=dmc.Text(labels[i]["name"])),
-                            dbc.Col(
-                                children=dbc.Select(
-                                    id="sel-{}-{}".format(
-                                        id, labels[i]["name"].replace(" ", "-")
-                                    ),
-                                    options=options,
-                                    value=labels[i]["value"],
-                                    persistence=True,
-                                )
-                            ),
-                        ]
-                    )
-                ),
-                html.Td(
-                    mat_val[i],
-                    id="val-{}-{}".format(id, labels[i]["name"].replace(" ", "-")),
-                ),
-            ]
-        )
-
-        rows.append(mat_row)
-    return dbc.Table(table_head + [html.Tbody(rows, className="w-75")])
+            rows.append(mat_row)
+        return dbc.Table(table_head + [html.Tbody(rows, className="w-75")])
 
 
-# ---- Class definition ----
+# ---- object instantiate ----
 beams = table(
     id="beams",
     concrete_options=greenbook_options.concrete,
@@ -244,6 +246,101 @@ stairs = table(
 )
 
 
+class total:
+    def __init__(self) -> None:
+        self.beam_obj = beams
+        self.beam_total = sum(
+            [
+                self.beam_obj.conc_val,
+                self.beam_obj.rebar_val,
+                self.beam_obj.steel_val,
+                self.beam_obj.timber_val,
+            ]
+        )
+        self.column_obj = columns
+        self.column_total = sum(
+            [
+                self.column_obj.conc_val,
+                self.column_obj.rebar_val,
+                self.column_obj.steel_val,
+                self.column_obj.timber_val,
+            ]
+        )
+        self.slab_obj = slabs
+        self.slab_total = sum(
+            [
+                self.slab_obj.conc_val,
+                self.slab_obj.rebar_val,
+                self.slab_obj.steel_val,
+                self.slab_obj.timber_val,
+            ]
+        )
+        self.wall_obj = walls
+        self.wall_total = sum(
+            [
+                self.wall_obj.conc_val,
+                self.wall_obj.rebar_val,
+                self.wall_obj.steel_val,
+                self.wall_obj.timber_val,
+            ]
+        )
+        self.stairs_obj = stairs
+        self.stairs_total = sum(
+            [
+                self.stairs_obj.conc_val,
+                self.stairs_obj.rebar_val,
+                self.stairs_obj.steel_val,
+                self.stairs_obj.timber_val,
+            ]
+        )
+
+
+@callback(
+    Output("gb_store", "data"),
+    Input("proc_store", "data"),
+    Input("beam_store", "modified_timestamp"),
+    Input("col_store", "modified_timestamp"),
+    Input("slab_store", "modified_timestamp"),
+    Input("wall_store", "modified_timestamp"),
+    Input("stair_store", "modified_timestamp"),
+    State("beam_store", "data"),
+    State("col_store", "data"),
+    State("slab_store", "data"),
+    State("wall_store", "data"),
+    State("stair_store", "data"),
+)
+def update_gb_store(
+    proc_store,
+    beam_store_mts,
+    col_store_mts,
+    slab_store_mts,
+    wall_store_mts,
+    stair_store_mts,
+    beam_store,
+    col_store,
+    slab_store,
+    wall_store,
+    stair_store,
+):
+    input_list = [
+        proc_store,
+        beam_store_mts,
+        col_store_mts,
+        slab_store_mts,
+        wall_store_mts,
+        stair_store_mts,
+        beam_store,
+        col_store,
+        slab_store,
+        wall_store,
+        stair_store,
+    ]
+    if None in input_list:
+        raise PreventUpdate
+    else:
+        pass
+
+
 # ---- This updates the total and benchmark ----
 @callback(
     Output("gb_analysis_total", "children"),
@@ -271,88 +368,234 @@ def update_total_benchmark(mts, mts_nla, gb_data, nla):
     Input("gb_tabs", "active_tab"),
 )
 def update_layout(tabs):
-    # df = pd.read_json(data, orient="split")
-    # id,concrete_options, rebar_options, steel_options, timber_options, concrete=0, rebar=0, steel=0, timber=0
     content = {
-        "Beams": table_gen(
-            beams.id,
-            beams.concrete_options,
-            beams.rebar_options,
-            beams.steel_options,
-            beams.timber_options,
-            beams.conc_val,
-            beams.rebar_val,
-            beams.steel_val,
-            beams.timber_val,
-        ),
-        "Columns": table_gen(
-            columns.id,
-            columns.concrete_options,
-            columns.rebar_options,
-            columns.steel_options,
-            columns.timber_options,
-            columns.conc_val,
-            columns.rebar_val,
-            columns.steel_val,
-            columns.timber_val,
-        ),
-        "Slabs": table_gen(
-            slabs.id,
-            slabs.concrete_options,
-            slabs.rebar_options,
-            slabs.steel_options,
-            slabs.timber_options,
-            slabs.conc_val,
-            slabs.rebar_val,
-            slabs.steel_val,
-            slabs.timber_val,
-        ),
-        "Walls": table_gen(
-            walls.id,
-            walls.concrete_options,
-            walls.rebar_options,
-            walls.steel_options,
-            walls.timber_options,
-            walls.conc_val,
-            walls.rebar_val,
-            walls.steel_val,
-            walls.timber_val,
-        ),
-        "Stairs": table_gen(
-            stairs.id,
-            stairs.concrete_options,
-            stairs.rebar_options,
-            stairs.steel_options,
-            stairs.timber_options,
-            stairs.conc_val,
-            stairs.rebar_val,
-            stairs.steel_val,
-            stairs.timber_val,
-        ),
+        "Beams": beams.table_gen(),
+        "Columns": columns.table_gen(),
+        "Slabs": slabs.table_gen(),
+        "Walls": walls.table_gen(),
+        "Stairs": stairs.table_gen(),
     }
 
     return content.get(tabs, "Error")
 
 
+list = ["Concrete", "Reinforcement Bar", "Structural Steel", "Structural Timber"]
+
+
+def material_dic(df: pd.DataFrame, cell_column: str, element: str) -> dict:
+    """returns a dictionary of the material values for a given element
+
+    Args:
+        df (pd.DataFrame): dataframe of the material values
+        cell_column (str): column name to access from df (Element, Materials, etc)
+        element (str): Beam, Column, Slab, Wall, or Stairs
+
+    Returns:
+        dict: dictionary of elements mass or volume
+    """
+    d = []
+    for i, mat in enumerate(list):
+        try:
+            val = df.loc[
+                (df["Element"] == element) & (df["Materials"] == mat),
+                cell_column,
+            ].values[0]
+
+        except:
+            val = 0
+
+        d.append((mat, val))
+        vol = dict(d)
+    return vol
+
+
+def for_storage(
+    df: pd.DataFrame, element: str, material: str, val: float
+) -> pd.DataFrame:
+    new_df = df.loc[(df["Element"] == element) & (df["Materials"] == material)]
+    ec_list_beam = []
+    for i, rows in new_df.iterrows():
+        ec_list_beam.append(float(val) * rows["Volume"])
+
+    return new_df.assign(gb_ec=ec_list_beam)
+
+
+# ---- callback for elements ----
 @callback(
-    Output("gb_store", "data"),
-    Input("proc_store", "data"),
+    Output("val-beams-Concrete", "children"),
+    Output("val-beams-Reinforcement-Bar", "children"),
+    Output("val-beams-Structural-Steel", "children"),
+    Output("val-beams-Structural-Timber", "children"),
+    Input("sel-beams-Concrete", "value"),
+    Input("sel-beams-Reinforcement-Bar", "value"),
+    Input("sel-beams-Structural-Steel", "value"),
+    Input("sel-beams-Structural-Timber", "value"),
+    State("proc_store", "data"),
 )
-def update_gb_store(data):
+def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+
     if data is None:
         raise PreventUpdate
     else:
-        # df = pd.read_json(data, orient="split")
-        # df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
+        df = pd.read_json(data, orient="split")
+        df.drop(["Green Book EC", "EPiC EC", "ICE EC"], axis=1, inplace=True)
+        df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
 
-        # beams.conc_val = conc_val * 1
-        # df.to_json(orient="split")
-        return data
+        vol = material_dic(df_grouped, "Volume", "Beam")
+        mass = material_dic(df_grouped, "Mass", "Beam")
+        beams.conc_val = float(conc_val) * vol["Concrete"]
+        beams.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
+        beams.steel_val = float(ste_val) * mass["Structural Steel"]
+        beams.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        concrete = for_storage(df, "Beam", "Concrete", float(conc_val))
+        rebar = for_storage(df, "Beam", "Reinforcement Bar", float(conc_val))
+        steel = for_storage(df, "Beam", "Structural Steel", float(conc_val))
+        timber = for_storage(df, "Beam", "Structural Timber", float(conc_val))
+
+        return (
+            "{:,.2f}".format(beams.conc_val),
+            "{:,.2f}".format(beams.rebar_val),
+            "{:,.2f}".format(beams.steel_val),
+            "{:,.2f}".format(beams.timber_val),
+        )
 
 
 @callback(
-    Output("val-beams-Concrete", "data"),
-    Input("sel-beams-Concrete", "value"),
+    Output("val-Columns-Concrete", "children"),
+    Output("val-Columns-Reinforcement-Bar", "children"),
+    Output("val-Columns-Structural-Steel", "children"),
+    Output("val-Columns-Structural-Timber", "children"),
+    Input("sel-Columns-Concrete", "value"),
+    Input("sel-Columns-Reinforcement-Bar", "value"),
+    Input("sel-Columns-Structural-Steel", "value"),
+    Input("sel-Columns-Structural-Timber", "value"),
+    State("proc_store", "data"),
 )
-def beam_val_update(val):
-    return val
+def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+
+    if data is None:
+        raise PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
+
+        vol = material_dic(df_grouped, "Volume", "Column")
+        mass = material_dic(df_grouped, "Mass", "Column")
+
+        columns.conc_val = float(conc_val) * vol["Concrete"]
+        columns.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
+        columns.steel_val = float(ste_val) * mass["Structural Steel"]
+        columns.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        return (
+            "{:,.2f}".format(columns.conc_val),
+            "{:,.2f}".format(columns.rebar_val),
+            "{:,.2f}".format(columns.steel_val),
+            "{:,.2f}".format(columns.timber_val),
+        )
+
+
+@callback(
+    Output("val-Slabs-Concrete", "children"),
+    Output("val-Slabs-Reinforcement-Bar", "children"),
+    Output("val-Slabs-Structural-Steel", "children"),
+    Output("val-Slabs-Structural-Timber", "children"),
+    Input("sel-Slabs-Concrete", "value"),
+    Input("sel-Slabs-Reinforcement-Bar", "value"),
+    Input("sel-Slabs-Structural-Steel", "value"),
+    Input("sel-Slabs-Structural-Timber", "value"),
+    State("proc_store", "data"),
+)
+def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+
+    if data is None:
+        raise PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
+
+        vol = material_dic(df_grouped, "Volume", "Slab")
+        mass = material_dic(df_grouped, "Mass", "Slab")
+
+        slabs.conc_val = float(conc_val) * vol["Concrete"]
+        slabs.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
+        slabs.steel_val = float(ste_val) * mass["Structural Steel"]
+        slabs.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        return (
+            "{:,.2f}".format(slabs.conc_val),
+            "{:,.2f}".format(slabs.rebar_val),
+            "{:,.2f}".format(slabs.steel_val),
+            "{:,.2f}".format(slabs.timber_val),
+        )
+
+
+@callback(
+    Output("val-Walls-Concrete", "children"),
+    Output("val-Walls-Reinforcement-Bar", "children"),
+    Output("val-Walls-Structural-Steel", "children"),
+    Output("val-Walls-Structural-Timber", "children"),
+    Input("sel-Walls-Concrete", "value"),
+    Input("sel-Walls-Reinforcement-Bar", "value"),
+    Input("sel-Walls-Structural-Steel", "value"),
+    Input("sel-Walls-Structural-Timber", "value"),
+    State("proc_store", "data"),
+)
+def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+
+    if data is None:
+        raise PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
+
+        vol = material_dic(df_grouped, "Volume", "Wall")
+        mass = material_dic(df_grouped, "Mass", "Wall")
+
+        walls.conc_val = float(conc_val) * vol["Concrete"]
+        walls.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
+        walls.steel_val = float(ste_val) * mass["Structural Steel"]
+        walls.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        return (
+            "{:,.2f}".format(walls.conc_val),
+            "{:,.2f}".format(walls.rebar_val),
+            "{:,.2f}".format(walls.steel_val),
+            "{:,.2f}".format(walls.timber_val),
+        )
+
+
+@callback(
+    Output("val-Stairs-Concrete", "children"),
+    Output("val-Stairs-Reinforcement-Bar", "children"),
+    Output("val-Stairs-Structural-Steel", "children"),
+    Output("val-Stairs-Structural-Timber", "children"),
+    Input("sel-Stairs-Concrete", "value"),
+    Input("sel-Stairs-Reinforcement-Bar", "value"),
+    Input("sel-Stairs-Structural-Steel", "value"),
+    Input("sel-Stairs-Structural-Timber", "value"),
+    State("proc_store", "data"),
+)
+def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+
+    if data is None:
+        raise PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
+
+        vol = material_dic(df_grouped, "Volume", "Stair")
+        mass = material_dic(df_grouped, "Mass", "Stair")
+
+        stairs.conc_val = float(conc_val) * vol["Concrete"]
+        stairs.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
+        stairs.steel_val = float(ste_val) * mass["Structural Steel"]
+        stairs.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        return (
+            "{:,.2f}".format(stairs.conc_val),
+            "{:,.2f}".format(stairs.rebar_val),
+            "{:,.2f}".format(stairs.steel_val),
+            "{:,.2f}".format(stairs.timber_val),
+        )
