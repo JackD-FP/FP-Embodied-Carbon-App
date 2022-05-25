@@ -584,7 +584,8 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
 
         # Appends timber values from layer
         elif re.search("timber", row["Layer"], re.IGNORECASE):
-            mat.append(row["Building Materials (All)"])
+            mat.append("Structural Timber")
+            # mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
@@ -599,7 +600,8 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
 
         # Appends steel values from layer
         elif re.search("steel", row["Layer"], re.IGNORECASE):
-            mat.append(row["Building Materials (All)"])
+            mat.append("Structural Steel")
+            # mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
@@ -762,7 +764,8 @@ def ec_calculator(
 
         # Appends timber values from layer
         elif re.search("timber", row["Layer"], re.IGNORECASE):
-            mat.append(row["Building Materials (All)"])
+            mat.append("Structural Timber")
+            # mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
@@ -776,7 +779,8 @@ def ec_calculator(
 
         # Appends steel values from layer
         elif re.search("steel", row["Layer"], re.IGNORECASE):
-            mat.append(row["Building Materials (All)"])
+            mat.append("Structural Steel")
+            # mat.append(row["Building Materials (All)"])
             vol.append(row["Net Volume"])
             mass.append(row["Mass"])
             floor.append(row["Home Story Name"])
