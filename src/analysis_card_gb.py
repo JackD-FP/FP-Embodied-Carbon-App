@@ -208,6 +208,16 @@ class table:
         return dbc.Table(table_head + [html.Tbody(rows, className="w-75")])
 
 
+# class tots_bm:
+#     def __init__(self, total, bm) -> None:
+#         self.total = total
+#         self.bm = bm
+
+#     def total_calc(self):
+#         df = pd.read_json(self.total, orient="split")
+#         return df["gb_ec"].sum()
+
+
 # ---- object instantiate ----
 beams = table(
     id="beams",
@@ -322,23 +332,60 @@ def update_gb_store(
     wall_store,
     stair_store,
 ):
-    input_list = [
-        proc_store,
-        beam_store_mts,
-        col_store_mts,
-        slab_store_mts,
-        wall_store_mts,
-        stair_store_mts,
-        beam_store,
-        col_store,
-        slab_store,
-        wall_store,
-        stair_store,
-    ]
-    if None in input_list:
-        raise PreventUpdate
+    df = pd.read_json(proc_store, orient="split")
+    beam_store_df = None
+    col_store_df = None
+    slab_store_df = None
+    wall_store_df = None
+    stair_store_df = None
+
+    print("DF print\n", df)
+    df.to_excel("test_df.xlsx")
+    print("DF Total:\n", df["Green Book EC"].sum())
+    if beam_store is None:
+        beam_store_df = df.loc[(df["Element"] == "Beam")].copy()
     else:
-        pass
+        beam_df = pd.read_json(beam_store, orient="split")
+        beam_store_df = beam_df.loc[(beam_df["Element"] == "Beam")]
+        print("number of rows of beams\n", len(beam_store_df))
+        # print(beam_store_df.sort_values(by="Floor Level"))
+
+    if col_store is None:
+        col_store_df = df.loc[(df["Element"] == "Column")].copy()
+    else:
+        col_df = pd.read_json(col_store, orient="split")
+        col_store_df = col_df.loc[(col_df["Element"] == "Column")]
+        print("number of rows of column\n", len(col_store_df))
+
+    if slab_store is None:
+        slab_store_df = df.loc[(df["Element"] == "Slab")].copy()
+    else:
+        slab_df = pd.read_json(slab_store, orient="split")
+        slab_store_df = slab_df.loc[(slab_df["Element"] == "Slab")]
+        print("number of rows of slab\n", len(slab_store_df))
+
+    if wall_store is None:
+        wall_store_df = df.loc[(df["Element"] == "Wall")].copy()
+    else:
+        wall_df = pd.read_json(wall_store, orient="split")
+        wall_store_df = wall_df.loc[(wall_df["Element"] == "Wall")]
+        print("number of rows of walls\n", len(wall_store_df))
+
+    if stair_store is None:
+        stair_store_df = df.loc[(df["Element"] == "Stairs")].copy()
+    else:
+        stair_df = pd.read_json(stair_store, orient="split")
+        stair_store_df = stair_df.loc[(stair_df["Element"] == "Stairs")]
+        print("number of rows of stairs\n", len(stair_store_df))
+
+    gb_store_update = pd.concat(
+        [beam_store_df, col_store_df, slab_store_df, wall_store_df, stair_store_df]
+    )
+    print("New edited data\n", gb_store_update)
+    gb_store_update.to_excel("test_gb_store_update.xlsx")
+    print("New edited total\n", gb_store_update["Green Book EC"].sum())
+    # return gb_store_update.to_json(orient="split")
+    return proc_store
 
 
 # ---- This updates the total and benchmark ----
@@ -412,12 +459,16 @@ def material_dic(df: pd.DataFrame, cell_column: str, element: str) -> dict:
 def for_storage(
     df: pd.DataFrame, element: str, material: str, val: float
 ) -> pd.DataFrame:
-    new_df = df.loc[(df["Element"] == element) & (df["Materials"] == material)]
-    ec_list_beam = []
+    new_df = df.loc[(df["Element"] == element) & (df["Materials"] == material)].copy()
+    ec_list = []
+    # submat_list = []
     for i, rows in new_df.iterrows():
-        ec_list_beam.append(float(val) * rows["Volume"])
+        ec_list.append(float(val) * rows["Volume"])
+        # submat_list.append()
 
-    return new_df.assign(gb_ec=ec_list_beam)
+    new_df["Green Book EC"] = ec_list
+    # return new_df.assign(gb_ec=ec_list)
+    return new_df
 
 
 # ---- callback for elements ----
@@ -426,6 +477,7 @@ def for_storage(
     Output("val-beams-Reinforcement-Bar", "children"),
     Output("val-beams-Structural-Steel", "children"),
     Output("val-beams-Structural-Timber", "children"),
+    Output("beam_store", "data"),
     Input("sel-beams-Concrete", "value"),
     Input("sel-beams-Reinforcement-Bar", "value"),
     Input("sel-beams-Structural-Steel", "value"),
@@ -438,7 +490,7 @@ def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
-        df.drop(["Green Book EC", "EPiC EC", "ICE EC"], axis=1, inplace=True)
+        df.drop(["Green Book EC"], axis=1, inplace=True)
         df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
 
         vol = material_dic(df_grouped, "Volume", "Beam")
@@ -452,12 +504,14 @@ def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
         rebar = for_storage(df, "Beam", "Reinforcement Bar", float(conc_val))
         steel = for_storage(df, "Beam", "Structural Steel", float(conc_val))
         timber = for_storage(df, "Beam", "Structural Timber", float(conc_val))
+        beam_data = pd.concat([concrete, rebar, steel, timber])
 
         return (
             "{:,.2f}".format(beams.conc_val),
             "{:,.2f}".format(beams.rebar_val),
             "{:,.2f}".format(beams.steel_val),
             "{:,.2f}".format(beams.timber_val),
+            beam_data.to_json(orient="split"),
         )
 
 
@@ -466,33 +520,41 @@ def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
     Output("val-Columns-Reinforcement-Bar", "children"),
     Output("val-Columns-Structural-Steel", "children"),
     Output("val-Columns-Structural-Timber", "children"),
+    Output("col_store", "data"),
     Input("sel-Columns-Concrete", "value"),
     Input("sel-Columns-Reinforcement-Bar", "value"),
     Input("sel-Columns-Structural-Steel", "value"),
     Input("sel-Columns-Structural-Timber", "value"),
     State("proc_store", "data"),
 )
-def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+def col_val_update(conc_val, reb_val, ste_val, tim_val, data):
 
     if data is None:
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
+        df.drop(["Green Book EC"], axis=1, inplace=True)
         df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
 
         vol = material_dic(df_grouped, "Volume", "Column")
         mass = material_dic(df_grouped, "Mass", "Column")
-
         columns.conc_val = float(conc_val) * vol["Concrete"]
         columns.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
         columns.steel_val = float(ste_val) * mass["Structural Steel"]
         columns.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        concrete = for_storage(df, "Column", "Concrete", float(conc_val))
+        rebar = for_storage(df, "Column", "Reinforcement Bar", float(conc_val))
+        steel = for_storage(df, "Column", "Structural Steel", float(conc_val))
+        timber = for_storage(df, "Column", "Structural Timber", float(conc_val))
+        col_data = pd.concat([concrete, rebar, steel, timber])
 
         return (
             "{:,.2f}".format(columns.conc_val),
             "{:,.2f}".format(columns.rebar_val),
             "{:,.2f}".format(columns.steel_val),
             "{:,.2f}".format(columns.timber_val),
+            col_data.to_json(orient="split"),
         )
 
 
@@ -501,33 +563,42 @@ def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
     Output("val-Slabs-Reinforcement-Bar", "children"),
     Output("val-Slabs-Structural-Steel", "children"),
     Output("val-Slabs-Structural-Timber", "children"),
+    Output("slab_store", "data"),
     Input("sel-Slabs-Concrete", "value"),
     Input("sel-Slabs-Reinforcement-Bar", "value"),
     Input("sel-Slabs-Structural-Steel", "value"),
     Input("sel-Slabs-Structural-Timber", "value"),
     State("proc_store", "data"),
 )
-def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+def slab_val_update(conc_val, reb_val, ste_val, tim_val, data):
 
     if data is None:
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
+        df.drop(["Green Book EC"], axis=1, inplace=True)
         df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
 
         vol = material_dic(df_grouped, "Volume", "Slab")
         mass = material_dic(df_grouped, "Mass", "Slab")
-
         slabs.conc_val = float(conc_val) * vol["Concrete"]
         slabs.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
         slabs.steel_val = float(ste_val) * mass["Structural Steel"]
         slabs.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        concrete = for_storage(df, "Column", "Concrete", float(conc_val))
+        rebar = for_storage(df, "Column", "Reinforcement Bar", float(conc_val))
+        steel = for_storage(df, "Column", "Structural Steel", float(conc_val))
+        timber = for_storage(df, "Column", "Structural Timber", float(conc_val))
+        slab_data = pd.concat([concrete, rebar, steel, timber])
+        print("print len_data\n", len(slab_data))
 
         return (
             "{:,.2f}".format(slabs.conc_val),
             "{:,.2f}".format(slabs.rebar_val),
             "{:,.2f}".format(slabs.steel_val),
             "{:,.2f}".format(slabs.timber_val),
+            slab_data.to_json(orient="split"),
         )
 
 
@@ -536,33 +607,41 @@ def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
     Output("val-Walls-Reinforcement-Bar", "children"),
     Output("val-Walls-Structural-Steel", "children"),
     Output("val-Walls-Structural-Timber", "children"),
+    Output("wall_store", "data"),
     Input("sel-Walls-Concrete", "value"),
     Input("sel-Walls-Reinforcement-Bar", "value"),
     Input("sel-Walls-Structural-Steel", "value"),
     Input("sel-Walls-Structural-Timber", "value"),
     State("proc_store", "data"),
 )
-def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+def wall_val_update(conc_val, reb_val, ste_val, tim_val, data):
 
     if data is None:
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
+        df.drop(["Green Book EC"], axis=1, inplace=True)
         df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
 
         vol = material_dic(df_grouped, "Volume", "Wall")
         mass = material_dic(df_grouped, "Mass", "Wall")
-
         walls.conc_val = float(conc_val) * vol["Concrete"]
         walls.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
         walls.steel_val = float(ste_val) * mass["Structural Steel"]
         walls.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        concrete = for_storage(df, "Wall", "Concrete", float(conc_val))
+        rebar = for_storage(df, "Wall", "Reinforcement Bar", float(conc_val))
+        steel = for_storage(df, "Wall", "Structural Steel", float(conc_val))
+        timber = for_storage(df, "Wall", "Structural Timber", float(conc_val))
+        wall_data = pd.concat([concrete, rebar, steel, timber])
 
         return (
             "{:,.2f}".format(walls.conc_val),
             "{:,.2f}".format(walls.rebar_val),
             "{:,.2f}".format(walls.steel_val),
             "{:,.2f}".format(walls.timber_val),
+            wall_data.to_json(orient="split"),
         )
 
 
@@ -571,31 +650,39 @@ def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
     Output("val-Stairs-Reinforcement-Bar", "children"),
     Output("val-Stairs-Structural-Steel", "children"),
     Output("val-Stairs-Structural-Timber", "children"),
+    Output("stair_store", "data"),
     Input("sel-Stairs-Concrete", "value"),
     Input("sel-Stairs-Reinforcement-Bar", "value"),
     Input("sel-Stairs-Structural-Steel", "value"),
     Input("sel-Stairs-Structural-Timber", "value"),
     State("proc_store", "data"),
 )
-def beam_val_update(conc_val, reb_val, ste_val, tim_val, data):
+def stair_val_update(conc_val, reb_val, ste_val, tim_val, data):
 
     if data is None:
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
+        df.drop(["Green Book EC"], axis=1, inplace=True)
         df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum()
 
         vol = material_dic(df_grouped, "Volume", "Stair")
         mass = material_dic(df_grouped, "Mass", "Stair")
-
         stairs.conc_val = float(conc_val) * vol["Concrete"]
         stairs.rebar_val = float(reb_val) * mass["Reinforcement Bar"]
         stairs.steel_val = float(ste_val) * mass["Structural Steel"]
         stairs.timber_val = float(tim_val) * vol["Structural Timber"]
+
+        concrete = for_storage(df, "Stairs", "Concrete", float(conc_val))
+        rebar = for_storage(df, "Stairs", "Reinforcement Bar", float(conc_val))
+        steel = for_storage(df, "Stairs", "Structural Steel", float(conc_val))
+        timber = for_storage(df, "Stairs", "Structural Timber", float(conc_val))
+        stair_data = pd.concat([concrete, rebar, steel, timber])
 
         return (
             "{:,.2f}".format(stairs.conc_val),
             "{:,.2f}".format(stairs.rebar_val),
             "{:,.2f}".format(stairs.steel_val),
             "{:,.2f}".format(stairs.timber_val),
+            stair_data.to_json(orient="split"),
         )
