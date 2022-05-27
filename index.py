@@ -10,8 +10,10 @@ from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from flask import Flask
 
-from pages import analysis, comparison, dashboard, documentation
-from src import analysis_lib, save_modal
+from pages import comparison, dashboard, documentation
+
+# from src import analysis_lib, save_modal
+from pages.analysis import green_book_db, epic_db, ice_db
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -74,23 +76,27 @@ sidebar = html.Div(
                 dbc.NavLink(
                     "Dashboard", href="/pages/dashboard", id="dashboard", active="exact"
                 ),
-                dmc.Tooltip(
-                    label="Make sure upload has no errors and NLA or GIA is not empty",
-                    wrapLines=True,
-                    width=220,
-                    withArrow=True,
-                    transition="fade",
-                    transitionDuration=300,
-                    transitionTimingFunction="ease",
+                dbc.DropdownMenu(
                     children=[
-                        dbc.NavLink(
-                            "Analysis",
-                            href="/pages/analysis",
-                            id="analysis",
-                            active="exact",
-                            # disabled=True,
+                        dbc.DropdownMenuItem(
+                            "Green Book DB",
+                            id="gb_btn",
+                            href="/pages/analysis/green_book_db",
+                        ),
+                        dbc.DropdownMenuItem(
+                            "EPiC DB", id="epic_btn", href="/pages/analysis/epic_db"
+                        ),
+                        dbc.DropdownMenuItem(
+                            "ICE DB", id="ice_btn", href="/pages/analysis/ice_db"
                         ),
                     ],
+                    id="analysis-dropdown",
+                    label="Analysis",
+                    style={
+                        "padding": "0.5rem 1rem",
+                        "width": "100%",
+                        "textAlign": "start",
+                    },
                 ),
                 dbc.NavLink(
                     "Comparison", href="/pages/comparison", id="tec", active="exact"
@@ -227,6 +233,19 @@ def gia_store_update(gia_mts, gia):
         return gia
 
 
+@app.callback(
+    Output("analysis-dropdown", "label"),
+    Input("url", "pathname"),
+)
+def analysis_dropdown_update(pathname):
+    urls = {
+        "/pages/analysis/green_book_db": "Green Book DB",
+        "/pages/analysis/epic_db": "EPiC DB",
+        "/pages/analysis/ice_db": "ICE DB",
+    }
+    return urls.get(pathname, "Analysis")
+
+
 # routing stuff also 404 page
 @app.callback(Output("content-id", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
@@ -234,12 +253,17 @@ def render_page_content(pathname):
         return dcc.Location(pathname="/pages/dashboard", id="doesntmatter")
     elif pathname == "/pages/dashboard":
         return dashboard.layout
-    elif pathname == "/pages/analysis":
-        return analysis.layout
+    elif pathname == "/pages/analysis/green_book_db":
+        return green_book_db.gb_layout
+    elif pathname == "/pages/analysis/epic_db":
+        return epic_db.epic_layout
+    elif pathname == "/pages/analysis/ice_db":
+        return ice_db.ice_layout
     elif pathname == "/pages/comparison":
         return comparison.layout
     elif pathname == "/pages/documentation":
         return documentation.layout
+
     # If the user tries to reach a different page, return a 404 message
     return dbc.Container(
         [
@@ -266,23 +290,6 @@ def render_page_content(pathname):
             ),
         ]
     )
-
-
-# @app.callback(
-#     Output("analysis", "disabled"),
-#     Input("main_store", "data"),
-#     Input("gfa_store", "data"),
-# )
-# def analysis_update(main_store, gfa_store):
-#     if main_store is not None:
-#         df = pd.read_json(main_store, orient="split")
-#         nan_check = sum(df.isna().sum().tolist())
-#         if nan_check > 0 or gfa_store is None or gfa_store == "":
-#             return True
-#         else:
-#             return False
-#     else:
-#         PreventUpdate
 
 
 app.layout = html.Div(

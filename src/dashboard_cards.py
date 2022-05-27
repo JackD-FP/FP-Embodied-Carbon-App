@@ -6,188 +6,7 @@ from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 
-from src import building_type_option, funcs
-
-
-def generate_card(name="Green Book DB", id="gb_generate_sum"):
-    return html.Div(
-        [
-            # Green Book Column
-            html.H5(
-                children=name,
-                className="mb-4 display-6",
-                style={"textAlign": "center"},
-            ),
-            dmc.Divider(),
-            html.Div(
-                [
-                    dmc.Container(
-                        fluid=True,
-                        children=[
-                            html.Div(
-                                style={"textAlign": "center"},
-                                id=id,
-                            ),
-                        ],
-                    )
-                ],
-                style={
-                    "marginTop": "3rem",
-                    "marginBottom": "3rem",
-                },
-            ),
-            dmc.Divider(
-                class_name="mb-4",
-            ),
-        ]
-    )
-
-
-def sum_layer(x):
-    return [
-        html.H3(
-            "{:,}".format(np.around(x, 2)),
-            className="fs-4",
-        ),
-        html.P(
-            ["kgCO₂e", html.Span(" Total EC")],
-        ),
-    ]
-
-
-def gb_benchmark_update():
-    children = [
-        dmc.SimpleGrid(
-            [
-                dmc.Col(
-                    [
-                        # dmc.NumberInput(
-                        #     label="NLA of the building",
-                        #     description="NLA is the Net Lettable Area of the building",
-                        #     value=10000.0,
-                        #     id="gb_nla",
-                        # )
-                        html.Strong("NLA of the Building"),
-                        dmc.Text(
-                            "NLA is the Net Lettable Area of the building",
-                            size="xs",
-                            color="dimmed",
-                        ),
-                        dbc.Input(
-                            type="number",
-                            min=1,
-                            debounce=True,
-                            persistence=True,
-                            value=10000.0,
-                            id="gb_nla",
-                        ),
-                    ],
-                ),
-                dmc.Col(
-                    [
-                        # dmc.Select(
-                        #     label="BCA Building Type:",
-                        #     description="Classification of the building under NCC",
-                        #     placeholder="Select one",
-                        #     id="gb_building_type",
-                        #     value="5_a_grade",
-                        #     data=building_type_option.building_type,
-                        # ),
-                        html.Strong("BCA Building Type:"),
-                        dmc.Text(
-                            "Classification of the building under NCC",
-                            size="xs",
-                            color="dimmed",
-                        ),
-                        dbc.Select(
-                            id="gb_building_type",
-                            options=building_type_option.building_type,
-                            value="5_a_grade",
-                            persistence=True,
-                        ),
-                    ],
-                ),
-            ],
-            cols=2,
-            class_name="mb-5",
-        ),
-        html.H3(id="gb_benchmark", className="fs-4 text-center"),
-        html.P(
-            ["kgCO₂e per m²"],
-            className="text-center mb-0",
-        ),
-        html.P(" Area in NLA", className="text-center bg-light mb-5"),
-        html.Div(id="gb_benchmark_result"),
-    ]
-    return children
-
-
-def ice_benchmark_update():
-    children = [
-        dmc.SimpleGrid(
-            [
-                dmc.Col(
-                    [
-                        # dmc.NumberInput(
-                        #     label="GIA of the building",
-                        #     description="GIA is the Gross Internal Area of the building",
-                        #     value=10000.0,
-                        #     id="ice_gia",
-                        # )
-                        html.Strong("GIA of the Building"),
-                        dmc.Text(
-                            "GIA is the Gross Internal Area of the building",
-                            size="xs",
-                            color="dimmed",
-                        ),
-                        dbc.Input(
-                            type="number",
-                            min=1,
-                            debounce=True,
-                            persistence=True,
-                            value=10000.0,
-                            id="ice_gia",
-                        ),
-                    ],
-                ),
-                dmc.Col(
-                    [
-                        # dmc.Select(
-                        #     label="LETI Building Type:",
-                        #     description="LETI building type classification",
-                        #     placeholder="Select one",
-                        #     id="ice_building_type",
-                        #     value="co",
-                        #     data=building_type_option.leti_type,
-                        # ),
-                        html.Strong("BCA Building Type:"),
-                        dmc.Text(
-                            "LETI building type classification",
-                            size="xs",
-                            color="dimmed",
-                        ),
-                        dbc.Select(
-                            id="ice_building_type",
-                            options=building_type_option.leti_type,
-                            value="co",
-                            persistence=True,
-                        ),
-                    ],
-                ),
-            ],
-            cols=2,
-            class_name="mb-5",
-        ),
-        html.H3(id="ice_benchmark", className="fs-4 text-center"),
-        html.P(
-            ["kgCO₂e per m²"],
-            className="text-center mb-0",
-        ),
-        html.P("Area in GIA", className="text-center bg-light mb-5"),
-        html.Div(id="ice_benchmark_result"),
-    ]
-    return children
-
+from src import building_type_option
 
 # ---- Callbacks ----
 
@@ -207,13 +26,134 @@ def cards_update(data):
     else:
         df = pd.read_json(data, orient="split")
 
-        gb = sum_layer(df["Green Book EC"].sum())
-        epic = sum_layer(df["EPiC EC"].sum())
-        ice = sum_layer(df["ICE EC"].sum())
+        gb = [
+            html.H3(
+                "{:,}".format(np.around(df["Green Book EC"].sum(), 2)),
+                className="fs-4",
+            ),
+            html.P(
+                ["kgCO₂e", html.Span(" Total EC")],
+            ),
+        ]
 
-        gb_benchmark = gb_benchmark_update()
-        ice_benchmark = ice_benchmark_update()
+        epic = [
+            html.H3(
+                "{:,}".format(np.around(df["EPiC EC"].sum(), 2)),
+                className="fs-4",
+            ),
+            html.P(
+                ["kgCO₂e", html.Span(" Total EC")],
+            ),
+        ]
 
+        ice = [
+            html.H3(
+                "{:,}".format(np.around(df["ICE EC"].sum(), 2)),
+                className="fs-4",
+            ),
+            html.P(
+                ["kgCO₂e", html.Span(" Total EC")],
+            ),
+        ]
+
+        gb_benchmark = [
+            dmc.SimpleGrid(
+                [
+                    dmc.Col(
+                        [
+                            html.Strong("NLA of the Building"),
+                            dmc.Text(
+                                "NLA is the Net Lettable Area of the building",
+                                size="xs",
+                                color="dimmed",
+                            ),
+                            dbc.Input(
+                                type="number",
+                                min=1,
+                                debounce=True,
+                                persistence=True,
+                                value=10000.0,
+                                id="gb_nla",
+                            ),
+                        ],
+                    ),
+                    dmc.Col(
+                        [
+                            html.Strong("BCA Building Type:"),
+                            dmc.Text(
+                                "Classification of the building under NCC",
+                                size="xs",
+                                color="dimmed",
+                            ),
+                            dbc.Select(
+                                id="gb_building_type",
+                                options=building_type_option.building_type,
+                                value="5_a_grade",
+                                persistence=True,
+                            ),
+                        ],
+                    ),
+                ],
+                cols=2,
+                class_name="mb-5",
+            ),
+            html.H3(id="gb_benchmark", className="fs-4 text-center"),
+            html.P(
+                ["kgCO₂e per m²"],
+                className="text-center mb-0",
+            ),
+            html.P(" Area in NLA", className="text-center bg-light mb-5"),
+            html.Div(id="gb_benchmark_result"),
+        ]
+        ice_benchmark = [
+            dmc.SimpleGrid(
+                [
+                    dmc.Col(
+                        [
+                            html.Strong("GIA of the Building"),
+                            dmc.Text(
+                                "GIA is the Gross Internal Area of the building",
+                                size="xs",
+                                color="dimmed",
+                            ),
+                            dbc.Input(
+                                type="number",
+                                min=1,
+                                debounce=True,
+                                persistence=True,
+                                value=10000.0,
+                                id="ice_gia",
+                            ),
+                        ],
+                    ),
+                    dmc.Col(
+                        [
+                            html.Strong("BCA Building Type:"),
+                            dmc.Text(
+                                "LETI building type classification",
+                                size="xs",
+                                color="dimmed",
+                            ),
+                            dbc.Select(
+                                id="ice_building_type",
+                                options=building_type_option.leti_type,
+                                value="co",
+                                persistence=True,
+                            ),
+                        ],
+                    ),
+                ],
+                cols=2,
+                class_name="mb-5",
+            ),
+            html.H3(id="ice_benchmark", className="fs-4 text-center"),
+            html.P(
+                ["kgCO₂e per m²"],
+                className="text-center mb-0",
+            ),
+            html.P("Area in GIA", className="text-center bg-light mb-5"),
+            html.Div(id="ice_benchmark_result"),
+        ]
         return gb, epic, ice, gb_benchmark, ice_benchmark
 
 
@@ -349,14 +289,43 @@ def gb_benchmarks_update(val, val_bld, data):
             return (False, "{:,}".format(np.around(ice_benchmark, 2)), template + child)
 
 
-# ---- Generate The Cards for Dashboard ----
 cards = html.Div(
     [
         dmc.Grid(
             [
                 dmc.Col(
                     [
-                        generate_card("Green Book DB"),
+                        html.Div(
+                            [
+                                # Green Book Column
+                                html.H5(
+                                    children="Green Book DB",
+                                    className="mb-4 display-6",
+                                    style={"textAlign": "center"},
+                                ),
+                                dmc.Divider(),
+                                html.Div(
+                                    [
+                                        dmc.Container(
+                                            fluid=True,
+                                            children=[
+                                                html.Div(
+                                                    style={"textAlign": "center"},
+                                                    id="gb_generate_sum",
+                                                ),
+                                            ],
+                                        )
+                                    ],
+                                    style={
+                                        "marginTop": "3rem",
+                                        "marginBottom": "3rem",
+                                    },
+                                ),
+                                dmc.Divider(
+                                    class_name="mb-4",
+                                ),
+                            ]
+                        ),
                         html.Div(id="gb_benchmark_layout"),
                     ],
                     span=3,
@@ -364,7 +333,36 @@ cards = html.Div(
                 ),
                 dmc.Col(
                     [
-                        generate_card("Epic DB", id="epic_generate_sum"),
+                        html.Div(
+                            [
+                                html.H5(
+                                    children="EPiC DB",
+                                    className="mb-4 display-6",
+                                    style={"textAlign": "center"},
+                                ),
+                                dmc.Divider(),
+                                html.Div(
+                                    [
+                                        dmc.Container(
+                                            fluid=True,
+                                            children=[
+                                                html.Div(
+                                                    style={"textAlign": "center"},
+                                                    id="epic_generate_sum",
+                                                ),
+                                            ],
+                                        )
+                                    ],
+                                    style={
+                                        "marginTop": "3rem",
+                                        "marginBottom": "3rem",
+                                    },
+                                ),
+                                dmc.Divider(
+                                    class_name="mb-4",
+                                ),
+                            ]
+                        ),
                         html.H3(
                             "No Benchmark Data", className="display-6 fs-5 text-center"
                         ),
@@ -374,7 +372,36 @@ cards = html.Div(
                 ),
                 dmc.Col(
                     [
-                        generate_card("ICE DB", id="ice_generate_sum"),
+                        html.Div(
+                            [
+                                html.H5(
+                                    children="ICE DB",
+                                    className="mb-4 display-6",
+                                    style={"textAlign": "center"},
+                                ),
+                                dmc.Divider(),
+                                html.Div(
+                                    [
+                                        dmc.Container(
+                                            fluid=True,
+                                            children=[
+                                                html.Div(
+                                                    style={"textAlign": "center"},
+                                                    id="ice_generate_sum",
+                                                ),
+                                            ],
+                                        )
+                                    ],
+                                    style={
+                                        "marginTop": "3rem",
+                                        "marginBottom": "3rem",
+                                    },
+                                ),
+                                dmc.Divider(
+                                    class_name="mb-4",
+                                ),
+                            ]
+                        ),
                         html.Div(id="ice_benchmark_layout"),
                     ],
                     span=3,
