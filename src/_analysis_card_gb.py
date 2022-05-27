@@ -2,7 +2,7 @@
 TODO:
     - Classes have been implemented incase there is a need for extra functionality
         - There is a possibility for to add a sum() for each beam/column/slab/wall/stairs element
-    
+
 """
 
 import dash_bootstrap_components as dbc
@@ -14,7 +14,7 @@ from dash.exceptions import PreventUpdate
 
 from src import greenbook_options
 
-gb_layout = [
+_gb_layout = [
     dbc.Card(
         [
             dcc.Store(id="gb_store", storage_type="session"),
@@ -461,7 +461,7 @@ def for_storage(
 ) -> pd.DataFrame:
     new_df = df.loc[(df["Element"] == element) & (df["Materials"] == material)].copy()
     ec_list = []
-    # submat_list = []
+
     for i, rows in new_df.iterrows():
         ec_list.append(float(val) * rows["Volume"])
         # submat_list.append()
