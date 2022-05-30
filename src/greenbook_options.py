@@ -162,3 +162,5 @@ steel = [
     {"label": "Steel Galvanised Recycled", "value": 1.65},
     {"label": "Steel Galvanised Virgin", "value": 3.3},
 ]
+
+colors = {}

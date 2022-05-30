@@ -92,10 +92,14 @@ sidebar = html.Div(
                     ],
                     id="analysis-dropdown",
                     label="Analysis",
-                    style={
+                    in_navbar=True,
+                    align_end=True,
+                    toggle_class_name="display-6",
+                    toggle_style={
                         "padding": "0.5rem 1rem",
                         "width": "100%",
                         "textAlign": "start",
+                        "zIndex": "5",
                     },
                 ),
                 dbc.NavLink(

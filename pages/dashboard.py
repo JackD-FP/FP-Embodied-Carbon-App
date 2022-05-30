@@ -30,7 +30,6 @@ def create_data(x, label):
 
 
 def create_table(x):
-    # columns, values = x.columns, x.values
     x.rename(
         columns={
             "Mass": "Mass (kg)",
@@ -47,7 +46,7 @@ def create_table(x):
     column = create_data(x.loc[x["Element"] == "Column"], "Column")
     slab = create_data(x.loc[x["Element"] == "Slab"], "Slab")
     walls = create_data(x.loc[x["Element"] == "Wall"], "Wall")
-    stair = create_data(x.loc[x["Element"] == "Stair"], "Stair")
+    stair = create_data(x.loc[x["Element"] == "Stairs"], "Stairs")
 
     rows = column + beam + slab + walls + stair
     table = [html.Thead(header), html.Tbody(rows)]
@@ -120,58 +119,6 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
-def em_calc(df):
-    df = df.groupby(
-        by=["Building Materials (All)"], as_index=False
-    ).sum()  # create consolidated df
-    # materials = []
-    volumes = df["Net Volume"].tolist()
-    df_mat = df["Building Materials (All)"].tolist()
-    mass = df["Mass"].tolist()
-    gb_embodied_carbon = []
-    epic_embodied_carbon = []
-    ice_embodied_carbon = []
-
-    for i, mat in enumerate(df_mat):
-        # if mat == "CONCRETE - IN-SITU":
-        if re.search("concrete", mat, re.IGNORECASE):
-            gb_embodied_carbon.append(volumes[i] * 643)  # Concrete 50 MPa || Green Book
-            epic_embodied_carbon.append(volumes[i] * 600)  # Concrete 40 MPa || Epic
-            ice_embodied_carbon.append(volumes[i] * 413.4943)  # Concrete 50 MPa || Ice
-        # elif mat == "STEEL - STRUCTURAL":
-        elif re.search("steel", mat, re.IGNORECASE):
-            gb_embodied_carbon.append(
-                mass[i] * 2.9
-            )  # Steel Universal Section || Green Book
-            epic_embodied_carbon.append(
-                mass[i] * 2.9
-            )  # Steel structural steel section || Epic
-            ice_embodied_carbon.append(mass[i] * 1.55)  # steel Section|| Ice
-        # elif mat == "TIMBER - STRUCTURAL":
-        elif re.search("timber", mat, re.IGNORECASE):
-            gb_embodied_carbon.append(
-                volumes[i] * 718
-            )  # Glue-Laminated Timber (Glu-lam) || Green Book
-            epic_embodied_carbon.append(
-                volumes[i] * 1718
-            )  # Glued laminated timber (glulam) || Epic
-            ice_embodied_carbon.append(mass[i] * 0.51)  # Timber Gluelam || Ice
-        else:  # if all else fail assume concrete
-            gb_embodied_carbon.append(volumes[i] * 643)  # Wood || Green Book
-            epic_embodied_carbon.append(volumes[i] * 600)  # Wood || Epic
-            ice_embodied_carbon.append(volumes[i] * 413.4943)  # Wood || Ice
-
-        # ADD OTHER MATERIALS LIKE ALUMINIUM AND BRICK!!! (╯‵□′)╯︵┻━┻
-        # Also i think it's better if we access dataframe.loc instead of a const
-        # like look for the right material type or something.
-
-    return (
-        np.around(gb_embodied_carbon, 2),
-        np.around(epic_embodied_carbon, 2),
-        np.around(ice_embodied_carbon, 2),
-    )
-
-
 def percent_check_return(lo, hi):
     if hi == lo:
         return "Lowest total EC"
@@ -187,10 +134,8 @@ def make_graphs(data):
     elif data is not None:
         df_ = pd.read_json(data, orient="split")
         df_o = df_.reset_index()
-        gb_ec, epic_ec, ice_ec = em_calc(df_o)  # To create database of all the ec
 
         df = df_.groupby(by=["Building Materials (All)"], as_index=False).sum()
-        df_mat = df["Building Materials (All)"].tolist()
 
         # new calculations for carbon intensity
         mat, vol, mass, floor, element, gbec, epicec, iceec = funcs.mat_interpreter(df_)
@@ -228,23 +173,6 @@ def make_graphs(data):
             "{:,.2f}".format
         )
         df_new_grouped.loc[:, "ICE EC"] = df_new_grouped["ICE EC"].map("{:,.2f}".format)
-
-        embodied_carbon_dict = {
-            "Materials": df_mat,
-            "Green Book (kgCO₂e)": gb_ec,
-            "EPiC EC (kgCO₂e)": epic_ec,
-            "ICE EC (kgCO₂e)": ice_ec,
-        }
-
-        ec_df = pd.DataFrame(embodied_carbon_dict)
-
-        ec_df.loc[:, "Green Book (kgCO₂e)"] = ec_df["Green Book (kgCO₂e)"].map(
-            "{:,.2f}".format
-        )
-        ec_df.loc[:, "EPiC EC (kgCO₂e)"] = ec_df["EPiC EC (kgCO₂e)"].map(
-            "{:,.2f}".format
-        )
-        ec_df.loc[:, "ICE EC (kgCO₂e)"] = ec_df["ICE EC (kgCO₂e)"].map("{:,.2f}".format)
 
         fig = make_subplots(
             rows=1,
