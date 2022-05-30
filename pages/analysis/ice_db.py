@@ -1,3 +1,4 @@
+from calendar import c
 import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
@@ -57,10 +58,10 @@ class table:
             self.timber_val,
         ]
         labels = [
-            {"name": "Concrete", "value": 643},
-            {"name": "Reinforcement Bar", "value": 2.340},
-            {"name": "Structural Steel", "value": 2.9},
-            {"name": "Structural Timber", "value": 718},
+            {"name": "Concrete", "value": 413.4943},
+            {"name": "Reinforcement Bar", "value": 1.99},
+            {"name": "Structural Steel", "value": 1.55},
+            {"name": "Structural Timber", "value": 0.51},
         ]
         rows = []
 
@@ -153,7 +154,7 @@ def concrete(value, volume):
         float: embodied carbon value to be append
     """
     sub_material = [
-        x["label"] for x in beams.concrete_options if x["value"] == int(value)
+        x["label"] for x in beams.concrete_options if x["value"] == float(value)
     ][0]
     ec_value = float(value) * volume
     return sub_material, ec_value
@@ -216,7 +217,7 @@ def timber(value, mass):
         float: embodied carbon value to be append
     """
     sub_material = [
-        x["label"] for x in beams.timber_options if x["value"] == int(value)
+        x["label"] for x in beams.timber_options if x["value"] == float(value)
     ][0]
     ec_value = float(value) * mass
     return sub_material, ec_value
@@ -547,6 +548,11 @@ ice_layout = html.Div(
                                 html.H3("Beam"),
                                 dmc.Divider(class_name="mb-3"),
                                 beams.table_gen(),
+                                dmc.Text(
+                                    "*Reinforcement Bar options have the same value at 1.99 kgCO₂e per kg",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -556,6 +562,11 @@ ice_layout = html.Div(
                                 html.H3("Column"),
                                 dmc.Divider(class_name="mb-3"),
                                 columns.table_gen(),
+                                dmc.Text(
+                                    "*Reinforcement Bar options have the same value at 1.99 kgCO₂e per kg",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -565,6 +576,11 @@ ice_layout = html.Div(
                                 html.H3("Slab"),
                                 dmc.Divider(class_name="mb-3"),
                                 slabs.table_gen(),
+                                dmc.Text(
+                                    "*Reinforcement Bar options have the same value at 1.99 kgCO₂e per kg",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -574,6 +590,11 @@ ice_layout = html.Div(
                                 html.H3("Wall"),
                                 dmc.Divider(class_name="mb-3"),
                                 walls.table_gen(),
+                                dmc.Text(
+                                    "*Reinforcement Bar options have the same value at 1.99 kgCO₂e per kg",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -583,6 +604,11 @@ ice_layout = html.Div(
                                 html.H3("Stair"),
                                 dmc.Divider(class_name="mb-3"),
                                 stairs.table_gen(),
+                                dmc.Text(
+                                    "*Reinforcement Bar options have the same value at 1.99 kgCO₂e per kg",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),

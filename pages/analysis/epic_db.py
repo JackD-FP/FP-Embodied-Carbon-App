@@ -152,8 +152,10 @@ def concrete(value, volume):
         str : sub-materials to be append
         float: embodied carbon value to be append
     """
+    # print([x["label"] for x in beams.concrete_options if x["value"] == int(value)])
+
     sub_material = [
-        x["label"] for x in beams.concrete_options if x["value"] == int(value)
+        x["label"] for x in epic_options.concrete if x["value"] == int(value)
     ][0]
     ec_value = float(value) * volume
     return sub_material, ec_value
@@ -544,6 +546,11 @@ epic_layout = html.Div(
                                 html.H3("Beam"),
                                 dmc.Divider(class_name="mb-3"),
                                 beams.table_gen(),
+                                dmc.Text(
+                                    "*Cross Laminated Timber (CLT) maybe have a clerical error and may have an extra 1000 kgCO₂e per m³",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -553,6 +560,11 @@ epic_layout = html.Div(
                                 html.H3("Column"),
                                 dmc.Divider(class_name="mb-3"),
                                 columns.table_gen(),
+                                dmc.Text(
+                                    "*Cross Laminated Timber (CLT) maybe have a clerical error and may have an extra 1000 kgCO₂e per m³",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -562,6 +574,11 @@ epic_layout = html.Div(
                                 html.H3("Slab"),
                                 dmc.Divider(class_name="mb-3"),
                                 slabs.table_gen(),
+                                dmc.Text(
+                                    "*Cross Laminated Timber (CLT) maybe have a clerical error and may have an extra 1000 kgCO₂e per m³",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -571,6 +588,11 @@ epic_layout = html.Div(
                                 html.H3("Wall"),
                                 dmc.Divider(class_name="mb-3"),
                                 walls.table_gen(),
+                                dmc.Text(
+                                    "*Cross Laminated Timber (CLT) maybe have a clerical error and may have an extra 1000 kgCO₂e per m³",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -580,6 +602,11 @@ epic_layout = html.Div(
                                 html.H3("Stair"),
                                 dmc.Divider(class_name="mb-3"),
                                 stairs.table_gen(),
+                                dmc.Text(
+                                    "*Cross Laminated Timber (CLT) maybe have a clerical error and may have an extra 1000 kgCO₂e per m³",
+                                    size="xs",
+                                    color="gray",
+                                ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
