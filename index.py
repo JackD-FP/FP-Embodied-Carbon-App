@@ -11,8 +11,6 @@ from dash.exceptions import PreventUpdate
 from flask import Flask
 
 from pages import comparison, dashboard, documentation
-
-# from src import analysis_lib, save_modal
 from pages.analysis import green_book_db, epic_db, ice_db
 
 # server shit
@@ -63,6 +61,9 @@ SIDEBAR_STYLE = {
 # ----------------------- side bar stuff -----------------------------------------
 sidebar = html.Div(
     [
+        dcc.Store(id="gb_analysis_store", storage_type="session"),
+        dcc.Store(id="epic_analysis_store", storage_type="session"),
+        dcc.Store(id="ice_analysis_store", storage_type="session"),
         html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
         html.H5("Embodied Carbon", className="mt-5 display-6", style={"font": "2rem"}),
         html.H5("Structure", className="mb-5 display-6 fs-3"),
@@ -92,9 +93,8 @@ sidebar = html.Div(
                     ],
                     id="analysis-dropdown",
                     label="Analysis",
-                    in_navbar=True,
+                    nav=True,
                     align_end=True,
-                    toggle_class_name="display-6",
                     toggle_style={
                         "padding": "0.5rem 1rem",
                         "width": "100%",
@@ -171,7 +171,6 @@ def save_2_main(data):
 )
 def proc_store_update(data):
     if data is not None:
-        # bld_data = analysis_lib.data(data)
         return data
     else:
         PreventUpdate

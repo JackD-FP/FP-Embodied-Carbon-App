@@ -5,7 +5,7 @@ import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, html, State
 from dash.exceptions import PreventUpdate
 import plotly.express as px
-from src import epic_options
+from src import epic_options, analysis_comparison
 import re
 from config import config
 
@@ -253,6 +253,7 @@ def timber(value, volume):
         # Output("epic_analysis_benchmark", "children"),
         Output("epic_analysis_pie", "figure"),
         Output("epic_analysis_bar", "figure"),
+        Output("epic_analysis_store", "data"),
     ],
     [
         Input("sel-epic_beams-Concrete", "value"),
@@ -402,6 +403,8 @@ def cards_update(
         color_discrete_map=color_dict,
     )
 
+    epic_df = df.to_json(orient="split")
+
     return (
         # Beam materials
         "{:,.2f}".format(
@@ -528,6 +531,7 @@ def cards_update(
         "{:,.2f}".format(total := sum(ec_values)),
         fig_pie,
         fig_bar,
+        epic_df,
     )
 
 
@@ -686,5 +690,6 @@ epic_layout = html.Div(
                 ),  # column for the results of the edits
             ]
         ),
+        analysis_comparison.comparison,
     ]
 )

@@ -8,11 +8,11 @@ import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.graph_objects as go
-from config import config, graph_colors
+from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import analysis_lib, building_type_option, dashboard_cards, funcs, uploader
+from src import dashboard_cards, funcs, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")

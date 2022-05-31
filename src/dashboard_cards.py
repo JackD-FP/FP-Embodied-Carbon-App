@@ -26,134 +26,144 @@ def cards_update(data):
     else:
         df = pd.read_json(data, orient="split")
 
-        gb = [
-            html.H3(
-                "{:,}".format(np.around(df["Green Book EC"].sum(), 2)),
-                className="fs-4",
-            ),
-            html.P(
-                ["kgCO₂e", html.Span(" Total EC")],
-            ),
-        ]
+        gb = html.Div(
+            [
+                html.H3(
+                    "{:,}".format(np.around(df["Green Book EC"].sum(), 2)),
+                    className="fs-4",
+                ),
+                html.P(
+                    ["kgCO₂e", html.Span(" Total EC")],
+                ),
+            ]
+        )
 
-        epic = [
-            html.H3(
-                "{:,}".format(np.around(df["EPiC EC"].sum(), 2)),
-                className="fs-4",
-            ),
-            html.P(
-                ["kgCO₂e", html.Span(" Total EC")],
-            ),
-        ]
+        epic = html.Div(
+            [
+                html.H3(
+                    "{:,}".format(np.around(df["EPiC EC"].sum(), 2)),
+                    className="fs-4",
+                ),
+                html.P(
+                    ["kgCO₂e", html.Span(" Total EC")],
+                ),
+            ]
+        )
 
-        ice = [
-            html.H3(
-                "{:,}".format(np.around(df["ICE EC"].sum(), 2)),
-                className="fs-4",
-            ),
-            html.P(
-                ["kgCO₂e", html.Span(" Total EC")],
-            ),
-        ]
+        ice = html.Div(
+            [
+                html.H3(
+                    "{:,}".format(np.around(df["ICE EC"].sum(), 2)),
+                    className="fs-4",
+                ),
+                html.P(
+                    ["kgCO₂e", html.Span(" Total EC")],
+                ),
+            ]
+        )
 
-        gb_benchmark = [
-            dmc.SimpleGrid(
-                [
-                    dmc.Col(
-                        [
-                            html.Strong("NLA of the Building"),
-                            dmc.Text(
-                                "NLA is the Net Lettable Area of the building",
-                                size="xs",
-                                color="dimmed",
-                            ),
-                            dbc.Input(
-                                type="number",
-                                min=1,
-                                debounce=True,
-                                persistence=True,
-                                value=10000.0,
-                                id="gb_nla",
-                            ),
-                        ],
-                    ),
-                    dmc.Col(
-                        [
-                            html.Strong("BCA Building Type:"),
-                            dmc.Text(
-                                "Classification of the building under NCC",
-                                size="xs",
-                                color="dimmed",
-                            ),
-                            dbc.Select(
-                                id="gb_building_type",
-                                options=building_type_option.building_type,
-                                value="5_a_grade",
-                                persistence=True,
-                            ),
-                        ],
-                    ),
-                ],
-                cols=2,
-                class_name="mb-5",
-            ),
-            html.H3(id="gb_benchmark", className="fs-4 text-center"),
-            html.P(
-                ["kgCO₂e per m²"],
-                className="text-center mb-0",
-            ),
-            html.P(" Area in NLA", className="text-center bg-light mb-5"),
-            html.Div(id="gb_benchmark_result"),
-        ]
-        ice_benchmark = [
-            dmc.SimpleGrid(
-                [
-                    dmc.Col(
-                        [
-                            html.Strong("GIA of the Building"),
-                            dmc.Text(
-                                "GIA is the Gross Internal Area of the building",
-                                size="xs",
-                                color="dimmed",
-                            ),
-                            dbc.Input(
-                                type="number",
-                                min=1,
-                                debounce=True,
-                                persistence=True,
-                                value=10000.0,
-                                id="ice_gia",
-                            ),
-                        ],
-                    ),
-                    dmc.Col(
-                        [
-                            html.Strong("BCA Building Type:"),
-                            dmc.Text(
-                                "LETI building type classification",
-                                size="xs",
-                                color="dimmed",
-                            ),
-                            dbc.Select(
-                                id="ice_building_type",
-                                options=building_type_option.leti_type,
-                                value="co",
-                                persistence=True,
-                            ),
-                        ],
-                    ),
-                ],
-                cols=2,
-                class_name="mb-5",
-            ),
-            html.H3(id="ice_benchmark", className="fs-4 text-center"),
-            html.P(
-                ["kgCO₂e per m²"],
-                className="text-center mb-0",
-            ),
-            html.P("Area in GIA", className="text-center bg-light mb-5"),
-            html.Div(id="ice_benchmark_result"),
-        ]
+        gb_benchmark = html.Div(
+            [
+                dmc.SimpleGrid(
+                    [
+                        dmc.Col(
+                            [
+                                html.Strong("NLA of the Building"),
+                                dmc.Text(
+                                    "NLA is the Net Lettable Area of the building",
+                                    size="xs",
+                                    color="dimmed",
+                                ),
+                                dbc.Input(
+                                    type="number",
+                                    min=1,
+                                    debounce=True,
+                                    persistence=True,
+                                    value=10000.0,
+                                    id="gb_nla",
+                                ),
+                            ],
+                        ),
+                        dmc.Col(
+                            [
+                                html.Strong("BCA Building Type:"),
+                                dmc.Text(
+                                    "Classification of the building under NCC",
+                                    size="xs",
+                                    color="dimmed",
+                                ),
+                                dbc.Select(
+                                    id="gb_building_type",
+                                    options=building_type_option.building_type,
+                                    value="5_a_grade",
+                                    persistence=True,
+                                ),
+                            ],
+                        ),
+                    ],
+                    cols=2,
+                    class_name="mb-5",
+                ),
+                html.H3(id="gb_benchmark", className="fs-4 text-center"),
+                html.P(
+                    ["kgCO₂e per m²"],
+                    className="text-center mb-0",
+                ),
+                html.P(" Area in NLA", className="text-center bg-light mb-5"),
+                html.Div(id="gb_benchmark_result"),
+            ]
+        )
+        ice_benchmark = html.Div(
+            [
+                dmc.SimpleGrid(
+                    [
+                        dmc.Col(
+                            [
+                                html.Strong("GIA of the Building"),
+                                dmc.Text(
+                                    "GIA is the Gross Internal Area of the building",
+                                    size="xs",
+                                    color="dimmed",
+                                ),
+                                dbc.Input(
+                                    type="number",
+                                    min=1,
+                                    debounce=True,
+                                    persistence=True,
+                                    value=10000.0,
+                                    id="ice_gia",
+                                ),
+                            ],
+                        ),
+                        dmc.Col(
+                            [
+                                html.Strong("BCA Building Type:"),
+                                dmc.Text(
+                                    "LETI building type classification",
+                                    size="xs",
+                                    color="dimmed",
+                                ),
+                                dbc.Select(
+                                    id="ice_building_type",
+                                    options=building_type_option.leti_type,
+                                    value="co",
+                                    persistence=True,
+                                ),
+                            ],
+                        ),
+                    ],
+                    cols=2,
+                    class_name="mb-5",
+                ),
+                html.H3(id="ice_benchmark", className="fs-4 text-center"),
+                html.P(
+                    ["kgCO₂e per m²"],
+                    className="text-center mb-0",
+                ),
+                html.P("Area in GIA", className="text-center bg-light mb-5"),
+                html.Div(id="ice_benchmark_result"),
+            ]
+        )
         return gb, epic, ice, gb_benchmark, ice_benchmark
 
 
@@ -286,7 +296,7 @@ def gb_benchmarks_update(val, val_bld, data):
                     ],
                 ),
             ]
-            return (False, "{:,}".format(np.around(ice_benchmark, 2)), template + child)
+            return False, "{:,}".format(np.around(ice_benchmark, 2)), template + child
 
 
 cards = html.Div(

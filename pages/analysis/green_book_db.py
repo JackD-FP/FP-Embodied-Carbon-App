@@ -5,9 +5,11 @@ import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, html, State
 from dash.exceptions import PreventUpdate
 import plotly.express as px
-from src import greenbook_options
+from pages import analysis
+from src import greenbook_options, analysis_comparison
 import re
 from config import config
+from dash_iconify import DashIconify
 
 
 class table:
@@ -251,6 +253,7 @@ def timber(value, volume):
         Output("gb_analysis_benchmark", "children"),
         Output("gb_analysis_pie", "figure"),
         Output("gb_analysis_bar", "figure"),
+        Output("gb_analysis_store", "data"),
     ],
     [
         Input("sel-beams-Concrete", "value"),
@@ -402,6 +405,9 @@ def cards_update(
         color_discrete_map=color_dict,
     )
 
+    # send the new df to storage
+    df_json = df.to_json(orient="split")
+
     return (
         # Beam materials
         "{:,.2f}".format(
@@ -529,7 +535,93 @@ def cards_update(
         "{:,.2f}".format(total / nla),
         fig_pie,
         fig_bar,
+        df_json,
     )
+
+
+# Callback provision for reset.
+
+# @callback(
+#     [
+#         Output("sel-beams-Concrete", "value"),
+#         Output("sel-beams-Reinforcement-Bar", "value"),
+#         Output("sel-beams-Structural-Steel", "value"),
+#         Output("sel-beams-Structural-Timber", "value"),
+#     ],
+#     [
+#         Input("beam_reset", "n_clicks"),
+#     ],
+# )
+# def reset_update(
+#     beam_reset,
+# ):
+#     return 643, 2.340, 2.9, 718
+
+
+# @callback(
+#     [
+#         Output("sel-Columns-Concrete", "value"),
+#         Output("sel-Columns-Reinforcement-Bar", "value"),
+#         Output("sel-Columns-Structural-Steel", "value"),
+#         Output("sel-Columns-Structural-Timber", "value"),
+#     ],
+#     [
+#         Input("col_reset", "n_clicks"),
+#     ],
+# )
+# def reset_update(
+#     col_reset,
+# ):
+#     return 643, 2.340, 2.9, 718
+
+
+# @callback(
+#     [
+#         Output("sel-Slabs-Concrete", "value"),
+#         Output("sel-Slabs-Reinforcement-Bar", "value"),
+#         Output("sel-Slabs-Structural-Steel", "value"),
+#         Output("sel-Slabs-Structural-Timber", "value"),
+#     ],
+#     [
+#         Input("slab_reset", "n_clicks"),
+#     ],
+# )
+# def reset_update(
+#     slab_reset,
+# ):
+#     return 643, 2.340, 2.9, 718
+
+
+# @callback(
+#     [
+#         Output("sel-Walls-Concrete", "value"),
+#         Output("sel-Walls-Reinforcement-Bar", "value"),
+#         Output("sel-Walls-Structural-Steel", "value"),
+#         Output("sel-Walls-Structural-Timber", "value"),
+#     ],
+#     [
+#         Input("wall_reset", "n_clicks"),
+#     ],
+# )
+# def reset_update(
+#     wall_reset,
+# ):
+#     return 643, 2.340, 2.9, 718
+
+
+# @callback(
+#     [
+#         Output("sel-Stairs-Concrete", "value"),
+#         Output("sel-Stairs-Reinforcement-Bar", "value"),
+#         Output("sel-Stairs-Structural-Steel", "value"),
+#         Output("sel-Stairs-Structural-Timber", "value"),
+#     ],
+#     [
+#         Input("stair_reset", "n_clicks"),
+#     ],
+# )
+# def reset_update(stair_reset):
+#     return 643, 2.340, 2.9, 718
 
 
 # ---- layout of the website ----
@@ -547,6 +639,15 @@ gb_layout = html.Div(
                                 html.H3("Beam"),
                                 dmc.Divider(class_name="mb-3"),
                                 beams.table_gen(),
+                                # html.Div(
+                                #     dmc.Button(
+                                #         id="beam_reset",
+                                #         children="reset",
+                                #         variant="outline",
+                                #         compact=True,
+                                #         leftIcon=[DashIconify(icon="bx:reset")],
+                                #     ),
+                                # ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -556,6 +657,15 @@ gb_layout = html.Div(
                                 html.H3("Column"),
                                 dmc.Divider(class_name="mb-3"),
                                 columns.table_gen(),
+                                # html.Div(
+                                #     dmc.Button(
+                                #         id="col_reset",
+                                #         children="reset",
+                                #         variant="outline",
+                                #         compact=True,
+                                #         leftIcon=[DashIconify(icon="bx:reset")],
+                                #     ),
+                                # ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -565,6 +675,15 @@ gb_layout = html.Div(
                                 html.H3("Slab"),
                                 dmc.Divider(class_name="mb-3"),
                                 slabs.table_gen(),
+                                # html.Div(
+                                #     dmc.Button(
+                                #         id="slab_reset",
+                                #         children="reset",
+                                #         variant="outline",
+                                #         compact=True,
+                                #         leftIcon=[DashIconify(icon="bx:reset")],
+                                #     ),
+                                # ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -574,6 +693,15 @@ gb_layout = html.Div(
                                 html.H3("Wall"),
                                 dmc.Divider(class_name="mb-3"),
                                 walls.table_gen(),
+                                # html.Div(
+                                #     dmc.Button(
+                                #         id="wall_reset",
+                                #         children="reset",
+                                #         variant="outline",
+                                #         compact=True,
+                                #         leftIcon=[DashIconify(icon="bx:reset")],
+                                #     ),
+                                # ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -583,6 +711,15 @@ gb_layout = html.Div(
                                 html.H3("Stair"),
                                 dmc.Divider(class_name="mb-3"),
                                 stairs.table_gen(),
+                                # html.Div(
+                                #     dmc.Button(
+                                #         id="stair_reset",
+                                #         children="reset",
+                                #         variant="outline",
+                                #         compact=True,
+                                #         leftIcon=[DashIconify(icon="bx:reset")],
+                                #     ),
+                                # ),
                             ],
                             class_name="p-5 m-5 shadow rounded",
                         ),
@@ -656,11 +793,12 @@ gb_layout = html.Div(
                                     },
                                 ),
                             ],
-                            className="pt-5 sticky-top",
+                            className="py-5 sticky-top",
                         ),
                     ]
                 ),  # column for the results of the edits
             ]
         ),
+        analysis_comparison.comparison,
     ]
 )

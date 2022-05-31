@@ -6,7 +6,7 @@ import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, html, State
 from dash.exceptions import PreventUpdate
 import plotly.express as px
-from src import ice_options
+from src import ice_options, analysis_comparison
 import re
 from config import config
 
@@ -252,6 +252,7 @@ def timber(value, mass):
         Output("ice_analysis_benchmark", "children"),
         Output("ice_analysis_pie", "figure"),
         Output("ice_analysis_bar", "figure"),
+        Output("ice_analysis_store", "data"),
     ],
     [
         Input("sel-ice-beams-Concrete", "value"),
@@ -402,6 +403,7 @@ def cards_update(
         title="Embodied Carbon",
         color_discrete_map=color_dict,
     )
+    ice_df = df.to_json(orient="split")
 
     return (
         # Beam materials
@@ -530,6 +532,7 @@ def cards_update(
         "{:,.2f}".format(total / nla),
         fig_pie,
         fig_bar,
+        ice_df,
     )
 
 
@@ -688,5 +691,6 @@ ice_layout = html.Div(
                 ),  # column for the results of the edits
             ]
         ),
+        analysis_comparison.comparison,
     ]
 )
