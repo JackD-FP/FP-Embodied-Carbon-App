@@ -22,9 +22,9 @@ card01 = html.Div([html.Div(id="card01_table")])
 
 @callback(
     Output("card01_table", "children"),
-    Input("gfa_store", "modified_timestamp"),
-    State("main_store", "data"),
-    State("gfa_store", "data"),
+    Input("proc_store", "modified_timestamp"),
+    State("proc_store", "data"),
+    State("nla_store", "data"),
 )
 def update_div(gfa_mts, main_data, gfa_data):
     if main_data is None:

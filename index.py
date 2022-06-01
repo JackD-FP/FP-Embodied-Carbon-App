@@ -262,8 +262,8 @@ def render_page_content(pathname):
         return epic_db.epic_layout
     elif pathname == "/pages/analysis/ice_db":
         return ice_db.ice_layout
-    elif pathname == "/pages/comparison":
-        return comparison.layout
+    # elif pathname == "/pages/comparison":
+    #     return comparison.layout
     elif pathname == "/pages/documentation":
         return documentation.layout
 
