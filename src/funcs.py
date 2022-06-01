@@ -345,30 +345,30 @@ def upload_alert(df):
             dismissable=True,
             is_open=True,
         )
-    else:
-        return dbc.Alert(
-            [
-                html.H3(
-                    [
-                        html.Span(
-                            html.I(className="bi bi-exclamation-circle-fill me-3")
-                        ),
-                        "No errors found 😁",
-                    ],
-                    className="mb-3",
-                ),
-                html.P(
-                    [
-                        "there was no missing values in your input file. You can proceed to the Analysis Page."
-                    ]
-                ),
-            ],
-            "Please fill in all the fields",
-            color="success",
-            dismissable=True,
-            is_open=True,
-            duration=2000,
-        )
+    # else:
+    #     return dbc.Alert(
+    #         [
+    #             html.H3(
+    #                 [
+    #                     html.Span(
+    #                         html.I(className="bi bi-exclamation-circle-fill me-3")
+    #                     ),
+    #                     "No errors found 😁",
+    #                 ],
+    #                 className="mb-3",
+    #             ),
+    #             html.P(
+    #                 [
+    #                     "there was no missing values in your input file. You can proceed to the Analysis Page."
+    #                 ]
+    #             ),
+    #         ],
+    #         "Please fill in all the fields",
+    #         color="success",
+    #         dismissable=True,
+    #         is_open=True,
+    #         duration=2000,
+    #     )
 
 
 def mass2vol(mass, density):

@@ -327,10 +327,10 @@ def filename_update(data):
     return data
 
 
-@callback(
-    Output("error_check", "children"),
-    Input("main_store", "data"),
-)
-def error_update(data):
-    df = pd.read_json(data, orient="split")
-    return funcs.upload_alert(df)
+# @callback(
+#     Output("error_check", "children"),
+#     Input("main_store", "data"),
+# )
+# def error_update(data):
+#     df = pd.read_json(data, orient="split")
+#     return funcs.upload_alert(df)
