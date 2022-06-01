@@ -249,11 +249,11 @@ def definition(gb, epic, ice, proc):
 
 @callback(
     [
-        Output("gb_comp_total", "children"),
-        Output("gb_comp_benchmark", "children"),
-        Output("epic_comp_total", "children"),
-        Output("ice_comp_total", "children"),
-        Output("ice_comp_benchmark", "children"),
+        Output("gb_analysis_comp_total", "children"),
+        Output("gb_analysis_comp_benchmark", "children"),
+        Output("epic_analysis_comp_total", "children"),
+        Output("ice_analysis_comp_total", "children"),
+        Output("ice_analysis_comp_benchmark", "children"),
     ],
     [
         Input("proc_store", "data"),
@@ -263,7 +263,7 @@ def definition(gb, epic, ice, proc):
         State("epic_analysis_store", "data"),
         State("ice_analysis_store", "data"),
         State("nla_store", "data"),
-        State("gia_tore", "data"),
+        State("gia_store", "data"),
     ],
 )
 def totals_benchmark_update(
@@ -277,10 +277,10 @@ def totals_benchmark_update(
         ice_df = pd.read_json(ice_data, orient="split")
 
         return (
-            gb_total := "{:,.2f}".format(gb_df["EC Value"].sum()),
-            "{:,.2f}".format(epic_df["EC Value"].sum()),
-            ice_total := "{:,.2f}".format(ice_df["EC Value"].sum()),
+            "{:,.2f}".format(gb_total := gb_df["EC Value"].sum()),
             "{:,.2f}".format(gb_total / nla_data),
+            "{:,.2f}".format(epic_df["EC Value"].sum()),
+            "{:,.2f}".format(ice_total := ice_df["EC Value"].sum()),
             "{:,.2f}".format(ice_total / gia_data),
         )
 
@@ -290,40 +290,43 @@ comparison = html.Div(
         dmc.Divider(class_name="my-5"),
         html.Div(
             children=[
-                html.H3("Analysis Comparison", className="mb-3"),
+                html.H5("Analysis Comparison", className="mb-3"),
                 dbc.Row(
                     [
                         dbc.Col(
                             [
-                                html.H5("Green Book DB", className="my-3"),
+                                html.H3("Green Book DB", className="mt-3 mb-5"),
                                 dbc.Row(
                                     children=[
                                         dbc.Col(
                                             [
-                                                html.H5(
+                                                html.Div(
                                                     [
-                                                        html.P(
-                                                            12345, id="gb_comp_total"
+                                                        html.H4(
+                                                            "Calculating...",
+                                                            id="gb_analysis_comp_total",
+                                                            className="m-0",
                                                         ),
-                                                        html.Span(" kgCO₂e"),
-                                                    ]
+                                                        html.Strong(" kgCO₂e"),
+                                                        html.P("Total EC"),
+                                                    ],
                                                 ),
-                                                html.P("Total EC"),
                                             ],
                                             class_name="text-center",
                                         ),
                                         dbc.Col(
                                             [
-                                                html.H5(
+                                                html.Div(
                                                     [
-                                                        html.P(
-                                                            12345,
-                                                            id="gb_comp_benchmark",
+                                                        html.H4(
+                                                            "Calculating...",
+                                                            id="gb_analysis_comp_benchmark",
+                                                            className="m-0",
                                                         ),
-                                                        html.Span(" kgCO₂e/m²"),
+                                                        html.Strong(" kgCO₂e/m²"),
+                                                        html.P("Benchmark per NLA"),
                                                     ]
                                                 ),
-                                                html.P("Benchmark per NLA"),
                                             ],
                                             class_name="text-center",
                                         ),
@@ -348,16 +351,20 @@ comparison = html.Div(
                         ),
                         dbc.Col(
                             [
-                                html.H5("EPiC DB", className="my-3"),
+                                html.H3("EPiC DB", className="mt-3 mb-5"),
                                 html.Div(
                                     [
-                                        html.H5(
+                                        html.Div(
                                             [
-                                                html.P(12345, id="epic_comp_total"),
-                                                html.Span(" kgCO₂e"),
+                                                html.H4(
+                                                    "Calculating...",
+                                                    id="epic_analysis_comp_total",
+                                                    className="m-0",
+                                                ),
+                                                html.Strong("kgCO₂e"),
+                                                html.P("Total EC"),
                                             ]
                                         ),
-                                        html.P("Total EC"),
                                     ],
                                     className="text-center",
                                 ),
@@ -384,34 +391,38 @@ comparison = html.Div(
                         ),
                         dbc.Col(
                             [
-                                html.H5("ICE DB", className="my-3"),
+                                html.H3("ICE DB", className="mt-3 mb-5"),
                                 dbc.Row(
                                     children=[
                                         dbc.Col(
                                             [
-                                                html.H5(
+                                                html.Div(
                                                     [
-                                                        html.P(
-                                                            12345, id="ice_comp_total"
+                                                        html.H4(
+                                                            "Calculating...",
+                                                            id="ice_analysis_comp_total",
+                                                            className="m-0",
                                                         ),
-                                                        html.Span(" kgCO₂e"),
+                                                        html.Strong(" kgCO₂e"),
+                                                        html.P("Total EC"),
                                                     ]
                                                 ),
-                                                html.P("Total EC"),
                                             ],
                                             class_name="text-center",
                                         ),
                                         dbc.Col(
                                             [
-                                                html.H5(
+                                                html.Div(
                                                     [
-                                                        html.P(
-                                                            12345, id="ice_comp_total"
+                                                        html.H4(
+                                                            "Calculating...",
+                                                            id="ice_analysis_comp_benchmark",
+                                                            className="m-0",
                                                         ),
-                                                        html.Span(" kgCO₂e/m²"),
+                                                        html.Strong(" kgCO₂e/m²"),
+                                                        html.P("Benchmark per GIA"),
                                                     ]
                                                 ),
-                                                html.P("Benchmark per NLA"),
                                             ],
                                             class_name="text-center",
                                         ),

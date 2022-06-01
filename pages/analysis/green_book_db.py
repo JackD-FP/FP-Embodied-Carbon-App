@@ -734,7 +734,7 @@ gb_layout = html.Div(
                                         dbc.Col(
                                             children=[
                                                 html.H3(
-                                                    children=[23234],
+                                                    children=["Calculating..."],
                                                     id="gb_analysis_total",
                                                     className="text-center",
                                                 ),
@@ -752,7 +752,7 @@ gb_layout = html.Div(
                                         dbc.Col(
                                             children=[
                                                 html.H3(
-                                                    children=[5678],
+                                                    children=["Calculating..."],
                                                     id="gb_analysis_benchmark",
                                                     className="text-center",
                                                 ),

@@ -625,7 +625,7 @@ epic_layout = html.Div(
                                         dbc.Col(
                                             children=[
                                                 html.H3(
-                                                    children=[23234],
+                                                    children=["Calculating..."],
                                                     id="epic_analysis_total",
                                                     className="text-center",
                                                 ),
