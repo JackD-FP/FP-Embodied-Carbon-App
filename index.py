@@ -10,8 +10,8 @@ from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from flask import Flask
 
-from pages import comparison, dashboard, documentation
-from pages.analysis import green_book_db, epic_db, ice_db
+from pages import analysis, comparison, dashboard, documentation
+from pages.analysis import analysis
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -257,13 +257,16 @@ def render_page_content(pathname):
     elif pathname == "/pages/dashboard":
         return dashboard.layout
     elif pathname == "/pages/analysis/green_book_db":
-        return green_book_db.gb_layout
+        return analysis.analysis_layout
     elif pathname == "/pages/analysis/epic_db":
-        return epic_db.epic_layout
+        return analysis.analysis_layout
     elif pathname == "/pages/analysis/ice_db":
-        return ice_db.ice_layout
+        return analysis.analysis_layout
+    elif pathname == "/pages/analysis/analysis":
+        return analysis.analysis_layout
     # elif pathname == "/pages/comparison":
     #     return comparison.layout
+
     elif pathname == "/pages/documentation":
         return documentation.layout
 
@@ -299,12 +302,9 @@ app.layout = html.Div(
     [
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
-        # Green Book dashboard
         dcc.Store(id="nla_store", storage_type="session"),
         dcc.Store(id="gb_bld_type_store", storage_type="session"),
-        # ICE GIA
         dcc.Store(id="gia_store", storage_type="session"),
-        #
         dcc.Store(id="project_name", storage_type="session"),
         dcc.Store(
             id="card02_store", storage_type="session"

@@ -8,7 +8,7 @@ import pandas as pd
 from config import graph_colors
 from dash import html
 
-from src import epic_options, greenbook_options, ice_options
+from src import epic_options, greenbook_options, ice_options, material_options
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
@@ -806,3 +806,155 @@ def none_check(is_none):
         return 0
     else:
         return is_none.values[0]
+
+
+def concrete(value, vol):
+    """
+    meant to work with callback below. This returns submaterial with ec value.
+    This definition should be used in a dictionary.
+    definition for concrete
+
+    Args:
+        value ( float ): value of the dropdown
+        unit_value ( float ): value of the unit for concrete (Greenbook - Volume) (epic - Volume) (ice - Volume)
+
+    Returns:
+        str : sub-materials to be append
+        float: embodied carbon value to be append
+    """
+    gb_submat = [
+        x["gb_label"] for x in material_options.concrete if x["value"] == value
+    ][0]
+    gb_val = [x["gb"] for x in material_options.concrete if x["value"] == value][
+        0
+    ] * vol
+
+    epic_submat = [
+        x["epic_label"] for x in material_options.concrete if x["value"] == value
+    ][0]
+    epic_val = [x["epic"] for x in material_options.concrete if x["value"] == value][
+        0
+    ] * vol
+
+    ice_submat = [
+        x["ice_label"] for x in material_options.concrete if x["value"] == value
+    ][0]
+    ice_val = [x["ice"] for x in material_options.concrete if x["value"] == value][
+        0
+    ] * vol
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat
+
+
+def rebar(value, unit_value):
+    """
+    meant to work with callback below. This returns submaterial with ec value.
+    This definition should be used in a dictionary.
+    definition for rebar
+
+    Args:
+        value ( float ): value of the dropdown
+        unit_value ( float ): value of the unit for rebar (Greenbook - kilogram kg) (epic - kilogram kg) (ice - kilogram kg)
+
+    Returns:
+        str : sub-materials to be append
+        float: embodied carbon value to be append
+    """
+    gb_submat = [x["gb_label"] for x in material_options.rebar if x["value"] == value][
+        0
+    ]
+    gb_val = [x["gb"] for x in material_options.rebar if x["value"] == value][
+        0
+    ] * unit_value
+
+    epic_submat = [
+        x["epic_label"] for x in material_options.rebar if x["value"] == value
+    ][0]
+    epic_val = [x["epic"] for x in material_options.rebar if x["value"] == value][
+        0
+    ] * unit_value
+
+    ice_submat = [
+        x["ice_label"] for x in material_options.rebar if x["value"] == value
+    ][0]
+    ice_val = [x["ice"] for x in material_options.rebar if x["value"] == value][
+        0
+    ] * unit_value
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat
+
+
+def steel(value, unit_value):
+    """
+    meant to work with callback below. This returns submaterial with ec value.
+    This definition should be used in a dictionary.
+    definition for steel
+
+    Args:
+        value ( float ): value of the dropdown
+        unit_value ( float ): value of the unit for steel (Greenbook - kilogram kg) (epic - kilogram kg) (ice - kilogram kg)
+
+    Returns:
+        str : sub-materials to be append
+        float: embodied carbon value to be append
+    """
+    gb_submat = [x["gb_label"] for x in material_options.steel if x["value"] == value][
+        0
+    ]
+    gb_val = [x["gb"] for x in material_options.steel if x["value"] == value][
+        0
+    ] * unit_value
+
+    epic_submat = [
+        x["epic_label"] for x in material_options.steel if x["value"] == value
+    ][0]
+    epic_val = [x["epic"] for x in material_options.steel if x["value"] == value][
+        0
+    ] * unit_value
+
+    ice_submat = [
+        x["ice_label"] for x in material_options.steel if x["value"] == value
+    ][0]
+    ice_val = [x["ice"] for x in material_options.steel if x["value"] == value][
+        0
+    ] * unit_value
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat
+
+
+def timber(value, mass, vol):
+    """
+    meant to work with callback below. This returns submaterial with ec value.
+    This definition should be used in a dictionary.
+    definition for timber
+
+    Args:
+        value ( float ): value of the dropdown
+        unit_value ( float ): value of the unit for timber (Greenbook - Volume) (epic - Volume) (ice - Volume)
+
+    Returns:
+        str : sub-materials to be append
+        float: embodied carbon value to be append
+    """
+    gb_submat = [x["gb_label"] for x in material_options.timber if x["value"] == value][
+        0
+    ]
+    gb_val = [x["gb"] for x in material_options.timber if x["value"] == value][
+        0
+    ] * vol
+
+    epic_submat = [
+        x["epic_label"] for x in material_options.timber if x["value"] == value
+    ][0]
+    epic_val = [x["epic"] for x in material_options.timber if x["value"] == value][
+        0
+    ] * vol
+
+    ice_submat = [
+        x["ice_label"] for x in material_options.timber if x["value"] == value
+    ][0]
+    ice_val = [x["ice"] for x in material_options.timber if x["value"] == value][
+        0
+    ] * mass
+
+    return gb_submat, epic_submat, ice_submat, gb_val, epic_val, ice_val

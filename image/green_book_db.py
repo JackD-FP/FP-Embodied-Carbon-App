@@ -41,7 +41,7 @@ class table:
                 html.Tr(
                     [
                         html.Th("Materials"),
-                        html.Th("Embodied Carbon"),
+                        html.Th("Embodied Carbon", style={"width": "30%"}),
                     ]
                 )
             )
@@ -72,7 +72,10 @@ class table:
                     html.Td(
                         dbc.Row(
                             [
-                                dbc.Col(children=dmc.Text(labels[i]["name"])),
+                                dbc.Col(
+                                    children=dmc.Text(labels[i]["name"]),
+                                    class_name="w-25",
+                                ),
                                 dbc.Col(
                                     children=dbc.Select(
                                         id="sel-{}-{}".format(
@@ -225,6 +228,7 @@ def timber(value, volume):
 
 
 # god all mighty callback! that does all the work!
+# █████████████████████
 # ████████(⓿_⓿)████████
 # █████████████████████
 @callback(
@@ -367,6 +371,7 @@ def cards_update(
             }
             sub_materials.append(material_dict.get(row["Materials"])[0])
             ec_values.append(material_dict.get(row["Materials"])[1])
+    df.to_excel("test.xlsx")
     df.insert(loc=0, column="Sub-Material", value=sub_materials)
     df.insert(loc=0, column="EC Value", value=ec_values)
 
@@ -541,87 +546,87 @@ def cards_update(
 
 # Callback provision for reset.
 
-# @callback(
-#     [
-#         Output("sel-beams-Concrete", "value"),
-#         Output("sel-beams-Reinforcement-Bar", "value"),
-#         Output("sel-beams-Structural-Steel", "value"),
-#         Output("sel-beams-Structural-Timber", "value"),
-#     ],
-#     [
-#         Input("beam_reset", "n_clicks"),
-#     ],
-# )
-# def reset_update(
-#     beam_reset,
-# ):
-#     return 643, 2.340, 2.9, 718
+@callback(
+    [
+        Output("sel-beams-Concrete", "value"),
+        Output("sel-beams-Reinforcement-Bar", "value"),
+        Output("sel-beams-Structural-Steel", "value"),
+        Output("sel-beams-Structural-Timber", "value"),
+    ],
+    [
+        Input("beam_reset", "n_clicks"),
+    ],
+)
+def reset_update(
+    beam_reset,
+):
+    return 643, 2.340, 2.9, 718
 
 
-# @callback(
-#     [
-#         Output("sel-Columns-Concrete", "value"),
-#         Output("sel-Columns-Reinforcement-Bar", "value"),
-#         Output("sel-Columns-Structural-Steel", "value"),
-#         Output("sel-Columns-Structural-Timber", "value"),
-#     ],
-#     [
-#         Input("col_reset", "n_clicks"),
-#     ],
-# )
-# def reset_update(
-#     col_reset,
-# ):
-#     return 643, 2.340, 2.9, 718
+@callback(
+    [
+        Output("sel-Columns-Concrete", "value"),
+        Output("sel-Columns-Reinforcement-Bar", "value"),
+        Output("sel-Columns-Structural-Steel", "value"),
+        Output("sel-Columns-Structural-Timber", "value"),
+    ],
+    [
+        Input("col_reset", "n_clicks"),
+    ],
+)
+def reset_update(
+    col_reset,
+):
+    return 643, 2.340, 2.9, 718
 
 
-# @callback(
-#     [
-#         Output("sel-Slabs-Concrete", "value"),
-#         Output("sel-Slabs-Reinforcement-Bar", "value"),
-#         Output("sel-Slabs-Structural-Steel", "value"),
-#         Output("sel-Slabs-Structural-Timber", "value"),
-#     ],
-#     [
-#         Input("slab_reset", "n_clicks"),
-#     ],
-# )
-# def reset_update(
-#     slab_reset,
-# ):
-#     return 643, 2.340, 2.9, 718
+@callback(
+    [
+        Output("sel-Slabs-Concrete", "value"),
+        Output("sel-Slabs-Reinforcement-Bar", "value"),
+        Output("sel-Slabs-Structural-Steel", "value"),
+        Output("sel-Slabs-Structural-Timber", "value"),
+    ],
+    [
+        Input("slab_reset", "n_clicks"),
+    ],
+)
+def reset_update(
+    slab_reset,
+):
+    return 643, 2.340, 2.9, 718
 
 
-# @callback(
-#     [
-#         Output("sel-Walls-Concrete", "value"),
-#         Output("sel-Walls-Reinforcement-Bar", "value"),
-#         Output("sel-Walls-Structural-Steel", "value"),
-#         Output("sel-Walls-Structural-Timber", "value"),
-#     ],
-#     [
-#         Input("wall_reset", "n_clicks"),
-#     ],
-# )
-# def reset_update(
-#     wall_reset,
-# ):
-#     return 643, 2.340, 2.9, 718
+@callback(
+    [
+        Output("sel-Walls-Concrete", "value"),
+        Output("sel-Walls-Reinforcement-Bar", "value"),
+        Output("sel-Walls-Structural-Steel", "value"),
+        Output("sel-Walls-Structural-Timber", "value"),
+    ],
+    [
+        Input("wall_reset", "n_clicks"),
+    ],
+)
+def reset_update(
+    wall_reset,
+):
+    return 643, 2.340, 2.9, 718
 
 
-# @callback(
-#     [
-#         Output("sel-Stairs-Concrete", "value"),
-#         Output("sel-Stairs-Reinforcement-Bar", "value"),
-#         Output("sel-Stairs-Structural-Steel", "value"),
-#         Output("sel-Stairs-Structural-Timber", "value"),
-#     ],
-#     [
-#         Input("stair_reset", "n_clicks"),
-#     ],
-# )
-# def reset_update(stair_reset):
-#     return 643, 2.340, 2.9, 718
+@callback(
+    [
+        Output("sel-Stairs-Concrete", "value"),
+        Output("sel-Stairs-Reinforcement-Bar", "value"),
+        Output("sel-Stairs-Structural-Steel", "value"),
+        Output("sel-Stairs-Structural-Timber", "value"),
+    ],
+    [
+        Input("stair_reset", "n_clicks"),
+    ],
+)
+def reset_update(stair_reset):
+    return 643, 2.340, 2.9, 718
 
 
 # ---- layout of the website ----

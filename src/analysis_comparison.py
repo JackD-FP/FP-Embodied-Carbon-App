@@ -269,7 +269,7 @@ def definition(gb, epic, ice, proc):
 def totals_benchmark_update(
     proc_data, gb_data, epic_data, ice_data, nla_data, gia_data
 ):
-    if proc_data is None:
+    if gb_data is None or epic_data is None or ice_data is None:
         raise PreventUpdate
     else:
         gb_df = pd.read_json(gb_data, orient="split")
@@ -347,7 +347,8 @@ comparison = html.Div(
                                     },
                                 ),
                             ],
-                            md=4,
+                            xxl=4,
+                            md=12,
                         ),
                         dbc.Col(
                             [
@@ -387,7 +388,8 @@ comparison = html.Div(
                                     },
                                 ),
                             ],
-                            md=4,
+                            xxl=4,
+                            md=12,
                         ),
                         dbc.Col(
                             [
@@ -447,7 +449,8 @@ comparison = html.Div(
                                     },
                                 ),
                             ],
-                            md=4,
+                            xxl=4,
+                            md=12,
                         ),
                     ]
                 ),
