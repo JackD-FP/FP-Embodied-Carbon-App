@@ -843,7 +843,9 @@ def concrete(value, vol):
         0
     ] * vol
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat
+    colors = [x["color"] for x in material_options.concrete if x["value"] == value][0]
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
 
 
 def rebar(value, unit_value):
@@ -881,7 +883,9 @@ def rebar(value, unit_value):
         0
     ] * unit_value
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat
+    colors = [x["color"] for x in material_options.rebar if x["value"] == value][0]
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
 
 
 def steel(value, unit_value):
@@ -919,7 +923,9 @@ def steel(value, unit_value):
         0
     ] * unit_value
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat
+    colors = [x["color"] for x in material_options.steel if x["value"] == value][0]
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
 
 
 def timber(value, mass, vol):
@@ -939,9 +945,7 @@ def timber(value, mass, vol):
     gb_submat = [x["gb_label"] for x in material_options.timber if x["value"] == value][
         0
     ]
-    gb_val = [x["gb"] for x in material_options.timber if x["value"] == value][
-        0
-    ] * vol
+    gb_val = [x["gb"] for x in material_options.timber if x["value"] == value][0] * vol
 
     epic_submat = [
         x["epic_label"] for x in material_options.timber if x["value"] == value
@@ -957,4 +961,29 @@ def timber(value, mass, vol):
         0
     ] * mass
 
-    return gb_submat, epic_submat, ice_submat, gb_val, epic_val, ice_val
+    colors = [x["color"] for x in material_options.timber if x["value"] == value][0]
+
+    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+
+
+def percent_diff(current, prev):
+    """
+    Calculates the percent difference between two values. Then return a dash dmc.Badge component.
+
+    Args:
+        current (float): current value
+        prev (float): previous value
+
+    Returns:
+        Dash Component: returns a dmc.Badge() component with the percent difference of
+    """
+
+    percent = (current - prev) / (prev + current) * 100
+    if percent > 0:
+        return dmc.Badge(
+            ["+" + str(np.around(percent, 1)) + "%"], variant="filled", color="yellow"
+        )
+    else:
+        return dmc.Badge(
+            [str(np.around(percent, 1)) + "%"], variant="filled", color="lime"
+        )

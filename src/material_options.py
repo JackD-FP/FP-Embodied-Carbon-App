@@ -8,6 +8,7 @@ concrete = [
         "epic": 492.00,
         "ice_label": "Concrete 50 MPa - GGBS 50%",
         "ice": 171.819,
+        "color": "#064789",
     },
     {
         "label": "Concrete 50 MPa - Fly Ash",
@@ -18,6 +19,7 @@ concrete = [
         "epic": 467.00,
         "ice_label": "Concrete 50 MPa - Fly Ash 50%",
         "ice": 293.457,
+        "color": "#0866C4",
     },
     {
         "label": "Concrete 50 MPa",
@@ -28,6 +30,7 @@ concrete = [
         "epic": 600.00,
         "ice_label": "Concrete 50 MPa",
         "ice": 413.4943,
+        "color": "#0A7AEB",
     },
     {
         "label": "Concrete 40 MPa - GGBS",
@@ -38,6 +41,7 @@ concrete = [
         "epic": 392.00,
         "ice_label": "Concrete 40 Mpa - GGBS 50%",
         "ice": 212.2368194884,
+        "color": "#288FF6",
     },
     {
         "label": "Concrete 40 MPa - Fly Ash",
@@ -48,6 +52,7 @@ concrete = [
         "epic": 373.00,
         "ice_label": "Concrete 40 Mpa - Fly Ash 50%",
         "ice": 259.2980961123,
+        "color": "#4FA3F8",
     },
     {
         "label": "Concrete 40 MPa",
@@ -68,6 +73,7 @@ concrete = [
         "epic": 331.00,
         "ice_label": "Concrete 40 MPa - GGBS 50%",
         "ice": 172.0060314645,
+        "color": "#9DCCFB",
     },
     {
         "label": "Concrete 32 MPa - Fly Ash",
@@ -78,6 +84,7 @@ concrete = [
         "epic": 314.00,
         "ice_label": "Concrete 32 MPa - Fly Ash 50%",
         "ice": 221.464679076147,
+        "color": "#76B8F9",
     },
     {
         "label": "Concrete 32 MPa",
@@ -88,6 +95,7 @@ concrete = [
         "epic": 416.00,
         "ice_label": "Concrete 32 MPa",
         "ice": 308.5726,
+        "color": "#C4E0FD",
     },
 ]
 
@@ -96,12 +104,13 @@ rebar = [
     {
         "label": "Steel Reinforment Bar",
         "value": "rebar",
-        "gb_label": "Over 65% Recycled Content",
+        "gb_label": "Rebar ≤65% Recycled Content",
         "gb": 1.733,
         "epic_label": "Steel reinforcement bar ",
         "epic": 2.9,
         "ice_label": "Steel Rebar recycled ",
         "ice": 1.99,
+        "color": "#F8CC0D",
     },
 ]
 
@@ -115,6 +124,7 @@ steel = [
         "epic": 3.88,
         "ice_label": "Steel Rebar recycled ",
         "ice": 1.55,
+        "color": "#FB3640",
     },
     {
         "label": "Steel Hollow Section",
@@ -125,6 +135,7 @@ steel = [
         "epic": 4.6,
         "ice_label": "Steel Rebar recycled ",
         "ice": 1.55,
+        "color": "#FEC3C6",
     },
 ]
 
@@ -138,16 +149,7 @@ timber = [
         "epic": 645,
         "ice_label": "Timber CLT",
         "ice": 0.44,
-    },
-    {
-        "label": "Timber Glu-Lam",
-        "value": "glu_lam",
-        "gb_label": "Glue Laminated Timber (Glu-Lam)",
-        "gb": 718,
-        "epic_label": "Glue Laminated Timber (Glu-Lam)",
-        "epic": 1718,
-        "ice_label": "Timber Glulam",
-        "ice": 0.51,
+        "color": "#35A746",
     },
     {
         "label": "Timber Glu-Lam",
@@ -158,6 +160,7 @@ timber = [
         "epic": 1718,
         "ice_label": "Timber Glulam",
         "ice": 0.51,
+        "color": "#64CE74",
     },
     {
         "label": "Timber LVL",
@@ -168,5 +171,6 @@ timber = [
         "epic": 1059,
         "ice_label": "Timber Glulam",
         "ice": 0.39,
+        "color": "#A2E2AC",
     },
 ]

@@ -24,174 +24,99 @@ from dash_iconify import DashIconify
         Output("ice_analysis_comp_pie", "figure"),
         Output("ice_analysis_comp_bar", "figure"),
     ],
-    Input("gb_analysis_store", "data"),
-    State("epic_analysis_store", "data"),
-    State("ice_analysis_store", "data"),
-    State("proc_store", "data"),
+    Input("analysis_store", "data"),
 )
-def definition(gb, epic, ice, proc):
-    if proc is None:
+def definition(data):
+    if data is None:
         raise PreventUpdate
-    elif epic is None or ice is None:
-        df = pd.read_json(proc, orient="split")
-        df_grouped = df.groupby(["Materials"], as_index=False).sum()
-        df_mat = df["Materials"].unique()
-        colors = [
-            "#FF595E",
-            "#36949D",
-            "#FF924C",
-            "#1982C4",
-            "#FFCA3A",
-            "#4267AC",
-            "#C5CA30",
-            "#565AA0",
-            "#8AC926",
-            "#6A4C93",
-        ]
-        color_dict = dict(zip(df_mat, colors))
-        epic_fig_pie = px.pie(
-            df_grouped,
-            values="EPiC EC",
-            color="Materials",
-            names="Materials",
-            color_discrete_map=color_dict,
-        )
-        epic_fig_bar = px.histogram(
-            df,
-            x="Floor Level",
-            y="EPiC EC",
-            color="Materials",
-            title="Embodied Carbon",
-            color_discrete_map=color_dict,
-        )
-
-        ice_fig_pie = px.pie(
-            df_grouped,
-            values="ICE EC",
-            color="Materials",
-            names="Materials",
-            color_discrete_map=color_dict,
-        )
-        ice_fig_bar = px.histogram(
-            df,
-            x="Floor Level",
-            y="ICE EC",
-            color="Materials",
-            title="Embodied Carbon",
-            color_discrete_map=color_dict,
-        )
-
-        gb_df = pd.read_json(gb, orient="split")
-        gb_df_grouped = gb_df.groupby(["Sub-Material"], as_index=False).sum()
-        color_names = gb_df["Sub-Material"].unique().tolist()
-
-        gb_color_dict = dict(zip(color_names, colors))
-
-        # generate green book pie and bar figs
-        gb_fig_pie = px.pie(
-            gb_df_grouped,
-            values="EC Value",
-            color="Sub-Material",
-            names="Sub-Material",
-            color_discrete_map=gb_color_dict,
-        )
-        gb_fig_bar = px.histogram(
-            gb_df,
-            x="Floor Level",
-            y="EC Value",
-            color="Sub-Material",
-            color_discrete_map=gb_color_dict,
-        )
-
-        return (
-            gb_fig_pie,
-            gb_fig_bar,
-            epic_fig_pie,
-            epic_fig_bar,
-            ice_fig_pie,
-            ice_fig_bar,
-        )
     else:
-        gb_df = pd.read_json(gb, orient="split")
-        gb_df_grouped = gb_df.groupby(["Sub-Material"], as_index=False).sum()
-        gb_color_names = gb_df["Sub-Material"].unique().tolist()
+        df = pd.read_json(data, orient="split")
+        gb_df = df.filter(
+            items=["Green Book Material", "Green Book EC", "Floor Level", "Element"]
+        )
+        gb_df_grouped = df.groupby(
+            ["Green Book Material", "Colors"], as_index=False
+        ).sum()
+        gb_vals = gb_df_grouped["Green Book Material"].to_list()
+        gb_colors = gb_df_grouped["Colors"].to_list()
+        # print(gb_vals, "\n\n", gb_colors, "\n\n", gb_df_grouped, "\n\n")
+        gb_color_dict = dict(zip(gb_vals, gb_colors))
 
-        epic_df = pd.read_json(epic, orient="split")
-        epic_df_grouped = epic_df.groupby(["Sub-Material"], as_index=False).sum()
-        epic_color_names = epic_df["Sub-Material"].unique().tolist()
+        epic_df = df.filter(
+            items=["EPiC Material", "EPiC EC", "Floor Level", "Element"]
+        )
+        epic_df_grouped = df.groupby(["EPiC Material", "Colors"], as_index=False).sum()
+        epic_vals = epic_df_grouped["EPiC Material"].to_list()
+        epic_colors = epic_df_grouped["Colors"].to_list()
+        epic_color_dict = dict(zip(epic_vals, epic_colors))
 
-        ice_df = pd.read_json(ice, orient="split")
-        ice_df_grouped = ice_df.groupby(["Sub-Material"], as_index=False).sum()
-        ice_color_names = ice_df["Sub-Material"].unique().tolist()
-        colors = [
-            "#FF595E",
-            "#36949D",
-            "#FF924C",
-            "#1982C4",
-            "#FFCA3A",
-            "#4267AC",
-            "#C5CA30",
-            "#565AA0",
-            "#8AC926",
-            "#6A4C93",
-        ]
-        gb_color_dict = dict(zip(gb_color_names, colors))
-        epic_color_dict = dict(zip(epic_color_names, colors))
-        ice_color_dict = dict(zip(ice_color_names, colors))
+        ice_df = df.filter(items=["ICE Material", "ICE EC", "Floor Level", "Element"])
+        ice_df_grouped = df.groupby(["ICE Material", "Colors"], as_index=False).sum()
+        ice_vals = ice_df_grouped["ICE Material"].to_list()
+        ice_colors = ice_df_grouped["Colors"].to_list()
+        ice_color_dict = dict(zip(ice_vals, ice_colors))
+        # ice_color_names = ice_df_grouped["ICE Material"].unique().tolist()
+
+        # colors = [
+        #     "#FF595E",
+        #     "#36949D",
+        #     "#FF924C",
+        #     "#1982C4",
+        #     "#FFCA3A",
+        #     "#4267AC",
+        #     "#C5CA30",
+        #     "#565AA0",
+        #     "#8AC926",
+        #     "#6A4C93",
+        # ]
+        # gb_color_dict = dict(zip(gb_color_names, colors))
+        # epic_color_dict = dict(zip(epic_color_names, colors))
+        # ice_color_dict = dict(zip(ice_color_names, colors))
 
         gb_fig_pie = px.pie(
             gb_df_grouped,
-            values="EC Value",
-            color="Sub-Material",
-            names="Sub-Material",
+            values="Green Book EC",
+            color="Green Book Material",
+            names="Green Book Material",
             color_discrete_map=gb_color_dict,
         )
         gb_fig_bar = px.histogram(
             gb_df,
             x="Floor Level",
-            y="EC Value",
-            color="Sub-Material",
+            y="Green Book EC",
+            color="Green Book Material",
             color_discrete_map=gb_color_dict,
         )
         epic_fig_pie = px.pie(
             epic_df_grouped,
-            values="EC Value",
-            color="Sub-Material",
-            names="Sub-Material",
+            values="EPiC EC",
+            color="EPiC Material",
+            names="EPiC Material",
             color_discrete_map=epic_color_dict,
         )
         epic_fig_bar = px.histogram(
             epic_df,
             x="Floor Level",
-            y="EC Value",
-            color="Sub-Material",
+            y="EPiC EC",
+            color="EPiC Material",
             color_discrete_map=epic_color_dict,
         )
         ice_fig_pie = px.pie(
             ice_df_grouped,
-            values="EC Value",
-            color="Sub-Material",
-            names="Sub-Material",
+            values="ICE EC",
+            color="ICE Material",
+            names="ICE Material",
             color_discrete_map=ice_color_dict,
         )
         ice_fig_bar = px.histogram(
             ice_df,
             x="Floor Level",
-            y="EC Value",
-            color="Sub-Material",
+            y="ICE EC",
+            color="ICE Material",
             color_discrete_map=ice_color_dict,
         )
 
         # update figures
-        gb_fig_pie.update_layout(
-            legend={
-                "orientation": "h",
-                "yanchor": "top",
-                "y": 1.3,
-                "xanchor": "center",
-                "x": 0.5,
-            }
-        )
         gb_fig_bar.update_layout(
             legend={
                 "orientation": "h",
@@ -201,25 +126,7 @@ def definition(gb, epic, ice, proc):
                 "x": 0.5,
             }
         )
-        epic_fig_pie.update_layout(
-            legend={
-                "orientation": "h",
-                "yanchor": "top",
-                "y": 1.3,
-                "xanchor": "center",
-                "x": 0.5,
-            }
-        )
         epic_fig_bar.update_layout(
-            legend={
-                "orientation": "h",
-                "yanchor": "top",
-                "y": 1.3,
-                "xanchor": "center",
-                "x": 0.5,
-            }
-        )
-        ice_fig_pie.update_layout(
             legend={
                 "orientation": "h",
                 "yanchor": "top",
@@ -256,32 +163,25 @@ def definition(gb, epic, ice, proc):
         Output("ice_analysis_comp_benchmark", "children"),
     ],
     [
-        Input("proc_store", "data"),
+        Input("analysis_store", "data"),
     ],
     [
-        State("gb_analysis_store", "data"),
-        State("epic_analysis_store", "data"),
-        State("ice_analysis_store", "data"),
         State("nla_store", "data"),
         State("gia_store", "data"),
     ],
 )
-def totals_benchmark_update(
-    proc_data, gb_data, epic_data, ice_data, nla_data, gia_data
-):
-    if gb_data is None or epic_data is None or ice_data is None:
+def totals_benchmark_update(data, nla, gia):
+    if data is None:
         raise PreventUpdate
     else:
-        gb_df = pd.read_json(gb_data, orient="split")
-        epic_df = pd.read_json(epic_data, orient="split")
-        ice_df = pd.read_json(ice_data, orient="split")
+        df = pd.read_json(data, orient="split")
 
         return (
-            "{:,.2f}".format(gb_total := gb_df["EC Value"].sum()),
-            "{:,.2f}".format(gb_total / nla_data),
-            "{:,.2f}".format(epic_df["EC Value"].sum()),
-            "{:,.2f}".format(ice_total := ice_df["EC Value"].sum()),
-            "{:,.2f}".format(ice_total / gia_data),
+            "{:,.2f}".format(gb_total := df["Green Book EC"].sum()),
+            "{:,.2f}".format(gb_total / nla),
+            "{:,.2f}".format(df["EPiC EC"].sum()),
+            "{:,.2f}".format(ice_total := df["ICE EC"].sum()),
+            "{:,.2f}".format(ice_total / gia),
         )
 
 
