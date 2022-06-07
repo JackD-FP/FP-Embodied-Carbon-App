@@ -6,6 +6,7 @@ from dash import Input, Output, callback, dcc, html, State
 from dash.exceptions import PreventUpdate
 import plotly.express as px
 from src import analysis_comparison, material_options, funcs
+from pages.analysis import custom_analysis
 import re
 from config import config
 from dash_iconify import DashIconify
@@ -824,9 +825,19 @@ def totals_update(analysis_store, ec_prev):
         )
 
 
+@callback(
+    Output("analysis_db_download", "data"),
+    Input("analysis_btn_download", "n_clicks"),
+    State("analysis_store", "data"),
+    prevent_initial_call=True,
+)
+def db_download_update(n_clicks, data):
+    df = pd.read_json(data, orient="split")
+    return dcc.send_data_frame(df.to_csv, "EC_Analysis_{}.csv".format(n_clicks))
+
+
 # create the layout for the cards
 # gen_analysis was separated from analysis_layout just to make it cleaner to read
-
 gen_analysis = dbc.Row(
     children=[
         dbc.Col(
@@ -996,7 +1007,14 @@ gen_analysis = dbc.Row(
                             ],
                             withBorder=True,
                             shadow="sm",
-                            class_name="p-3 mt-4 mx-4",
+                            class_name="p-3 m-4",
+                        ),
+                        dcc.Download(id="analysis_db_download"),
+                        dmc.Button(
+                            "Download Database",
+                            leftIcon=[DashIconify(icon="ant-design:download-outlined")],
+                            id="analysis_btn_download",
+                            class_name="mx-4",
                         ),
                     ],
                 ),
@@ -1010,7 +1028,6 @@ gen_analysis = dbc.Row(
 # full page layout
 analysis_layout = html.Div(
     [
-        dcc.Store(id="analysis_store", storage_type="session"),
         dcc.Store(id="ec_prev", storage_type="memory"),
         html.H1("Analysis", className="display-2 mb-5 "),
         html.Hr(className="mb-5"),
@@ -1019,17 +1036,20 @@ analysis_layout = html.Div(
                 dmc.Tab(
                     children=[
                         gen_analysis,
-                        analysis_comparison.comparison,
                     ],
                     label="General Analysis",
                 ),
                 dmc.Tab(
                     label="Custom Analysis",
+                    children=[
+                        custom_analysis.layout,
+                    ],
                 ),
             ],
             color="blue",
             active=0,
         ),
+        analysis_comparison.comparison,
         html.Div(
             id="tab_analysis",
             className="my-5",

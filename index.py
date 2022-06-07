@@ -77,31 +77,34 @@ sidebar = html.Div(
                 dbc.NavLink(
                     "Dashboard", href="/pages/dashboard", id="dashboard", active="exact"
                 ),
-                dbc.DropdownMenu(
-                    children=[
-                        dbc.DropdownMenuItem(
-                            "Green Book DB",
-                            id="gb_btn",
-                            href="/pages/analysis/green_book_db",
-                        ),
-                        dbc.DropdownMenuItem(
-                            "EPiC DB", id="epic_btn", href="/pages/analysis/epic_db"
-                        ),
-                        dbc.DropdownMenuItem(
-                            "ICE DB", id="ice_btn", href="/pages/analysis/ice_db"
-                        ),
-                    ],
-                    id="analysis-dropdown",
-                    label="Analysis",
-                    nav=True,
-                    align_end=True,
-                    toggle_style={
-                        "padding": "0.5rem 1rem",
-                        "width": "100%",
-                        "textAlign": "start",
-                        "zIndex": "5",
-                    },
+                dbc.NavLink(
+                    "Analysis", href="/pages/analysis", id="analysis", active="exact"
                 ),
+                # dbc.DropdownMenu(
+                #     children=[
+                #         dbc.DropdownMenuItem(
+                #             "Green Book DB",
+                #             id="gb_btn",
+                #             href="/pages/analysis/green_book_db",
+                #         ),
+                #         dbc.DropdownMenuItem(
+                #             "EPiC DB", id="epic_btn", href="/pages/analysis/epic_db"
+                #         ),
+                #         dbc.DropdownMenuItem(
+                #             "ICE DB", id="ice_btn", href="/pages/analysis/ice_db"
+                #         ),
+                #     ],
+                #     id="analysis-dropdown",
+                #     label="Analysis",
+                #     nav=True,
+                #     align_end=True,
+                #     toggle_style={
+                #         "padding": "0.5rem 1rem",
+                #         "width": "100%",
+                #         "textAlign": "start",
+                #         "zIndex": "5",
+                #     },
+                # ),
                 dbc.NavLink(
                     "Comparison", href="/pages/comparison", id="tec", active="exact"
                 ),
@@ -236,17 +239,17 @@ def gia_store_update(gia_mts, gia):
         return gia
 
 
-@app.callback(
-    Output("analysis-dropdown", "label"),
-    Input("url", "pathname"),
-)
-def analysis_dropdown_update(pathname):
-    urls = {
-        "/pages/analysis/green_book_db": "Green Book DB",
-        "/pages/analysis/epic_db": "EPiC DB",
-        "/pages/analysis/ice_db": "ICE DB",
-    }
-    return urls.get(pathname, "Analysis")
+# @app.callback(
+#     Output("analysis-dropdown", "label"),
+#     Input("url", "pathname"),
+# )
+# def analysis_dropdown_update(pathname):
+#     urls = {
+#         "/pages/analysis/green_book_db": "Green Book DB",
+#         "/pages/analysis/epic_db": "EPiC DB",
+#         "/pages/analysis/ice_db": "ICE DB",
+#     }
+#     return urls.get(pathname, "Analysis")
 
 
 # routing stuff also 404 page
@@ -262,7 +265,7 @@ def render_page_content(pathname):
         return analysis.analysis_layout
     elif pathname == "/pages/analysis/ice_db":
         return analysis.analysis_layout
-    elif pathname == "/pages/analysis/analysis":
+    elif pathname == "/pages/analysis":
         return analysis.analysis_layout
     # elif pathname == "/pages/comparison":
     #     return comparison.layout
@@ -300,6 +303,7 @@ def render_page_content(pathname):
 
 app.layout = html.Div(
     [
+        dcc.Store(id="analysis_store", storage_type="session"),
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
         dcc.Store(id="nla_store", storage_type="session"),

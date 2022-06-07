@@ -808,7 +808,7 @@ def none_check(is_none):
         return is_none.values[0]
 
 
-def concrete(value, vol):
+def concrete(value, vol, source=material_options.concrete):
     """
     meant to work with callback below. This returns submaterial with ec value.
     This definition should be used in a dictionary.
@@ -817,38 +817,33 @@ def concrete(value, vol):
     Args:
         value ( float ): value of the dropdown
         unit_value ( float ): value of the unit for concrete (Greenbook - Volume) (epic - Volume) (ice - Volume)
+        source ( dict ): values of the dropdown and ec
 
     Returns:
         str : sub-materials to be append
         float: embodied carbon value to be append
     """
-    gb_submat = [
-        x["gb_label"] for x in material_options.concrete if x["value"] == value
-    ][0]
-    gb_val = [x["gb"] for x in material_options.concrete if x["value"] == value][
-        0
-    ] * vol
+    if source == material_options.concrete:
+        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        gb_val = [x["gb"] for x in source if x["value"] == value][0] * vol
 
-    epic_submat = [
-        x["epic_label"] for x in material_options.concrete if x["value"] == value
-    ][0]
-    epic_val = [x["epic"] for x in material_options.concrete if x["value"] == value][
-        0
-    ] * vol
+        epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
+        epic_val = [x["epic"] for x in source if x["value"] == value][0] * vol
 
-    ice_submat = [
-        x["ice_label"] for x in material_options.concrete if x["value"] == value
-    ][0]
-    ice_val = [x["ice"] for x in material_options.concrete if x["value"] == value][
-        0
-    ] * vol
+        ice_submat = [x["ice_label"] for x in source if x["value"] == value][0]
+        ice_val = [x["ice"] for x in source if x["value"] == value][0] * vol
 
-    colors = [x["color"] for x in material_options.concrete if x["value"] == value][0]
+        colors = [x["color"] for x in source if x["value"] == value][0]
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+    else:
+        sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
+        new_colors = [x["color"] for x in source if x["value"] == float(value)][0]
+        ec_value = float(value) * vol
+        return sub_material, ec_value, new_colors
 
 
-def rebar(value, unit_value):
+def rebar(value, unit_value, source=material_options.rebar):
     """
     meant to work with callback below. This returns submaterial with ec value.
     This definition should be used in a dictionary.
@@ -862,33 +857,27 @@ def rebar(value, unit_value):
         str : sub-materials to be append
         float: embodied carbon value to be append
     """
-    gb_submat = [x["gb_label"] for x in material_options.rebar if x["value"] == value][
-        0
-    ]
-    gb_val = [x["gb"] for x in material_options.rebar if x["value"] == value][
-        0
-    ] * unit_value
+    if source == material_options.rebar:
+        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        gb_val = [x["gb"] for x in source if x["value"] == value][0] * unit_value
 
-    epic_submat = [
-        x["epic_label"] for x in material_options.rebar if x["value"] == value
-    ][0]
-    epic_val = [x["epic"] for x in material_options.rebar if x["value"] == value][
-        0
-    ] * unit_value
+        epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
+        epic_val = [x["epic"] for x in source if x["value"] == value][0] * unit_value
 
-    ice_submat = [
-        x["ice_label"] for x in material_options.rebar if x["value"] == value
-    ][0]
-    ice_val = [x["ice"] for x in material_options.rebar if x["value"] == value][
-        0
-    ] * unit_value
+        ice_submat = [x["ice_label"] for x in source if x["value"] == value][0]
+        ice_val = [x["ice"] for x in source if x["value"] == value][0] * unit_value
 
-    colors = [x["color"] for x in material_options.rebar if x["value"] == value][0]
+        colors = [x["color"] for x in source if x["value"] == value][0]
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+    else:
+        sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
+        colors = [x["color"] for x in source if x["value"] == float(value)][0]
+        ec_value = float(value) * unit_value
+        return sub_material, ec_value, colors
 
 
-def steel(value, unit_value):
+def steel(value, unit_value, source=material_options.steel):
     """
     meant to work with callback below. This returns submaterial with ec value.
     This definition should be used in a dictionary.
@@ -902,33 +891,27 @@ def steel(value, unit_value):
         str : sub-materials to be append
         float: embodied carbon value to be append
     """
-    gb_submat = [x["gb_label"] for x in material_options.steel if x["value"] == value][
-        0
-    ]
-    gb_val = [x["gb"] for x in material_options.steel if x["value"] == value][
-        0
-    ] * unit_value
+    if source == material_options.steel:
+        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        gb_val = [x["gb"] for x in source if x["value"] == value][0] * unit_value
 
-    epic_submat = [
-        x["epic_label"] for x in material_options.steel if x["value"] == value
-    ][0]
-    epic_val = [x["epic"] for x in material_options.steel if x["value"] == value][
-        0
-    ] * unit_value
+        epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
+        epic_val = [x["epic"] for x in source if x["value"] == value][0] * unit_value
 
-    ice_submat = [
-        x["ice_label"] for x in material_options.steel if x["value"] == value
-    ][0]
-    ice_val = [x["ice"] for x in material_options.steel if x["value"] == value][
-        0
-    ] * unit_value
+        ice_submat = [x["ice_label"] for x in source if x["value"] == value][0]
+        ice_val = [x["ice"] for x in source if x["value"] == value][0] * unit_value
 
-    colors = [x["color"] for x in material_options.steel if x["value"] == value][0]
+        colors = [x["color"] for x in source if x["value"] == value][0]
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+    else:
+        sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
+        color = [x["color"] for x in source if x["value"] == float(value)][0]
+        ec_value = float(value) * unit_value
+        return sub_material, ec_value, color
 
 
-def timber(value, mass, vol):
+def timber(value, mass, vol, source=material_options.timber, ice=False):
     """
     meant to work with callback below. This returns submaterial with ec value.
     This definition should be used in a dictionary.
@@ -942,28 +925,28 @@ def timber(value, mass, vol):
         str : sub-materials to be append
         float: embodied carbon value to be append
     """
-    gb_submat = [x["gb_label"] for x in material_options.timber if x["value"] == value][
-        0
-    ]
-    gb_val = [x["gb"] for x in material_options.timber if x["value"] == value][0] * vol
+    if source == material_options.timber:
+        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        gb_val = [x["gb"] for x in source if x["value"] == value][0] * vol
 
-    epic_submat = [
-        x["epic_label"] for x in material_options.timber if x["value"] == value
-    ][0]
-    epic_val = [x["epic"] for x in material_options.timber if x["value"] == value][
-        0
-    ] * vol
+        epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
+        epic_val = [x["epic"] for x in source if x["value"] == value][0] * vol
 
-    ice_submat = [
-        x["ice_label"] for x in material_options.timber if x["value"] == value
-    ][0]
-    ice_val = [x["ice"] for x in material_options.timber if x["value"] == value][
-        0
-    ] * mass
+        ice_submat = [x["ice_label"] for x in source if x["value"] == value][0]
+        ice_val = [x["ice"] for x in source if x["value"] == value][0] * mass
 
-    colors = [x["color"] for x in material_options.timber if x["value"] == value][0]
+        colors = [x["color"] for x in source if x["value"] == value][0]
 
-    return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+    else:
+        sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
+        colors = [x["color"] for x in source if x["value"] == float(value)][0]
+        if ice is True:
+            ec_value = float(value) * mass
+            return sub_material, ec_value, colors
+        else:
+            ec_value = float(value) * vol
+            return sub_material, ec_value, colors
 
 
 def percent_diff(current, prev):
@@ -987,3 +970,97 @@ def percent_diff(current, prev):
         return dmc.Badge(
             [str(np.around(percent, 1)) + "%"], variant="filled", color="lime"
         )
+
+
+class table:
+    def __init__(
+        self,
+        id,
+        concrete_options,
+        rebar_options,
+        steel_options,
+        timber_options,
+        db_name,
+        concrete=0,
+        rebar=0,
+        steel=0,
+        timber=0,
+    ):
+        self.id = id
+        self.concrete_options = concrete_options
+        self.rebar_options = rebar_options
+        self.steel_options = steel_options
+        self.timber_options = timber_options
+        self.conc_val = concrete
+        self.rebar_val = rebar
+        self.steel_val = steel
+        self.timber_val = timber
+        self.db_name = db_name
+
+    def table_gen(self):
+        table_head = [
+            html.Thead(
+                html.Tr(
+                    [
+                        html.Th("Materials"),
+                        html.Th("Embodied Carbon", style={"width": "30%"}),
+                    ]
+                )
+            )
+        ]
+        options = [
+            self.concrete_options,
+            self.rebar_options,
+            self.steel_options,
+            self.timber_options,
+        ]
+        mat_val = [
+            self.conc_val,
+            self.rebar_val,
+            self.steel_val,
+            self.timber_val,
+        ]
+        labels = [
+            {"name": "Concrete", "value": self.conc_val},
+            {"name": "Reinforcement Bar", "value": self.rebar_val},
+            {"name": "Structural Steel", "value": self.steel_val},
+            {"name": "Structural Timber", "value": self.timber_val},
+        ]
+        rows = []
+
+        for i, options in enumerate(options):
+            mat_row = html.Tr(
+                [
+                    html.Td(
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    children=dmc.Text(labels[i]["name"]),
+                                    class_name="w-25",
+                                ),
+                                dbc.Col(
+                                    children=dbc.Select(
+                                        id="sel-custom-{}-{}-{}".format(
+                                            self.db_name,
+                                            self.id,
+                                            labels[i]["name"].replace(" ", "-"),
+                                        ),
+                                        options=options,
+                                        value=labels[i]["value"],
+                                        persistence=True,
+                                    )
+                                ),
+                            ]
+                        )
+                    ),
+                    html.Td(
+                        mat_val[i],
+                        id="{}-val-custom-{}-{}".format(
+                            self.db_name, self.id, labels[i]["name"].replace(" ", "-")
+                        ),
+                    ),
+                ]
+            )
+
+            rows.append(mat_row)
+        return dbc.Table(table_head + [html.Tbody(rows, className="w-75")])
