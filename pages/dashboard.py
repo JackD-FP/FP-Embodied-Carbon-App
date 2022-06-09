@@ -1,6 +1,5 @@
 # saving this because of the ^3 (m³)
 import re
-from time import clock_settime
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -8,6 +7,7 @@ import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
@@ -151,6 +151,22 @@ def make_graphs(data):
                 "ICE EC": iceec,
             }
         )
+        colour_list = []
+
+        def colour_append(items):
+            colours = {
+                "Concrete": "#064789",
+                "Reinforcement Bar": "#F8CC0D",
+                "Structural Steel": "#FB3640",
+                "Structural Timber": "#35A746",
+            }
+            return colours.get(items)
+
+        for i, items in enumerate(mat):
+            colour_list.append(colour_append(items))
+
+        print(colour_list)
+        val_colour = dict(zip(mat, colour_list))
 
         # df_new.to_csv("temp-df-store.csv", index=False)
 
@@ -183,7 +199,7 @@ def make_graphs(data):
         fig.add_trace(
             go.Pie(
                 labels=mat,
-                values=gbec,
+                values=val_colour,
                 name="Green Book DB",
                 hole=0.5,
                 scalegroup="dashboard_pie",
@@ -197,7 +213,6 @@ def make_graphs(data):
                 values=epicec,
                 name="EPiC DB",
                 hole=0.5,
-                scalegroup="dashboard_pie",
             ),
             1,
             2,
@@ -220,25 +235,25 @@ def make_graphs(data):
                 dict(text="Greenbook", x=0.12, y=0.50, font_size=16, showarrow=False),
                 dict(
                     text="{:,.2f} kgCO₂e".format(gb_sum),
-                    x=0,
-                    y=0.1,
-                    font_size=24,
+                    x=0.1,
+                    y=0.45,
+                    font_size=12,
                     showarrow=False,
                 ),
                 dict(text="EPiC", x=0.50, y=0.50, font_size=16, showarrow=False),
                 dict(
                     text="{:,.2f} kgCO₂e".format(epic_sum),
                     x=0.5,
-                    y=0.1,
-                    font_size=24,
+                    y=0.45,
+                    font_size=12,
                     showarrow=False,
                 ),
                 dict(text="ICE", x=0.87, y=0.50, font_size=16, showarrow=False),
                 dict(
                     text="{:,.2f} kgCO₂e".format(ice_sum),
-                    x=1,
-                    y=0.1,
-                    font_size=24,
+                    x=0.90,
+                    y=0.45,
+                    font_size=12,
                     showarrow=False,
                 ),
             ],
@@ -246,16 +261,6 @@ def make_graphs(data):
         fig.update_traces(
             hoverinfo="label+value",
             textinfo="percent",
-            # marker=dict(
-            #     colors=[
-            #         "#5463FF",
-            #         "#FFC300",
-            #         "#FF1818",
-            #         "#70C1B3",
-            #         "#79b159",
-            #         "#42D9C8",
-            #     ]
-            # ),
         )
 
         # drop embodied carbon if it exist

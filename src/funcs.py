@@ -467,7 +467,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
         if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
 
             # --------- check if the layer is BEAMS
-            if re.search("beams", row["Layer"], re.IGNORECASE):
+            if re.search(r"(beam)|(BEAM)|(Beam)", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.0385)
 
                 # add concrete volume
@@ -491,7 +491,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Cheack if the layer is COLUMNS
-            elif re.search("columns", row["Layer"], re.IGNORECASE):
+            elif re.search(r"(column)|(COLUMN)|(Column)", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.041)
                 # add concrete volume
                 mat.append("Concrete")
@@ -514,7 +514,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is SLAB
-            elif re.search("slab", row["Layer"], re.IGNORECASE):
+            elif re.search(r"(slab)|(Slab)|(SLAB)", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.013)
                 # add concrete volume
                 mat.append("Concrete")
@@ -537,7 +537,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is WALLS
-            elif re.search("wall", row["Layer"], re.IGNORECASE):
+            elif re.search(r"(wall)|(Wall)|(WALL)", row["Layer"]):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
@@ -560,7 +560,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is STAIRS
-            elif re.search("stairs", row["Layer"], re.IGNORECASE):
+            elif re.search("/(stair)|(Stair)|(STAIR)/", row["Layer"], re.IGNORECASE):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
@@ -1064,3 +1064,19 @@ class table:
 
             rows.append(mat_row)
         return dbc.Table(table_head + [html.Tbody(rows, className="w-75")])
+
+
+[
+    {
+        "props": {
+            "id": "url1",
+            "refresh": True,
+            "pathname": "/4102021Chelmsford",
+            "href": "http://10.0.0.178:8050/4102021Chelmsford",
+            "hash": "",
+            "search": "",
+        },
+        "type": "Location",
+        "namespace": "dash_core_components",
+    }
+]
