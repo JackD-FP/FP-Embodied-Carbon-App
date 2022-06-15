@@ -239,27 +239,34 @@ def gb_benchmarks_update(val, val_bld, data):
             "No Value",
         )
     else:
-        # label = [x["label"] for x in label_bld if x["value"] == val_bld]
         label = building_type_option.leti_option[val_bld]
-        template = [
-            dcc.Store(id="temp_ice_gia", data=val),
-            html.H5(
-                [html.Strong("LETI"), "'s Climate Emegency Design Guide requires"],
-                className="display-6 fs-5 text-center",
-            ),
-            html.Span(
-                [
-                    html.H5(
-                        [
-                            html.Strong("{}".format(label)),
-                            " to be less than < ",
-                            html.Strong("{}".format(label)),
-                        ],
-                        className="display-6 fs-5 text-center mb-5",
-                    )
-                ]
-            ),
-        ]
+
+        def template(x: str):
+            template = [
+                dcc.Store(id="temp_ice_gia", data=val),
+                html.H5(
+                    [html.Strong("LETI"), "'s Climate Emegency Design Guide requires"],
+                    className="display-6 fs-5 text-center",
+                ),
+                html.Span(
+                    [
+                        html.H5(
+                            [
+                                html.Strong("{}".format(label)),
+                                x,
+                                html.Strong(
+                                    "{} kgCO₂e per m²".format(
+                                        building_type_option.leti(val_bld)
+                                    )
+                                ),
+                                # html.Strong("{}".format(label)),
+                            ],
+                            className="display-6 fs-5 text-center mb-5",
+                        )
+                    ]
+                ),
+            ]
+            return template
 
         df = pd.read_json(data, orient="split")
         ice_sum = df["ICE EC"].sum()
@@ -269,7 +276,7 @@ def gb_benchmarks_update(val, val_bld, data):
             val_bld
         ):  # if ice_benchmark is less than leti
             message = "Your benchmark is lower than the LETI's Climate Emergency Design Guide requirement"
-            child = [
+            alert = [
                 dmc.Alert(
                     message,
                     title="Success!",
@@ -281,10 +288,14 @@ def gb_benchmarks_update(val, val_bld, data):
                     ],
                 )
             ]
-            return (False, "{:,}".format(np.around(ice_benchmark, 2)), template + child)
+            return (
+                False,
+                "{:,}".format(np.around(ice_benchmark, 2)),
+                template(" to be less than < ") + alert,
+            )
         else:  # if ice_benchmark is MORE than leti
             message = "Your benchmark is greater than the LETI benchmark"
-            child = [
+            alert = [
                 dmc.Alert(
                     message,
                     title="Alert!",
@@ -296,7 +307,11 @@ def gb_benchmarks_update(val, val_bld, data):
                     ],
                 ),
             ]
-            return False, "{:,}".format(np.around(ice_benchmark, 2)), template + child
+            return (
+                False,
+                "{:,}".format(np.around(ice_benchmark, 2)),
+                template(" to be MORE than > ") + alert,
+            )
 
 
 cards = html.Div(

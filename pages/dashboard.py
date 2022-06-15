@@ -6,8 +6,8 @@ import dash_mantine_components as dmc
 import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
-import plotly.graph_objects as go
 import plotly.express as px
+import plotly.graph_objects as go
 from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
@@ -151,24 +151,7 @@ def make_graphs(data):
                 "ICE EC": iceec,
             }
         )
-        colour_list = []
-
-        def colour_append(items):
-            colours = {
-                "Concrete": "#064789",
-                "Reinforcement Bar": "#F8CC0D",
-                "Structural Steel": "#FB3640",
-                "Structural Timber": "#35A746",
-            }
-            return colours.get(items)
-
-        for i, items in enumerate(mat):
-            colour_list.append(colour_append(items))
-
-        print(colour_list)
-        val_colour = dict(zip(mat, colour_list))
-
-        # df_new.to_csv("temp-df-store.csv", index=False)
+        colour_list = ["#064789", "#F8CC0D", "#FB3640", "#35A746"]
 
         gb_sum = df_new["Green Book EC"].sum()
         epic_sum = df_new["EPiC EC"].sum()
@@ -199,7 +182,8 @@ def make_graphs(data):
         fig.add_trace(
             go.Pie(
                 labels=mat,
-                values=val_colour,
+                values=gbec,
+                # values=val_colour,
                 name="Green Book DB",
                 hole=0.5,
                 scalegroup="dashboard_pie",
@@ -213,6 +197,7 @@ def make_graphs(data):
                 values=epicec,
                 name="EPiC DB",
                 hole=0.5,
+                scalegroup="dashboard_pie",
             ),
             1,
             2,
@@ -262,7 +247,6 @@ def make_graphs(data):
             hoverinfo="label+value",
             textinfo="percent",
         )
-
         # drop embodied carbon if it exist
         if "Embodied Carbon" in df.columns:
             df = df.drop(["Embodied Carbon"], axis=1)

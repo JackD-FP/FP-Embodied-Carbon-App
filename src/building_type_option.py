@@ -1,7 +1,6 @@
-from dash import Input, Output, State, callback, dash_table, dcc, html
 import dash_mantine_components as dmc
+from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash_iconify import DashIconify
-
 
 building_type = [
     {
@@ -40,7 +39,7 @@ leti_option = {
 
 
 def leti(bld_type):
-    leti = {"sh": 500, "mh": 500, "school": 600, "co": 600}
+    leti = {"sh": 150, "mh": 230, "school": 180, "co": 288}
     return leti.get(bld_type, 0)
 
 

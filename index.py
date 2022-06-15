@@ -80,34 +80,9 @@ sidebar = html.Div(
                 dbc.NavLink(
                     "Analysis", href="/pages/analysis", id="analysis", active="exact"
                 ),
-                # dbc.DropdownMenu(
-                #     children=[
-                #         dbc.DropdownMenuItem(
-                #             "Green Book DB",
-                #             id="gb_btn",
-                #             href="/pages/analysis/green_book_db",
-                #         ),
-                #         dbc.DropdownMenuItem(
-                #             "EPiC DB", id="epic_btn", href="/pages/analysis/epic_db"
-                #         ),
-                #         dbc.DropdownMenuItem(
-                #             "ICE DB", id="ice_btn", href="/pages/analysis/ice_db"
-                #         ),
-                #     ],
-                #     id="analysis-dropdown",
-                #     label="Analysis",
-                #     nav=True,
-                #     align_end=True,
-                #     toggle_style={
-                #         "padding": "0.5rem 1rem",
-                #         "width": "100%",
-                #         "textAlign": "start",
-                #         "zIndex": "5",
-                #     },
+                # dbc.NavLink(
+                #     "Comparison", href="/pages/comparison", id="tec", active="exact"
                 # ),
-                dbc.NavLink(
-                    "Comparison", href="/pages/comparison", id="tec", active="exact"
-                ),
                 dbc.NavLink(
                     "How To...",
                     href="/pages/documentation",
