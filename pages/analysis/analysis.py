@@ -794,6 +794,7 @@ def analysis_update(
                     "ICE EC",
                 ].sum()
             ),
+            # analysis_store
             df.to_json(orient="split"),
         )
 

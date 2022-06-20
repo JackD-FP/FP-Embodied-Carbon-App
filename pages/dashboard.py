@@ -151,6 +151,8 @@ def make_graphs(data):
                 "ICE EC": iceec,
             }
         )
+        # df_new.to_csv(".testing/df_new.csv")  # FIXME: for testing purposes
+
         colour_list = ["#064789", "#F8CC0D", "#FB3640", "#35A746"]
 
         gb_sum = df_new["Green Book EC"].sum()

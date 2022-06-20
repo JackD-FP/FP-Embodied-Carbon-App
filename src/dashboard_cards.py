@@ -310,7 +310,7 @@ def gb_benchmarks_update(val, val_bld, data):
             return (
                 False,
                 "{:,}".format(np.around(ice_benchmark, 2)),
-                template(" to be MORE than > ") + alert,
+                template(" to be LESS than < ") + alert,
             )
 
 

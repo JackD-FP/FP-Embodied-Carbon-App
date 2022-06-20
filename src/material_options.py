@@ -104,8 +104,8 @@ rebar = [
     {
         "label": "Steel Reinforment Bar",
         "value": "rebar",
-        "gb_label": "Rebar ≤65% Recycled Content",
-        "gb": 1.733,
+        "gb_label": "Standard - Bar Reinforcement",
+        "gb": 2.9,
         "epic_label": "Steel reinforcement bar ",
         "epic": 2.9,
         "ice_label": "Steel Rebar recycled ",
