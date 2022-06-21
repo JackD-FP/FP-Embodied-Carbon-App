@@ -1,16 +1,11 @@
-import os
-from ast import Not
-from http import server
-
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import pandas as pd
-from dash import Input, Output, State, callback, dcc, html
+from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 from flask import Flask
 
-from pages import analysis, comparison, dashboard, documentation
+from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
 
 # server shit
