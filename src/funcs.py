@@ -464,12 +464,18 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
     ice_ec = []
 
     for i, row in df.iterrows():
-        if re.search("concrete", row["Building Materials (All)"], re.IGNORECASE):
+        if re.search(
+            r"(concrete)|(conc)", row["Building Materials (All)"], re.IGNORECASE
+        ) or re.search(r"(concrete)|(conc)", row["Layer"], re.IGNORECASE):
             # TODO: refactor the if statments
             # FIXME: there are too many repeating append statements
 
             # --------- check if the layer is BEAMS
-            if re.search(r"(beam)|(BEAM)|(Beam)", row["Layer"], re.IGNORECASE):
+            if re.search(
+                r"(beam)|(BEAM)|(Beam)", row["Layer"], re.IGNORECASE
+            ) or re.search(
+                r"(beam)|(BEAM)|(Beam)", row["Building Materials (All)"], re.IGNORECASE
+            ):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.0385)
 
                 # add concrete volume
@@ -493,7 +499,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Cheack if the layer is COLUMNS
-            elif re.search(r"(column)|(COLUMN)|(Column)", row["Layer"], re.IGNORECASE):
+            elif re.search(
+                r"(column)|(COLUMN)|(Column)", row["Layer"], re.IGNORECASE
+            ) or re.search(
+                r"(column)|(COLUMN)|(Column)",
+                row["Building Materials (All)"],
+                re.IGNORECASE,
+            ):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.041)
                 # add concrete volume
                 mat.append("Concrete")
@@ -516,7 +528,11 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is SLAB
-            elif re.search(r"(slab)|(Slab)|(SLAB)", row["Layer"], re.IGNORECASE):
+            elif re.search(
+                r"(slab)|(Slab)|(SLAB)", row["Layer"], re.IGNORECASE
+            ) or re.search(
+                r"(slab)|(Slab)|(SLAB)", row["Building Materials (All)"], re.IGNORECASE
+            ):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.013)
                 # add concrete volume
                 mat.append("Concrete")
@@ -564,7 +580,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is STAIRS
-            elif re.search(r"(stair)|(Stair)|(STAIR)", row["Layer"], re.IGNORECASE):
+            elif re.search(
+                r"(stair)|(Stair)|(STAIR)", row["Layer"], re.IGNORECASE
+            ) or re.search(
+                r"(stair)|(Stair)|(STAIR)",
+                row["Building Materials (All)"],
+                re.IGNORECASE,
+            ):
                 vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
                 # add concrete volume
                 mat.append("Concrete")
