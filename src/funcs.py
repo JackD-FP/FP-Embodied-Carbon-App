@@ -19,8 +19,9 @@ def find_vols(vol, ratio):
     Returns:
         Tuple: (vol_conc, vol_rebar) volume of concrete and rebar respectively
     """
-    vol_conc = vol / (ratio + 1)
-    vol_rebar = vol - vol_conc
+    x = 1 + (1 / ratio)
+    vol_rebar = vol / x
+    vol_conc = vol - vol_rebar
     return vol_conc, vol_rebar
 
 
@@ -220,7 +221,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
 
         # Appends steel values from layer
         elif re.search("steel", row["Layer"], re.IGNORECASE) or re.search(
-            "structural steel", row["Building Materials (All)"], re.IGNORECASE
+            "steel", row["Building Materials (All)"], re.IGNORECASE
         ):
             mat.append("Structural Steel")
             # mat.append(row["Building Materials (All)"])
