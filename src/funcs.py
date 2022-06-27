@@ -549,9 +549,9 @@ def create_table(x):
         columns={
             "Mass": "Mass (kg)",
             "Volume": "Volume (m³)",
-            "Green Book EC": "Green Book EC (kgCO₂e)",
-            "Epic EC": "Epic EC (kgCO₂e)",
-            "Ice EC": "Ice EC (kgCO₂e)",
+            "Green Book EC": "Green Book (kgCO₂e)",
+            "Epic EC": "EPiC (kgCO₂e)",
+            "Ice EC": "Ice (kgCO₂e)",
         },
         inplace=True,
     )

@@ -1,14 +1,17 @@
-import dash_bootstrap_components as dbc
-import pandas as pd
-import numpy as np
-import dash_mantine_components as dmc
-from dash import Input, Output, callback, dcc, html, State
-from dash.exceptions import PreventUpdate
-import plotly.express as px
-from src import greenbook_options
 import re
+
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+import numpy as np
+import pandas as pd
+import plotly.express as px
 from config import config
+from dash import Input, Output, State, callback, dcc, html
+from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
+
+from src import greenbook_options
+
 
 # callback for analysis comparison
 # kinda confusing but the callback is to generate graphs
@@ -187,7 +190,6 @@ def totals_benchmark_update(data, nla, gia):
 
 comparison = html.Div(
     children=[
-        dmc.Divider(class_name="my-5"),
         html.Div(
             children=[
                 html.H5("Analysis Comparison", className="mb-3"),

@@ -799,6 +799,7 @@ def analysis_update(
         )
 
 
+# updates the % difference between old values and new values
 @callback(
     [
         Output("gb_analysis_current_total", "children"),
@@ -876,6 +877,7 @@ def totals_update(analysis_store, ec_prev):
         )
 
 
+# Create table for the analysis
 @callback(
     Output("analysis_db_download", "data"),
     Input("analysis_btn_download", "n_clicks"),
@@ -886,6 +888,190 @@ def db_download_update(n_clicks, data):
     df = pd.read_json(data, orient="split")
     return dcc.send_data_frame(df.to_csv, "EC_Analysis_{}.csv".format(n_clicks))
 
+
+@callback(
+    Output("analysis_table", "children"),
+    Input("analysis_store", "data"),
+)
+def table_update(data):
+    df = pd.read_json(data, orient="split")
+    df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum().round(2)
+    return dmc.Table(
+        funcs.create_table(df_grouped), highlightOnHover=True, class_name="my-5"
+    )
+
+
+totals_ui = [
+    dmc.Paper(  # GreenBook
+        [
+            dmc.Text("Green Book DB:", size="lg", weight="bold"),
+            dmc.Group(
+                [
+                    dmc.Text(
+                        "Calculating...",
+                        class_name="fs-3",
+                        weight="bold",
+                        color="blue",
+                        id="gb_analysis_current_total",
+                    ),
+                    html.Div(
+                        [
+                            dmc.Text(
+                                color="gray",
+                                id="gb_analysis_prev_total",
+                            ),
+                            html.Div(id="gb_badge"),
+                        ]
+                    ),
+                ],
+                spacing="md",
+                direction="row",
+            ),
+        ],
+        withBorder=True,
+        shadow="sm",
+        class_name="p-3 mb-4 mx-4",
+    ),
+    dmc.Paper(  # epic
+        [
+            dmc.Text("EPiC DB:", size="lg", weight="bold"),
+            dmc.Group(
+                [
+                    dmc.Text(
+                        "Calculating...",
+                        class_name="fs-3",
+                        weight="bold",
+                        color="blue",
+                        id="epic_analysis_current_total",
+                    ),
+                    html.Div(
+                        [
+                            dmc.Text(
+                                color="gray",
+                                id="epic_analysis_prev_total",
+                            ),
+                            html.Div(id="epic_badge"),
+                        ]
+                    ),
+                ],
+                spacing="md",
+                direction="row",
+            ),
+        ],
+        withBorder=True,
+        shadow="sm",
+        class_name="p-3 m-4",
+    ),
+    dmc.Paper(  # ice
+        [
+            dmc.Text("ICE DB:", size="lg", weight="bold"),
+            dmc.Group(
+                [
+                    dmc.Text(
+                        "Calculating...",
+                        class_name="fs-3",
+                        weight="bold",
+                        color="blue",
+                        id="ice_analysis_current_total",
+                    ),
+                    html.Div(
+                        [
+                            dmc.Text(
+                                color="gray",
+                                id="ice_analysis_prev_total",
+                            ),
+                            html.Div(id="ice_badge"),
+                        ]
+                    ),
+                ],
+                spacing="md",
+                direction="row",
+            ),
+        ],
+        withBorder=True,
+        shadow="sm",
+        class_name="p-3 m-4",
+    ),
+    dcc.Download(id="analysis_db_download"),
+    dmc.Button(
+        "Download Database",
+        leftIcon=[DashIconify(icon="ant-design:download-outlined")],
+        id="analysis_btn_download",
+        class_name="mx-4",
+    ),
+]
+
+settings_ui = html.Div(
+    children=[
+        dmc.Text("Rebar Concrete Ratio Settings", weight=700, size="lg"),
+        html.Div(
+            children=[
+                dmc.Text("Beam: 0", id="ratio_beam"),
+                dmc.Slider(
+                    id="beam_slider",
+                    value=5,
+                    min=0,
+                    max=10,
+                    step=0.5,
+                ),
+            ],
+            className="my-3",
+        ),
+        html.Div(
+            children=[
+                dmc.Text("Column: 0", id="ratio_column"),
+                dmc.Slider(
+                    id="column_slider",
+                    value=5,
+                    min=0,
+                    max=10,
+                    step=0.5,
+                ),
+            ],
+            className="my-3",
+        ),
+        html.Div(
+            children=[
+                dmc.Text("Slab: 0", id="ratio_slab"),
+                dmc.Slider(
+                    id="slab_slider",
+                    value=5,
+                    min=0,
+                    max=10,
+                    step=0.5,
+                ),
+            ],
+            className="my-3",
+        ),
+        html.Div(
+            children=[
+                dmc.Text("wall: 0", id="ratio_wall"),
+                dmc.Slider(
+                    id="wall_slider",
+                    value=5,
+                    min=0,
+                    max=10,
+                    step=0.5,
+                ),
+            ],
+            className="my-3",
+        ),
+        html.Div(
+            children=[
+                dmc.Text("stair: 0", id="ratio_stair"),
+                dmc.Slider(
+                    id="stair_slider",
+                    value=5,
+                    min=0,
+                    max=10,
+                    step=0.5,
+                ),
+            ],
+            className="my-3",
+        ),
+    ],
+    className="px-5",
+)
 
 # create the layout for the cards
 # gen_analysis was separated from analysis_layout just to make it cleaner to read
@@ -968,106 +1154,19 @@ gen_analysis = dbc.Row(
         ),
         dbc.Col(
             children=[
-                html.Div(
-                    [
-                        dmc.Paper(  # GreenBook
-                            [
-                                dmc.Text("Green Book DB:", size="lg", weight="bold"),
-                                dmc.Group(
-                                    [
-                                        dmc.Text(
-                                            "Calculating...",
-                                            class_name="fs-3",
-                                            weight="bold",
-                                            color="blue",
-                                            id="gb_analysis_current_total",
-                                        ),
-                                        html.Div(
-                                            [
-                                                dmc.Text(
-                                                    color="gray",
-                                                    id="gb_analysis_prev_total",
-                                                ),
-                                                html.Div(id="gb_badge"),
-                                            ]
-                                        ),
-                                    ],
-                                    spacing="md",
-                                    direction="row",
-                                ),
-                            ],
-                            withBorder=True,
-                            shadow="sm",
-                            class_name="p-3 mb-4 mx-4",
+                dmc.Tabs(
+                    children=[
+                        dmc.Tab(
+                            label="Totals",
+                            icon=[DashIconify(icon="iconoir:graph-up")],
+                            children=totals_ui,
                         ),
-                        dmc.Paper(  # epic
-                            [
-                                dmc.Text("EPiC DB:", size="lg", weight="bold"),
-                                dmc.Group(
-                                    [
-                                        dmc.Text(
-                                            "Calculating...",
-                                            class_name="fs-3",
-                                            weight="bold",
-                                            color="blue",
-                                            id="epic_analysis_current_total",
-                                        ),
-                                        html.Div(
-                                            [
-                                                dmc.Text(
-                                                    color="gray",
-                                                    id="epic_analysis_prev_total",
-                                                ),
-                                                html.Div(id="epic_badge"),
-                                            ]
-                                        ),
-                                    ],
-                                    spacing="md",
-                                    direction="row",
-                                ),
-                            ],
-                            withBorder=True,
-                            shadow="sm",
-                            class_name="p-3 m-4",
+                        dmc.Tab(
+                            label="Settings",
+                            icon=[DashIconify(icon="cil:settings")],
+                            children=settings_ui,
                         ),
-                        dmc.Paper(  # ice
-                            [
-                                dmc.Text("ICE DB:", size="lg", weight="bold"),
-                                dmc.Group(
-                                    [
-                                        dmc.Text(
-                                            "Calculating...",
-                                            class_name="fs-3",
-                                            weight="bold",
-                                            color="blue",
-                                            id="ice_analysis_current_total",
-                                        ),
-                                        html.Div(
-                                            [
-                                                dmc.Text(
-                                                    color="gray",
-                                                    id="ice_analysis_prev_total",
-                                                ),
-                                                html.Div(id="ice_badge"),
-                                            ]
-                                        ),
-                                    ],
-                                    spacing="md",
-                                    direction="row",
-                                ),
-                            ],
-                            withBorder=True,
-                            shadow="sm",
-                            class_name="p-3 m-4",
-                        ),
-                        dcc.Download(id="analysis_db_download"),
-                        dmc.Button(
-                            "Download Database",
-                            leftIcon=[DashIconify(icon="ant-design:download-outlined")],
-                            id="analysis_btn_download",
-                            class_name="mx-4",
-                        ),
-                    ],
+                    ]
                 ),
             ],
             xxl=4,
@@ -1082,6 +1181,10 @@ analysis_layout = html.Div(
         dcc.Store(id="ec_prev", storage_type="memory"),
         html.H1("Analysis", className="display-2 mb-5 "),
         html.Hr(className="mb-5"),
+        analysis_comparison.comparison,
+        html.Div(
+            id="analysis_table",
+        ),
         dmc.Tabs(
             children=[
                 dmc.Tab(
@@ -1100,10 +1203,15 @@ analysis_layout = html.Div(
             color="blue",
             active=0,
         ),
-        analysis_comparison.comparison,
-        html.Div(
-            id="tab_analysis",
-            className="my-5",
+        dmc.Paper(
+            children=[
+                html.H3("Reinforced Concrete & Concrete Ratio"),
+                html.Div("asdasdaosd"),
+            ],
+            shadow="sm",
+            radius="md",
+            withBorder=True,
+            class_name="p-5 my-5",
         ),
     ]
 )
