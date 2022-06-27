@@ -18,41 +18,6 @@ gb_df = pd.read_csv("src/Greenbook _reduced.csv")
 epic_df = pd.read_csv("src/epic _reduced.csv")
 ice_df = pd.read_csv("src/ice _reduced.csv")
 
-# dmc.Table(create_table(df_new_grouped))
-
-
-def create_data(x, label):
-    x = x.drop(["Element"], axis=1)
-    values = x.values
-    rows = [html.Tr([html.Td(cell) for cell in row]) for row in values]
-    row_label = html.Tr([html.Td(label, rowSpan=len(x) + 1)])
-    return [row_label] + rows
-
-
-def create_table(x):
-    x.rename(
-        columns={
-            "Mass": "Mass (kg)",
-            "Volume": "Volume (m³)",
-            "Green Book EC": "Green Book EC (kgCO₂e)",
-            "Epic EC": "Epic EC (kgCO₂e)",
-            "Ice EC": "Ice EC (kgCO₂e)",
-        },
-        inplace=True,
-    )
-    columns = x.columns
-    header = [html.Tr([html.Th(col) for col in columns])]
-    beam = create_data(x.loc[x["Element"] == "Beam"], "Beam")
-    column = create_data(x.loc[x["Element"] == "Column"], "Column")
-    slab = create_data(x.loc[x["Element"] == "Slab"], "Slab")
-    walls = create_data(x.loc[x["Element"] == "Wall"], "Wall")
-    stair = create_data(x.loc[x["Element"] == "Stairs"], "Stairs")
-
-    rows = column + beam + slab + walls + stair
-    table = [html.Thead(header), html.Tbody(rows)]
-
-    return table
-
 
 layout = html.Div(
     [
@@ -292,7 +257,7 @@ def make_graphs(data):
                     [
                         html.H3("Embodied Carbon (EC) calculation"),
                         dmc.Table(
-                            create_table(df_new_grouped),
+                            funcs.create_table(df_new_grouped),
                             highlightOnHover=True,
                         ),
                         dashboard_cards.cards,
