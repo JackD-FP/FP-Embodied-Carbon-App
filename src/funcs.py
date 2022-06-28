@@ -28,6 +28,11 @@ def find_vols(vol, ratio):
 
 def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE CODE
     df: pd.DataFrame,
+    beam_slider: float,
+    column_slider: float,
+    slab_slider: float,
+    wall_slider: float,
+    stair_slider: float,
     gb_conc=greenbook_options.concrete[11]["value"],
     epic_conc=epic_options.concrete[12]["value"],
     ice_conc=ice_options.concrete[28]["value"],
@@ -44,7 +49,12 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
     """interprets the materials in the schedule
 
     Args:
-        df ( pd dataframe): uploaded schedule
+        df ( pd dataframe ): uploaded schedule
+        beam_slider ( float ): value of the beam slider
+        column_slider ( float ): value of the column slider
+        slab_slider ( float ): value of the slab slider
+        wall_slider ( float ): value of the wall slider
+        stair_slider ( float ): value of the stair slider
 
     Returns:
         tuple: (mat, vol, mass, floor) tuple of lists of mass, volume, material and floor
@@ -71,12 +81,14 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             ) or re.search(
                 r"(beam)|(BEAM)|(Beam)", row["Building Materials (All)"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.0385)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], beam_slider / 1000)
 
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                mass.append(
+                    2360 * vol_conc
+                )  # 2360 is the density of average concrete density from EPiC
                 floor.append(row["Home Story Name"])
                 element.append("Beam")
                 gb_ec.append(vol_conc * gb_conc)
@@ -86,7 +98,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                mass.append(
+                    7740 * vol_rebar
+                )  # 7740 is the density of average rebar density from EPiC
                 floor.append(row["Home Story Name"])
                 element.append("Beam")
                 gb_ec.append(mass_rebar * gb_rebar)
@@ -101,7 +115,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 row["Building Materials (All)"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.041)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], column_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
@@ -128,7 +142,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             ) or re.search(
                 r"(slab)|(Slab)|(SLAB)", row["Building Materials (All)"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.013)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], slab_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
@@ -153,7 +167,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             elif re.match(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.match(
                 "concrete", row["Building Materials (All)"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.011)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], wall_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
@@ -182,7 +196,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 row["Building Materials (All)"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], stair_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)

@@ -16,51 +16,32 @@ from src import building_type_option
     Output("epic_generate_sum", "children"),
     Output("ice_generate_sum", "children"),
     Output("gb_benchmark_layout", "children"),
+    Output("epic_benchmark_layout", "children"),
     Output("ice_benchmark_layout", "children"),
     Input("proc_store", "data"),
 )
 def cards_update(data):
+    def ui(db_name):
+        return html.Div(
+            [
+                html.H3(
+                    "{:,}".format(np.around(df[db_name].sum(), 2)),
+                    className="fs-4",
+                ),
+                html.P(
+                    ["kgCO₂e", html.Span(" Total EC")],
+                ),
+            ]
+        )
 
     if data is None:
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
 
-        gb = html.Div(
-            [
-                html.H3(
-                    "{:,}".format(np.around(df["Green Book EC"].sum(), 2)),
-                    className="fs-4",
-                ),
-                html.P(
-                    ["kgCO₂e", html.Span(" Total EC")],
-                ),
-            ]
-        )
-
-        epic = html.Div(
-            [
-                html.H3(
-                    "{:,}".format(np.around(df["EPiC EC"].sum(), 2)),
-                    className="fs-4",
-                ),
-                html.P(
-                    ["kgCO₂e", html.Span(" Total EC")],
-                ),
-            ]
-        )
-
-        ice = html.Div(
-            [
-                html.H3(
-                    "{:,}".format(np.around(df["ICE EC"].sum(), 2)),
-                    className="fs-4",
-                ),
-                html.P(
-                    ["kgCO₂e", html.Span(" Total EC")],
-                ),
-            ]
-        )
+        gb = ui("Green Book EC")
+        epic = ui("EPiC EC")
+        ice = ui("ICE EC")
 
         gb_benchmark = html.Div(
             [
@@ -111,6 +92,44 @@ def cards_update(data):
                 ),
                 html.P(" Area in NLA", className="text-center bg-light mb-5"),
                 html.Div(id="gb_benchmark_result"),
+            ]
+        )
+        epic_benchmark = html.Div(
+            children=[
+                dmc.SimpleGrid(
+                    [
+                        dmc.Col(
+                            [
+                                html.Strong("Area"),
+                                dmc.Text(
+                                    "Total area of the building",
+                                    size="xs",
+                                    color="dimmed",
+                                ),
+                                dbc.Input(
+                                    type="number",
+                                    min=1,
+                                    debounce=True,
+                                    persistence=True,
+                                    value=10000.0,
+                                    id="epic_area",
+                                ),
+                            ],
+                        ),
+                        dmc.Col(
+                            [
+                                html.Strong("No Benchmark Tool Available"),
+                            ],
+                        ),
+                    ],
+                    cols=2,
+                    class_name="mb-5",
+                ),
+                html.H3(id="epic_benchmark", className="fs-4 text-center"),
+                html.P(
+                    ["kgCO₂e per m²"],
+                    className="text-center mb-0",
+                ),
             ]
         )
         ice_benchmark = html.Div(
@@ -164,7 +183,7 @@ def cards_update(data):
                 html.Div(id="ice_benchmark_result"),
             ]
         )
-        return gb, epic, ice, gb_benchmark, ice_benchmark
+        return gb, epic, ice, gb_benchmark, epic_benchmark, ice_benchmark
 
 
 # Green Book callback
@@ -388,9 +407,10 @@ cards = html.Div(
                                 ),
                             ]
                         ),
-                        html.H3(
-                            "No Benchmark Data", className="display-6 fs-5 text-center"
-                        ),
+                        html.Div(id="epic_benchmark_layout"),
+                        # html.H3(
+                        #     "No Benchmark Data", className="display-6 fs-5 text-center"
+                        # ),
                     ],
                     span=3,
                     class_name="p-5",

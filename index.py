@@ -3,10 +3,12 @@ import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
+from dash_iconify import DashIconify
 from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
+from src import drawer
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -90,6 +92,14 @@ sidebar = html.Div(
             style={"marginTop": "3rem", "fontSize": "1.5rem"},
             className="display-6",
         ),
+        html.Hr(),
+        dmc.Button(
+            "Settings",
+            variant="outline",
+            leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
+            id="settings-button",
+        ),
+        drawer.drawer_layout,
         dmc.Affix(
             dmc.Tooltip(
                 label="Send some feedback!",
@@ -209,17 +219,42 @@ def gia_store_update(gia_mts, gia):
         return gia
 
 
-# @app.callback(
-#     Output("analysis-dropdown", "label"),
-#     Input("url", "pathname"),
-# )
-# def analysis_dropdown_update(pathname):
-#     urls = {
-#         "/pages/analysis/green_book_db": "Green Book DB",
-#         "/pages/analysis/epic_db": "EPiC DB",
-#         "/pages/analysis/ice_db": "ICE DB",
-#     }
-#     return urls.get(pathname, "Analysis")
+# updates the setting data with sliders
+@app.callback(
+    [
+        Output("settings-drawer", "opened"),
+        Output("ratio_beam", "children"),
+        Output("ratio_column", "children"),
+        Output("ratio_slab", "children"),
+        Output("ratio_wall", "children"),
+        Output("ratio_stair", "children"),
+    ],
+    [
+        Input("settings-button", "n_clicks"),
+        Input("beam_slider", "value"),
+        Input("column_slider", "value"),
+        Input("slab_slider", "value"),
+        Input("wall_slider", "value"),
+        Input("stair_slider", "value"),
+    ],
+    prevent_initial_call=True,
+)
+def drawer_update(
+    n,
+    beam,
+    column,
+    slab,
+    wall,
+    stair,
+):
+    return (
+        True,
+        "Beam: {}".format(beam),
+        "Column: {}".format(column),
+        "Slab: {}".format(slab),
+        "Wall: {}".format(wall),
+        "Stair: {}".format(stair),
+    )
 
 
 # routing stuff also 404 page
