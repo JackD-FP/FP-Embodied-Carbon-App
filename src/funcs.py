@@ -10,7 +10,8 @@ from src import epic_options, greenbook_options, ice_options, material_options
 
 
 def find_vols(vol, ratio):
-    """Finds the volume of concrete and rebar of a beams element
+    """Finds the volume of concrete and rebar of a beams element.
+    equation is: vol_concrete = vol_total / (1 + (1 / ratio))
 
     Args:
         vol ( float ): Volume of the element
@@ -152,7 +153,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             elif re.match(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.match(
                 "concrete", row["Building Materials (All)"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.022)
+                vol_conc, vol_rebar = find_vols(row["Net Volume"], 0.011)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)

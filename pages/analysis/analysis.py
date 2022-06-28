@@ -877,7 +877,7 @@ def totals_update(analysis_store, ec_prev):
         )
 
 
-# Create table for the analysis
+# Event driven update. OnClick with download btn will give clients the updated data
 @callback(
     Output("analysis_db_download", "data"),
     Input("analysis_btn_download", "n_clicks"),
@@ -889,6 +889,7 @@ def db_download_update(n_clicks, data):
     return dcc.send_data_frame(df.to_csv, "EC_Analysis_{}.csv".format(n_clicks))
 
 
+# updates the table with consolidated data
 @callback(
     Output("analysis_table", "children"),
     Input("analysis_store", "data"),
@@ -898,6 +899,33 @@ def table_update(data):
     df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum().round(2)
     return dmc.Table(
         funcs.create_table(df_grouped), highlightOnHover=True, class_name="my-5"
+    )
+
+
+# updates the setting data with sliders
+@callback(
+    [
+        Output("ratio_beam", "children"),
+        Output("ratio_column", "children"),
+        Output("ratio_slab", "children"),
+        Output("ratio_wall", "children"),
+        Output("ratio_stair", "children"),
+    ],
+    [
+        Input("beam_slider", "value"),
+        Input("column_slider", "value"),
+        Input("slab_slider", "value"),
+        Input("wall_slider", "value"),
+        Input("stair_slider", "value"),
+    ],
+)
+def title_update(beam, column, slab, wall, stair):
+    return (
+        "Beam: {}".format(beam),
+        "Column: {}".format(column),
+        "Slab: {}".format(slab),
+        "Wall: {}".format(wall),
+        "Stair: {}".format(stair),
     )
 
 
@@ -1003,16 +1031,31 @@ totals_ui = [
 
 settings_ui = html.Div(
     children=[
-        dmc.Text("Rebar Concrete Ratio Settings", weight=700, size="lg"),
+        dmc.Group(
+            [
+                dmc.Text("Rebar Concrete Ratio Settings", weight=700, size="lg"),
+                dmc.Tooltip(
+                    wrapLines=True,
+                    width=220,
+                    withArrow=True,
+                    transition="fade",
+                    transitionDuration=200,
+                    delay=250,
+                    label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (m³).",
+                    children=[DashIconify(icon="feather:info")],
+                ),
+            ],
+            direction="row",
+        ),
         html.Div(
             children=[
                 dmc.Text("Beam: 0", id="ratio_beam"),
                 dmc.Slider(
                     id="beam_slider",
-                    value=5,
-                    min=0,
-                    max=10,
-                    step=0.5,
+                    value=0.039,
+                    min=0.032,
+                    max=0.045,
+                    step=0.0001,
                 ),
             ],
             className="my-3",
@@ -1022,10 +1065,10 @@ settings_ui = html.Div(
                 dmc.Text("Column: 0", id="ratio_column"),
                 dmc.Slider(
                     id="column_slider",
-                    value=5,
-                    min=0,
-                    max=10,
-                    step=0.5,
+                    value=0.041,
+                    min=0.025,
+                    max=0.057,
+                    step=0.0001,
                 ),
             ],
             className="my-3",
@@ -1035,10 +1078,10 @@ settings_ui = html.Div(
                 dmc.Text("Slab: 0", id="ratio_slab"),
                 dmc.Slider(
                     id="slab_slider",
-                    value=5,
-                    min=0,
-                    max=10,
-                    step=0.5,
+                    value=0.013,
+                    min=0.009,
+                    max=0.017,
+                    step=0.0001,
                 ),
             ],
             className="my-3",
@@ -1048,10 +1091,10 @@ settings_ui = html.Div(
                 dmc.Text("wall: 0", id="ratio_wall"),
                 dmc.Slider(
                     id="wall_slider",
-                    value=5,
-                    min=0,
-                    max=10,
-                    step=0.5,
+                    value=0.011,
+                    min=0.009,
+                    max=0.013,
+                    step=0.0001,
                 ),
             ],
             className="my-3",
@@ -1061,10 +1104,10 @@ settings_ui = html.Div(
                 dmc.Text("stair: 0", id="ratio_stair"),
                 dmc.Slider(
                     id="stair_slider",
-                    value=5,
-                    min=0,
-                    max=10,
-                    step=0.5,
+                    value=0.0195,
+                    min=0.017,
+                    max=0.022,
+                    step=0.0001,
                 ),
             ],
             className="my-3",
