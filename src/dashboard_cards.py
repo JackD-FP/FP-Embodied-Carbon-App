@@ -12,10 +12,8 @@ from src import building_type_option
 
 
 @callback(
-    Output("gb_generate_sum", "children"),
     Output("epic_generate_sum", "children"),
     Output("ice_generate_sum", "children"),
-    Output("gb_benchmark_layout", "children"),
     Output("epic_benchmark_layout", "children"),
     Output("ice_benchmark_layout", "children"),
     Input("proc_store", "data"),
@@ -98,7 +96,7 @@ def cards_update(data):
             children=[
                 dmc.SimpleGrid(
                     [
-                        dmc.Col(
+                        html.Div(
                             [
                                 html.Strong("Area"),
                                 dmc.Text(
@@ -116,7 +114,7 @@ def cards_update(data):
                                 ),
                             ],
                         ),
-                        dmc.Col(
+                        html.Div(
                             [
                                 html.Strong("No Benchmark Tool Available"),
                             ],
@@ -136,7 +134,7 @@ def cards_update(data):
             [
                 dmc.SimpleGrid(
                     [
-                        dmc.Col(
+                        html.Div(
                             [
                                 html.Strong("GIA of the Building"),
                                 dmc.Text(
@@ -154,7 +152,7 @@ def cards_update(data):
                                 ),
                             ],
                         ),
-                        dmc.Col(
+                        html.Div(
                             [
                                 html.Strong("BCA Building Type:"),
                                 dmc.Text(
@@ -183,7 +181,7 @@ def cards_update(data):
                 html.Div(id="ice_benchmark_result"),
             ]
         )
-        return gb, epic, ice, gb_benchmark, epic_benchmark, ice_benchmark
+        return epic, ice, epic_benchmark, ice_benchmark
 
 
 # Green Book callback
@@ -333,129 +331,187 @@ def gb_benchmarks_update(val, val_bld, data):
             )
 
 
-cards = html.Div(
-    [
-        dmc.Grid(
-            [
-                dmc.Col(
+# cards = html.Div(
+#     [
+#         dmc.SimpleGrid(
+#             [
+#                 dmc.Col(
+#                     [
+#                         dmc.Paper(
+#                             children=[
+#                                 html.Div(
+#                                     [
+#                                         html.H5(
+#                                             children="EPiC DB",
+#                                             className="mb-4 display-6",
+#                                             style={"textAlign": "center"},
+#                                         ),
+#                                         dmc.Divider(),
+#                                         html.Div(
+#                                             [
+#                                                 dmc.Container(
+#                                                     fluid=True,
+#                                                     children=[
+#                                                         html.Div(
+#                                                             style={
+#                                                                 "textAlign": "center"
+#                                                             },
+#                                                             id="epic_generate_sum",
+#                                                         ),
+#                                                     ],
+#                                                 )
+#                                             ],
+#                                             style={
+#                                                 "marginTop": "3rem",
+#                                                 "marginBottom": "3rem",
+#                                             },
+#                                         ),
+#                                         dmc.Divider(
+#                                             class_name="mb-4",
+#                                         ),
+#                                     ]
+#                                 ),
+#                                 html.Div(id="epic_benchmark_layout"),
+#                             ],
+#                             radius="sm",
+#                             withBorder=True,
+#                             class_name="p-5",
+#                             shadow="sm"
+#                             # style={"padding": "2rem"},
+#                         ),
+#                     ],
+#                     span=3,
+#                 ),
+#                 dmc.Col(
+#                     [
+#                         html.Div(
+#                             [
+#                                 html.H5(
+#                                     children="ICE DB",
+#                                     className="mb-4 display-6",
+#                                     style={"textAlign": "center"},
+#                                 ),
+#                                 dmc.Divider(),
+#                                 html.Div(
+#                                     [
+#                                         dmc.Container(
+#                                             fluid=True,
+#                                             children=[
+#                                                 html.Div(
+#                                                     style={"textAlign": "center"},
+#                                                     id="ice_generate_sum",
+#                                                 ),
+#                                             ],
+#                                         )
+#                                     ],
+#                                     style={
+#                                         "marginTop": "3rem",
+#                                         "marginBottom": "3rem",
+#                                     },
+#                                 ),
+#                                 dmc.Divider(
+#                                     class_name="mb-4",
+#                                 ),
+#                             ]
+#                         ),
+#                         html.Div(id="ice_benchmark_layout"),
+#                     ],
+#                     span=3,
+#                     class_name="bg-light p-5",
+#                 ),
+#             ],
+#             gutter="xl",
+#             class_name="my-5",
+#             grow=True,
+#         )
+#     ],
+# )
+
+
+cards = dmc.SimpleGrid(
+    children=[
+        dmc.Paper(
+            children=[
+                html.Div(
                     [
+                        html.H5(
+                            children="EPiC DB",
+                            className="mb-4 display-6",
+                            style={"textAlign": "center"},
+                        ),
+                        dmc.Divider(),
                         html.Div(
                             [
-                                # Green Book Column
-                                html.H5(
-                                    children="Green Book DB",
-                                    className="mb-4 display-6",
-                                    style={"textAlign": "center"},
-                                ),
-                                dmc.Divider(),
-                                html.Div(
-                                    [
-                                        dmc.Container(
-                                            fluid=True,
-                                            children=[
-                                                html.Div(
-                                                    style={"textAlign": "center"},
-                                                    id="gb_generate_sum",
-                                                ),
-                                            ],
-                                        )
+                                dmc.Container(
+                                    fluid=True,
+                                    children=[
+                                        html.Div(
+                                            style={"textAlign": "center"},
+                                            id="epic_generate_sum",
+                                        ),
                                     ],
-                                    style={
-                                        "marginTop": "3rem",
-                                        "marginBottom": "3rem",
-                                    },
-                                ),
-                                dmc.Divider(
-                                    class_name="mb-4",
-                                ),
-                            ]
+                                )
+                            ],
+                            style={
+                                "marginTop": "3rem",
+                                "marginBottom": "3rem",
+                            },
                         ),
-                        html.Div(id="gb_benchmark_layout"),
-                    ],
-                    span=3,
-                    class_name="bg-light p-5",
-                ),
-                dmc.Col(
-                    [
-                        html.Div(
-                            [
-                                html.H5(
-                                    children="EPiC DB",
-                                    className="mb-4 display-6",
-                                    style={"textAlign": "center"},
-                                ),
-                                dmc.Divider(),
-                                html.Div(
-                                    [
-                                        dmc.Container(
-                                            fluid=True,
-                                            children=[
-                                                html.Div(
-                                                    style={"textAlign": "center"},
-                                                    id="epic_generate_sum",
-                                                ),
-                                            ],
-                                        )
-                                    ],
-                                    style={
-                                        "marginTop": "3rem",
-                                        "marginBottom": "3rem",
-                                    },
-                                ),
-                                dmc.Divider(
-                                    class_name="mb-4",
-                                ),
-                            ]
+                        dmc.Divider(
+                            class_name="mb-4",
                         ),
-                        html.Div(id="epic_benchmark_layout"),
-                        # html.H3(
-                        #     "No Benchmark Data", className="display-6 fs-5 text-center"
-                        # ),
-                    ],
-                    span=3,
-                    class_name="p-5",
+                    ]
                 ),
-                dmc.Col(
-                    [
-                        html.Div(
-                            [
-                                html.H5(
-                                    children="ICE DB",
-                                    className="mb-4 display-6",
-                                    style={"textAlign": "center"},
-                                ),
-                                dmc.Divider(),
-                                html.Div(
-                                    [
-                                        dmc.Container(
-                                            fluid=True,
-                                            children=[
-                                                html.Div(
-                                                    style={"textAlign": "center"},
-                                                    id="ice_generate_sum",
-                                                ),
-                                            ],
-                                        )
-                                    ],
-                                    style={
-                                        "marginTop": "3rem",
-                                        "marginBottom": "3rem",
-                                    },
-                                ),
-                                dmc.Divider(
-                                    class_name="mb-4",
-                                ),
-                            ]
-                        ),
-                        html.Div(id="ice_benchmark_layout"),
-                    ],
-                    span=3,
-                    class_name="bg-light p-5",
-                ),
+                html.Div(id="epic_benchmark_layout"),
             ],
-            gutter="xl",
-            class_name="my-5",
-            grow=True,
-        )
+            radius="md",
+            withBorder=True,
+            class_name="p-5",
+            style={"border": f"1px solid {dmc.theme.DEFAULT_COLORS['gray'][4]}"},
+        ),
+        dmc.Paper(
+            children=[
+                html.Div(
+                    [
+                        html.H5(
+                            children="ICE DB",
+                            className="mb-4 display-6",
+                            style={"textAlign": "center"},
+                        ),
+                        dmc.Divider(),
+                        html.Div(
+                            [
+                                dmc.Container(
+                                    fluid=True,
+                                    children=[
+                                        html.Div(
+                                            style={"textAlign": "center"},
+                                            id="ice_generate_sum",
+                                        ),
+                                    ],
+                                )
+                            ],
+                            style={
+                                "marginTop": "3rem",
+                                "marginBottom": "3rem",
+                            },
+                        ),
+                        dmc.Divider(
+                            class_name="mb-4",
+                        ),
+                    ]
+                ),
+                html.Div(id="ice_benchmark_layout"),
+            ],
+            radius="sm",
+            withBorder=True,
+            class_name="p-5",
+            style={"border": f"1px solid {dmc.theme.DEFAULT_COLORS['gray'][2]}"},
+        ),
+    ],
+    cols=2,
+    class_name="mt-5",
+    breakpoints=[
+        {"maxWidth": 1200, "cols": 1},
     ],
 )

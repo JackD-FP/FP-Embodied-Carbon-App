@@ -14,10 +14,6 @@ from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 from src import dashboard_cards, funcs, uploader
 
-gb_df = pd.read_csv("src/Greenbook _reduced.csv")
-epic_df = pd.read_csv("src/epic _reduced.csv")
-ice_df = pd.read_csv("src/ice _reduced.csv")
-
 layout = html.Div(
     [
         html.H1("Dashboard", className="display-2 mb-5 "),
