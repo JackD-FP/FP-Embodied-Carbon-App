@@ -93,13 +93,12 @@ sidebar = html.Div(
             className="display-6",
         ),
         html.Hr(),
-        dmc.Button(
-            "Settings",
-            variant="outline",
-            leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
-            id="settings-button",
-        ),
-        drawer.drawer_layout,
+        # dmc.Button(
+        #     "Settings",
+        #     variant="outline",
+        #     leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
+        #     id="settings-button",
+        # ),
         dmc.Affix(
             dmc.Tooltip(
                 label="Send some feedback!",
@@ -217,44 +216,6 @@ def gia_store_update(gia_mts, gia):
         raise PreventUpdate
     else:
         return gia
-
-
-# updates the setting data with sliders
-@app.callback(
-    [
-        Output("settings-drawer", "opened"),
-        Output("ratio_beam", "children"),
-        Output("ratio_column", "children"),
-        Output("ratio_slab", "children"),
-        Output("ratio_wall", "children"),
-        Output("ratio_stair", "children"),
-    ],
-    [
-        Input("settings-button", "n_clicks"),
-        Input("beam_slider", "value"),
-        Input("column_slider", "value"),
-        Input("slab_slider", "value"),
-        Input("wall_slider", "value"),
-        Input("stair_slider", "value"),
-    ],
-    prevent_initial_call=True,
-)
-def drawer_update(
-    n,
-    beam,
-    column,
-    slab,
-    wall,
-    stair,
-):
-    return (
-        True,
-        "Beam: {}".format(beam),
-        "Column: {}".format(column),
-        "Slab: {}".format(slab),
-        "Wall: {}".format(wall),
-        "Stair: {}".format(stair),
-    )
 
 
 # routing stuff also 404 page

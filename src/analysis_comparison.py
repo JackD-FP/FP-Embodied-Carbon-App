@@ -31,16 +31,16 @@ def definition(data):
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
-        gb_df = df.filter(
-            items=["Green Book Material", "Green Book EC", "Floor Level", "Element"]
-        )
-        gb_df_grouped = df.groupby(
-            ["Green Book Material", "Colors"], as_index=False
-        ).sum()
-        gb_vals = gb_df_grouped["Green Book Material"].to_list()
-        gb_colors = gb_df_grouped["Colors"].to_list()
+        # gb_df = df.filter(
+        #     items=["Green Book Material", "Green Book EC", "Floor Level", "Element"]
+        # )
+        # gb_df_grouped = df.groupby(
+        #     ["Green Book Material", "Colors"], as_index=False
+        # ).sum()
+        # gb_vals = gb_df_grouped["Green Book Material"].to_list()
+        # gb_colors = gb_df_grouped["Colors"].to_list()
         # print(gb_vals, "\n\n", gb_colors, "\n\n", gb_df_grouped, "\n\n")
-        gb_color_dict = dict(zip(gb_vals, gb_colors))
+        # gb_color_dict = dict(zip(gb_vals, gb_colors))
 
         epic_df = df.filter(
             items=["EPiC Material", "EPiC EC", "Floor Level", "Element"]
@@ -73,20 +73,20 @@ def definition(data):
         # epic_color_dict = dict(zip(epic_color_names, colors))
         # ice_color_dict = dict(zip(ice_color_names, colors))
 
-        gb_fig_pie = px.pie(
-            gb_df_grouped,
-            values="Green Book EC",
-            color="Green Book Material",
-            names="Green Book Material",
-            color_discrete_map=gb_color_dict,
-        )
-        gb_fig_bar = px.histogram(
-            gb_df,
-            x="Floor Level",
-            y="Green Book EC",
-            color="Green Book Material",
-            color_discrete_map=gb_color_dict,
-        )
+        # gb_fig_pie = px.pie(
+        #     gb_df_grouped,
+        #     values="Green Book EC",
+        #     color="Green Book Material",
+        #     names="Green Book Material",
+        #     color_discrete_map=gb_color_dict,
+        # )
+        # gb_fig_bar = px.histogram(
+        #     gb_df,
+        #     x="Floor Level",
+        #     y="Green Book EC",
+        #     color="Green Book Material",
+        #     color_discrete_map=gb_color_dict,
+        # )
         epic_fig_pie = px.pie(
             epic_df_grouped,
             values="EPiC EC",
@@ -116,16 +116,16 @@ def definition(data):
             color_discrete_map=ice_color_dict,
         )
 
-        # update figures
-        gb_fig_bar.update_layout(
-            legend={
-                "orientation": "h",
-                "yanchor": "top",
-                "y": 1.3,
-                "xanchor": "center",
-                "x": 0.5,
-            }
-        )
+        # # update figures
+        # gb_fig_bar.update_layout(
+        #     legend={
+        #         "orientation": "h",
+        #         "yanchor": "top",
+        #         "y": 1.3,
+        #         "xanchor": "center",
+        #         "x": 0.5,
+        #     }
+        # )
         epic_fig_bar.update_layout(
             legend={
                 "orientation": "h",
@@ -145,8 +145,8 @@ def definition(data):
             }
         )
         return (
-            gb_fig_pie,
-            gb_fig_bar,
+            # gb_fig_pie,
+            # gb_fig_bar,
             epic_fig_pie,
             epic_fig_bar,
             ice_fig_pie,
@@ -156,8 +156,6 @@ def definition(data):
 
 @callback(
     [
-        Output("gb_analysis_comp_total", "children"),
-        Output("gb_analysis_comp_benchmark", "children"),
         Output("epic_analysis_comp_total", "children"),
         Output("ice_analysis_comp_total", "children"),
         Output("ice_analysis_comp_benchmark", "children"),
@@ -177,8 +175,8 @@ def totals_benchmark_update(data, nla, gia):
         df = pd.read_json(data, orient="split")
 
         return (
-            "{:,.2f}".format(gb_total := df["Green Book EC"].sum()),
-            "{:,.2f}".format(gb_total / nla),
+            # "{:,.2f}".format(gb_total := df["Green Book EC"].sum()),
+            # "{:,.2f}".format(gb_total / nla),
             "{:,.2f}".format(df["EPiC EC"].sum()),
             "{:,.2f}".format(ice_total := df["ICE EC"].sum()),
             "{:,.2f}".format(ice_total / gia),

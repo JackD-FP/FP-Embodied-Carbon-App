@@ -11,7 +11,7 @@ from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 from pages.analysis import custom_analysis
-from src import analysis_comparison, funcs, material_options
+from src import analysis_comparison, funcs, material_options, drawer
 
 
 class table:
@@ -160,6 +160,7 @@ stairs = table(
     steel_options=material_options.steel,
     timber_options=material_options.timber,
 )
+
 
 # callback that converts all the inputs into a new df
 # then output to stores to analysis_store
@@ -633,9 +634,9 @@ def analysis_update(
 # updates the % difference between old values and new values
 @callback(
     [
-        Output("gb_analysis_current_total", "children"),
-        Output("gb_analysis_prev_total", "children"),
-        Output("gb_badge", "children"),
+        # Output("gb_analysis_current_total", "children"),
+        # Output("gb_analysis_prev_total", "children"),
+        # Output("gb_badge", "children"),
         Output("epic_analysis_current_total", "children"),
         Output("epic_analysis_prev_total", "children"),
         Output("epic_badge", "children"),
@@ -689,7 +690,7 @@ def totals_update(analysis_store, ec_prev):
             tots_2_json,
         )
     else:
-        (
+        return (
             "{:,.2f} kgCO₂e".format(epic_total),
             "",
             "",
@@ -726,36 +727,6 @@ def table_update(data):
 
 
 totals_ui = [
-    # dmc.Paper(  # GreenBook
-    #     [
-    #         dmc.Text("Green Book DB:", size="lg", weight="bold"),
-    #         dmc.Group(
-    #             [
-    #                 dmc.Text(
-    #                     "Calculating...",
-    #                     class_name="fs-3",
-    #                     weight="bold",
-    #                     color="blue",
-    #                     id="gb_analysis_current_total",
-    #                 ),
-    #                 html.Div(
-    #                     [
-    #                         dmc.Text(
-    #                             color="gray",
-    #                             id="gb_analysis_prev_total",
-    #                         ),
-    #                         html.Div(id="gb_badge"),
-    #                     ]
-    #                 ),
-    #             ],
-    #             spacing="md",
-    #             direction="row",
-    #         ),
-    #     ],
-    #     withBorder=True,
-    #     shadow="sm",
-    #     class_name="p-3 mb-4 mx-4",
-    # ),
     dmc.Paper(  # epic
         [
             dmc.Text("EPiC DB:", size="lg", weight="bold"),
@@ -824,93 +795,6 @@ totals_ui = [
         class_name="mx-4",
     ),
 ]
-
-# settings_ui = html.Div(
-#     children=[
-#         dmc.Group(
-#             [
-#                 dmc.Text("Rebar Concrete Ratio Settings", weight=700, size="lg"),
-#                 dmc.Tooltip(
-#                     wrapLines=True,
-#                     width=220,
-#                     withArrow=True,
-#                     transition="fade",
-#                     transitionDuration=200,
-#                     delay=250,
-#                     label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (1000 m³).",
-#                     children=[DashIconify(icon="feather:info")],
-#                 ),
-#             ],
-#             direction="row",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("Beam: 0", id="ratio_beam"),
-#                 dmc.Slider(
-#                     id="beam_slider",
-#                     value=0.039,
-#                     min=0.032,
-#                     max=0.045,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("Column: 0", id="ratio_column"),
-#                 dmc.Slider(
-#                     id="column_slider",
-#                     value=0.041,
-#                     min=0.025,
-#                     max=0.057,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("Slab: 0", id="ratio_slab"),
-#                 dmc.Slider(
-#                     id="slab_slider",
-#                     value=0.013,
-#                     min=0.009,
-#                     max=0.017,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("wall: 0", id="ratio_wall"),
-#                 dmc.Slider(
-#                     id="wall_slider",
-#                     value=0.011,
-#                     min=0.009,
-#                     max=0.013,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("stair: 0", id="ratio_stair"),
-#                 dmc.Slider(
-#                     id="stair_slider",
-#                     value=0.0195,
-#                     min=0.017,
-#                     max=0.022,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#     ],
-#     className="px-5",
-# )
 
 # create the layout for the cards
 # gen_analysis was separated from analysis_layout just to make it cleaner to read
@@ -999,7 +883,12 @@ gen_analysis = dbc.Row(
                             label="Totals",
                             icon=[DashIconify(icon="iconoir:graph-up")],
                             children=totals_ui,
-                        )
+                        ),
+                        dmc.Tab(
+                            label="Rebar Setting",
+                            icon=[DashIconify(icon="ep:setting")],
+                            children=drawer.settings_ui,
+                        ),
                     ]
                 ),
             ],
