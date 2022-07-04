@@ -13,18 +13,18 @@ from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 from src import analysis_comparison, funcs, material_options
 
-from pages.analysis import epic_db, green_book_db, ice_db
+from pages.analysis import epic_db, ice_db
 
 layout = html.Div(
     children=[
         dmc.Accordion(
             children=[
-                dmc.AccordionItem(
-                    label="Green Book DB",
-                    children=[
-                        green_book_db.gb_layout,
-                    ],
-                ),
+                # dmc.AccordionItem(
+                #     label="Green Book DB",
+                #     children=[
+                #         green_book_db.gb_layout,
+                #     ],
+                # ),
                 dmc.AccordionItem(
                     label="EPiC DB",
                     children=[

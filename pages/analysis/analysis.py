@@ -45,9 +45,9 @@ class table:
                         html.Th(
                             "Materials", style={"width": "40%", "textAlign": "Start"}
                         ),
-                        html.Th(
-                            "Green Book", style={"width": "20%", "textAlign": "end"}
-                        ),
+                        # html.Th(
+                        #     "Green Book", style={"width": "20%", "textAlign": "end"}
+                        # ),
                         html.Th("EPiC", style={"width": "20%", "textAlign": "end"}),
                         html.Th("ICE", style={"width": "20%", "textAlign": "end"}),
                     ]
@@ -94,16 +94,16 @@ class table:
                             ]
                         )
                     ),
-                    html.Td(
-                        mat_val[i],
-                        id="gb-val-{}-{}".format(
-                            self.id, labels[i]["name"].replace(" ", "-")
-                        ),
-                        style={
-                            "verticalAlign": "bottom",
-                            "textAlign": "end",
-                        },
-                    ),
+                    # html.Td(
+                    #     mat_val[i],
+                    #     id="gb-val-{}-{}".format(
+                    #         self.id, labels[i]["name"].replace(" ", "-")
+                    #     ),
+                    #     style={
+                    #         "verticalAlign": "bottom",
+                    #         "textAlign": "end",
+                    #     },
+                    # ),
                     html.Td(
                         mat_val[i],
                         id="epic-val-{}-{}".format(
@@ -167,64 +167,44 @@ stairs = table(
 # but it works for now
 @callback(
     [
-        Output("gb-val-beams-Concrete", "children"),
         Output("epic-val-beams-Concrete", "children"),
         Output("ice-val-beams-Concrete", "children"),
-        Output("gb-val-beams-Rebar", "children"),
         Output("epic-val-beams-Rebar", "children"),
         Output("ice-val-beams-Rebar", "children"),
-        Output("gb-val-beams-Structural-Steel", "children"),
         Output("epic-val-beams-Structural-Steel", "children"),
         Output("ice-val-beams-Structural-Steel", "children"),
-        Output("gb-val-beams-Structural-Timber", "children"),
         Output("epic-val-beams-Structural-Timber", "children"),
         Output("ice-val-beams-Structural-Timber", "children"),
-        Output("gb-val-Columns-Concrete", "children"),
         Output("epic-val-Columns-Concrete", "children"),
         Output("ice-val-Columns-Concrete", "children"),
-        Output("gb-val-Columns-Rebar", "children"),
         Output("epic-val-Columns-Rebar", "children"),
         Output("ice-val-Columns-Rebar", "children"),
-        Output("gb-val-Columns-Structural-Steel", "children"),
         Output("epic-val-Columns-Structural-Steel", "children"),
         Output("ice-val-Columns-Structural-Steel", "children"),
-        Output("gb-val-Columns-Structural-Timber", "children"),
         Output("epic-val-Columns-Structural-Timber", "children"),
         Output("ice-val-Columns-Structural-Timber", "children"),
-        Output("gb-val-Slabs-Concrete", "children"),
         Output("epic-val-Slabs-Concrete", "children"),
         Output("ice-val-Slabs-Concrete", "children"),
-        Output("gb-val-Slabs-Rebar", "children"),
         Output("epic-val-Slabs-Rebar", "children"),
         Output("ice-val-Slabs-Rebar", "children"),
-        Output("gb-val-Slabs-Structural-Steel", "children"),
         Output("epic-val-Slabs-Structural-Steel", "children"),
         Output("ice-val-Slabs-Structural-Steel", "children"),
-        Output("gb-val-Slabs-Structural-Timber", "children"),
         Output("epic-val-Slabs-Structural-Timber", "children"),
         Output("ice-val-Slabs-Structural-Timber", "children"),
-        Output("gb-val-Walls-Concrete", "children"),
         Output("epic-val-Walls-Concrete", "children"),
         Output("ice-val-Walls-Concrete", "children"),
-        Output("gb-val-Walls-Rebar", "children"),
         Output("epic-val-Walls-Rebar", "children"),
         Output("ice-val-Walls-Rebar", "children"),
-        Output("gb-val-Walls-Structural-Steel", "children"),
         Output("epic-val-Walls-Structural-Steel", "children"),
         Output("ice-val-Walls-Structural-Steel", "children"),
-        Output("gb-val-Walls-Structural-Timber", "children"),
         Output("epic-val-Walls-Structural-Timber", "children"),
         Output("ice-val-Walls-Structural-Timber", "children"),
-        Output("gb-val-Stairs-Concrete", "children"),
         Output("epic-val-Stairs-Concrete", "children"),
         Output("ice-val-Stairs-Concrete", "children"),
-        Output("gb-val-Stairs-Rebar", "children"),
         Output("epic-val-Stairs-Rebar", "children"),
         Output("ice-val-Stairs-Rebar", "children"),
-        Output("gb-val-Stairs-Structural-Steel", "children"),
         Output("epic-val-Stairs-Structural-Steel", "children"),
         Output("ice-val-Stairs-Structural-Steel", "children"),
-        Output("gb-val-Stairs-Structural-Timber", "children"),
         Output("epic-val-Stairs-Structural-Timber", "children"),
         Output("ice-val-Stairs-Structural-Timber", "children"),
         Output("analysis_store", "data"),
@@ -280,13 +260,13 @@ def analysis_update(
         raise PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
-        df.drop(columns=["Green Book EC", "EPiC EC", "ICE EC"], inplace=True)
+        df.drop(columns=["EPiC EC", "ICE EC"], inplace=True)
 
-        gb_sub_materials = []
+        # gb_sub_materials = []
         epic_sub_materials = []
         ice_sub_materials = []
 
-        gb_ec = []
+        # gb_ec = []
         epic_ec = []
         ice_ec = []
 
@@ -302,13 +282,11 @@ def analysis_update(
                         beam_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                epic_ec.append(material_dict.get(row["Materials"])[0])
+                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
+                ice_ec.append(material_dict.get(row["Materials"])[2])
+                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
+                colors.append(material_dict.get(row["Materials"])[4])
 
             if row["Element"] == "Column":
                 material_dict = {
@@ -319,13 +297,11 @@ def analysis_update(
                         col_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                epic_ec.append(material_dict.get(row["Materials"])[0])
+                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
+                ice_ec.append(material_dict.get(row["Materials"])[2])
+                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
+                colors.append(material_dict.get(row["Materials"])[4])
 
             if row["Element"] == "Slab":
                 material_dict = {
@@ -336,13 +312,11 @@ def analysis_update(
                         slab_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                epic_ec.append(material_dict.get(row["Materials"])[0])
+                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
+                ice_ec.append(material_dict.get(row["Materials"])[2])
+                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
+                colors.append(material_dict.get(row["Materials"])[4])
 
             if row["Element"] == "Wall":
                 material_dict = {
@@ -353,13 +327,11 @@ def analysis_update(
                         wall_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                epic_ec.append(material_dict.get(row["Materials"])[0])
+                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
+                ice_ec.append(material_dict.get(row["Materials"])[2])
+                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
+                colors.append(material_dict.get(row["Materials"])[4])
 
             if row["Element"] == "Stairs":
                 material_dict = {
@@ -370,23 +342,14 @@ def analysis_update(
                         stair_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                epic_ec.append(material_dict.get(row["Materials"])[0])
+                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
+                ice_ec.append(material_dict.get(row["Materials"])[2])
+                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
+                colors.append(material_dict.get(row["Materials"])[4])
 
-        df.insert(loc=0, column="Green Book Material", value=gb_sub_materials)
         df.insert(loc=1, column="EPiC Material", value=epic_sub_materials)
         df.insert(loc=2, column="ICE Material", value=ice_sub_materials)
-
-        df.insert(
-            loc=3,
-            column="Green Book EC",
-            value=gb_ec,
-        )
         df.insert(loc=4, column="EPiC EC", value=epic_ec)
         df.insert(loc=5, column="ICE EC", value=ice_ec)
         df.insert(loc=6, column="Colors", value=colors)
@@ -397,12 +360,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Beam") & (df["Materials"] == "Concrete"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Beam") & (df["Materials"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -416,13 +373,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Beam")
                     & (df["Materials"] == "Reinforcement Bar"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Beam")
-                    & (df["Materials"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -436,12 +386,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Beam") & (df["Materials"] == "Structural Steel"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Beam") & (df["Materials"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -449,13 +393,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Beam") & (df["Materials"] == "Structural Steel"),
                     "ICE EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Beam")
-                    & (df["Materials"] == "Structural Timber"),
-                    "Green Book EC",
                 ].sum()
             ),
             "{:,.2f}".format(
@@ -476,12 +413,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column") & (df["Materials"] == "Concrete"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Column") & (df["Materials"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -495,13 +426,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Column")
                     & (df["Materials"] == "Reinforcement Bar"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Column")
-                    & (df["Materials"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -516,13 +440,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Column")
                     & (df["Materials"] == "Structural Steel"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Column")
-                    & (df["Materials"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -531,13 +448,6 @@ def analysis_update(
                     (df["Element"] == "Column")
                     & (df["Materials"] == "Structural Steel"),
                     "ICE EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Column")
-                    & (df["Materials"] == "Structural Timber"),
-                    "Green Book EC",
                 ].sum()
             ),
             "{:,.2f}".format(
@@ -558,12 +468,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Slab") & (df["Materials"] == "Concrete"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Slab") & (df["Materials"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -577,13 +481,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Slab")
                     & (df["Materials"] == "Reinforcement Bar"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Slab")
-                    & (df["Materials"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -597,12 +494,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Slab") & (df["Materials"] == "Structural Steel"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Slab") & (df["Materials"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -610,13 +501,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Slab") & (df["Materials"] == "Structural Steel"),
                     "ICE EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Slab")
-                    & (df["Materials"] == "Structural Timber"),
-                    "Green Book EC",
                 ].sum()
             ),
             "{:,.2f}".format(
@@ -637,12 +521,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Wall") & (df["Materials"] == "Concrete"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Wall") & (df["Materials"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -656,13 +534,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Wall")
                     & (df["Materials"] == "Reinforcement Bar"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Wall")
-                    & (df["Materials"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -676,12 +547,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Wall") & (df["Materials"] == "Structural Steel"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Wall") & (df["Materials"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -689,13 +554,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Wall") & (df["Materials"] == "Structural Steel"),
                     "ICE EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Wall")
-                    & (df["Materials"] == "Structural Timber"),
-                    "Green Book EC",
                 ].sum()
             ),
             "{:,.2f}".format(
@@ -716,12 +574,6 @@ def analysis_update(
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs") & (df["Materials"] == "Concrete"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Stairs") & (df["Materials"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -735,13 +587,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Stairs")
                     & (df["Materials"] == "Reinforcement Bar"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -756,13 +601,6 @@ def analysis_update(
                 df.loc[
                     (df["Element"] == "Stairs")
                     & (df["Materials"] == "Structural Steel"),
-                    "Green Book EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
@@ -771,13 +609,6 @@ def analysis_update(
                     (df["Element"] == "Stairs")
                     & (df["Materials"] == "Structural Steel"),
                     "ICE EC",
-                ].sum()
-            ),
-            "{:,.2f}".format(
-                df.loc[
-                    (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Structural Timber"),
-                    "Green Book EC",
                 ].sum()
             ),
             "{:,.2f}".format(
@@ -821,12 +652,11 @@ def analysis_update(
 def totals_update(analysis_store, ec_prev):
     df = pd.read_json(analysis_store, orient="split")
     # df.to_excel("test.xlsx")
-    gb_total = df["Green Book EC"].sum()
+    # gb_total = df["Green Book EC"].sum()
     epic_total = df["EPiC EC"].sum()
     ice_total = df["ICE EC"].sum()
     tots_2_json = json.dumps(
         {
-            "gb": gb_total,
             "epic": epic_total,
             "ice": ice_total,
         },
@@ -836,13 +666,12 @@ def totals_update(analysis_store, ec_prev):
 
     if ec_prev is not None:  # if there is a previous ec value
         data = json.loads(ec_prev)  # convert load from json
-        gb_percent = funcs.percent_diff(gb_total, data["gb"])
+        # gb_percent = funcs.percent_diff(gb_total, data["gb"])
         epic_percent = funcs.percent_diff(epic_total, data["epic"])
         ice_percent = funcs.percent_diff(ice_total, data["ice"])
 
         tots_2_json = json.dumps(
             {
-                "gb": gb_total,
                 "epic": epic_total,
                 "ice": ice_total,
             },
@@ -851,9 +680,6 @@ def totals_update(analysis_store, ec_prev):
         )
 
         return (
-            "{:,.2f} kgCO₂e".format(gb_total),
-            "from {:,.2f}".format(data["gb"]),
-            gb_percent,
             "{:,.2f} kgCO₂e".format(epic_total),
             "from {:,.2f}".format(data["epic"]),
             epic_percent,
@@ -863,10 +689,7 @@ def totals_update(analysis_store, ec_prev):
             tots_2_json,
         )
     else:
-        return (
-            "{:,.2f} kgCO₂e".format(gb_total),
-            "",
-            "",
+        (
             "{:,.2f} kgCO₂e".format(epic_total),
             "",
             "",
@@ -903,36 +726,36 @@ def table_update(data):
 
 
 totals_ui = [
-    dmc.Paper(  # GreenBook
-        [
-            dmc.Text("Green Book DB:", size="lg", weight="bold"),
-            dmc.Group(
-                [
-                    dmc.Text(
-                        "Calculating...",
-                        class_name="fs-3",
-                        weight="bold",
-                        color="blue",
-                        id="gb_analysis_current_total",
-                    ),
-                    html.Div(
-                        [
-                            dmc.Text(
-                                color="gray",
-                                id="gb_analysis_prev_total",
-                            ),
-                            html.Div(id="gb_badge"),
-                        ]
-                    ),
-                ],
-                spacing="md",
-                direction="row",
-            ),
-        ],
-        withBorder=True,
-        shadow="sm",
-        class_name="p-3 mb-4 mx-4",
-    ),
+    # dmc.Paper(  # GreenBook
+    #     [
+    #         dmc.Text("Green Book DB:", size="lg", weight="bold"),
+    #         dmc.Group(
+    #             [
+    #                 dmc.Text(
+    #                     "Calculating...",
+    #                     class_name="fs-3",
+    #                     weight="bold",
+    #                     color="blue",
+    #                     id="gb_analysis_current_total",
+    #                 ),
+    #                 html.Div(
+    #                     [
+    #                         dmc.Text(
+    #                             color="gray",
+    #                             id="gb_analysis_prev_total",
+    #                         ),
+    #                         html.Div(id="gb_badge"),
+    #                     ]
+    #                 ),
+    #             ],
+    #             spacing="md",
+    #             direction="row",
+    #         ),
+    #     ],
+    #     withBorder=True,
+    #     shadow="sm",
+    #     class_name="p-3 mb-4 mx-4",
+    # ),
     dmc.Paper(  # epic
         [
             dmc.Text("EPiC DB:", size="lg", weight="bold"),

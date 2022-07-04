@@ -110,7 +110,7 @@ def make_graphs(
         df = df_.groupby(by=["Building Materials (All)"], as_index=False).sum()
 
         # new calculations for carbon intensity
-        mat, vol, mass, floor, element, gbec, epicec, iceec = funcs.mat_interpreter(
+        mat, vol, mass, floor, element, epicec, iceec = funcs.mat_interpreter(
             df_, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
         )
         df_new = pd.DataFrame(
@@ -120,7 +120,6 @@ def make_graphs(
                 "Materials": mat,
                 "Mass": mass,
                 "Volume": vol,
-                "Green Book EC": gbec,
                 "EPiC EC": epicec,
                 "ICE EC": iceec,
             }
@@ -129,7 +128,6 @@ def make_graphs(
 
         colour_list = ["#064789", "#F8CC0D", "#FB3640", "#35A746"]
 
-        gb_sum = df_new["Green Book EC"].sum()
         epic_sum = df_new["EPiC EC"].sum()
         ice_sum = df_new["ICE EC"].sum()
 
@@ -141,9 +139,6 @@ def make_graphs(
         # TODO: make this one line or something
         df_new_grouped.loc[:, "Mass"] = df_new_grouped["Mass"].map("{:,.2f}".format)
         df_new_grouped.loc[:, "Volume"] = df_new_grouped["Volume"].map("{:,.2f}".format)
-        df_new_grouped.loc[:, "Green Book EC"] = df_new_grouped["Green Book EC"].map(
-            "{:,.2f}".format
-        )
         df_new_grouped.loc[:, "EPiC EC"] = df_new_grouped["EPiC EC"].map(
             "{:,.2f}".format
         )
@@ -151,22 +146,10 @@ def make_graphs(
 
         fig = make_subplots(
             rows=1,
-            cols=3,
-            specs=[[{"type": "domain"}, {"type": "domain"}, {"type": "domain"}]],
+            cols=2,
+            specs=[[{"type": "pie"}, {"type": "pie"}]],
         )
-        # subplot for greenbook
-        fig.add_trace(
-            go.Pie(
-                labels=mat,
-                values=gbec,
-                # values=val_colour,
-                name="Green Book DB",
-                hole=0.5,
-                scalegroup="dashboard_pie",
-            ),
-            1,
-            1,
-        )
+        # subplot for epic
         fig.add_trace(
             go.Pie(
                 labels=mat,
@@ -176,9 +159,9 @@ def make_graphs(
                 scalegroup="dashboard_pie",
             ),
             1,
-            2,
+            1,
         )
-        # subplot for greenbookW
+        # subplot for ice
         fig.add_trace(
             go.Pie(
                 labels=mat,
@@ -188,31 +171,23 @@ def make_graphs(
                 scalegroup="dashboard_pie",
             ),
             1,
-            3,
+            2,
         )
         fig.update_layout(
             title_text="Structure Embodied Carbon",
             annotations=[
-                dict(text="Greenbook", x=0.12, y=0.50, font_size=16, showarrow=False),
-                dict(
-                    text="{:,.2f} kgCO₂e".format(gb_sum),
-                    x=0.1,
-                    y=0.45,
-                    font_size=12,
-                    showarrow=False,
-                ),
-                dict(text="EPiC", x=0.50, y=0.50, font_size=16, showarrow=False),
+                dict(text="EPiC", x=0.22, y=0.50, font_size=16, showarrow=False),
                 dict(
                     text="{:,.2f} kgCO₂e".format(epic_sum),
-                    x=0.5,
+                    x=0.18,
                     y=0.45,
                     font_size=12,
                     showarrow=False,
                 ),
-                dict(text="ICE", x=0.87, y=0.50, font_size=16, showarrow=False),
+                dict(text="ICE", x=0.79, y=0.50, font_size=16, showarrow=False),
                 dict(
                     text="{:,.2f} kgCO₂e".format(ice_sum),
-                    x=0.90,
+                    x=0.82,
                     y=0.45,
                     font_size=12,
                     showarrow=False,

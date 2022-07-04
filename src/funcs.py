@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from dash import html
 
-from src import epic_options, greenbook_options, ice_options, material_options
+from src import epic_options, ice_options, material_options
 
 
 def find_vols(vol, ratio):
@@ -33,16 +33,12 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
     slab_slider: float,
     wall_slider: float,
     stair_slider: float,
-    gb_conc=greenbook_options.concrete[11]["value"],
     epic_conc=epic_options.concrete[12]["value"],
     ice_conc=ice_options.concrete[28]["value"],
-    gb_rebar=greenbook_options.rebar[0]["value"],
     epic_rebar=epic_options.rebar[0]["value"],
     ice_rebar=ice_options.rebar[0]["value"],
-    gb_steel=greenbook_options.steel[1]["value"],
     epic_steel=epic_options.steel[1]["value"],
     ice_steel=ice_options.steel[1]["value"],
-    gb_timber=greenbook_options.timber[1]["value"],
     epic_timber=epic_options.timber[1]["value"],
     ice_timber=ice_options.timber[1]["value"],
 ) -> tuple:
@@ -64,7 +60,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
     mat = []
     floor = []
     element = []
-    gb_ec = []
     epic_ec = []
     ice_ec = []
 
@@ -91,7 +86,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 )  # 2360 is the density of average concrete density from EPiC
                 floor.append(row["Home Story Name"])
                 element.append("Beam")
-                gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
 
@@ -103,7 +97,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 )  # 7740 is the density of average rebar density from EPiC
                 floor.append(row["Home Story Name"])
                 element.append("Beam")
-                gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
@@ -122,7 +115,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 element.append("Column")
-                gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
 
@@ -132,7 +124,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 element.append("Column")
-                gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
@@ -149,7 +140,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 element.append("Slab")
-                gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
 
@@ -159,7 +149,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 element.append("Slab")
-                gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
@@ -174,7 +163,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 element.append("Wall")
-                gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
 
@@ -184,7 +172,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 element.append("Wall")
-                gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
@@ -203,7 +190,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 element.append("Stairs")
-                gb_ec.append(vol_conc * gb_conc)
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
 
@@ -213,7 +199,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
                 floor.append(row["Home Story Name"])
                 element.append("Stairs")
-                gb_ec.append(mass_rebar * gb_rebar)
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
@@ -228,9 +213,6 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             element.append(
                 element_check(row["Layer"])
             )  # TODO: add function to define what element is being used
-            gb_ec.append(
-                row["Net Volume"] * gb_timber
-            )  # timber... assumes there no other materials types
             epic_ec.append(row["Net Volume"] * epic_timber)
             ice_ec.append(row["Mass"] * ice_timber)
 
@@ -246,12 +228,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             element.append(
                 element_check(row["Layer"])
             )  # TODO: add function to define what element is being used
-            gb_ec.append(
-                row["Mass"] * gb_steel
-            )  # timber... assumes there no other materials types
             epic_ec.append(row["Mass"] * epic_steel)
             ice_ec.append(row["Mass"] * ice_steel)
-    return mat, vol, mass, floor, element, gb_ec, epic_ec, ice_ec
+    return mat, vol, mass, floor, element, epic_ec, ice_ec
 
 
 def element_check(layer: str) -> str:
@@ -309,8 +288,8 @@ def concrete(value, vol, source=material_options.concrete):
         float: embodied carbon value to be append
     """
     if source == material_options.concrete:
-        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
-        gb_val = [x["gb"] for x in source if x["value"] == value][0] * vol
+        # gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        # gb_val = [x["gb"] for x in source if x["value"] == value][0] * vol
 
         epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
         epic_val = [x["epic"] for x in source if x["value"] == value][0] * vol
@@ -320,7 +299,7 @@ def concrete(value, vol, source=material_options.concrete):
 
         colors = [x["color"] for x in source if x["value"] == value][0]
 
-        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return epic_val, epic_submat, ice_val, ice_submat, colors
     else:
         sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
         new_colors = [x["color"] for x in source if x["value"] == float(value)][0]
@@ -343,8 +322,8 @@ def rebar(value, unit_value, source=material_options.rebar):
         float: embodied carbon value to be append
     """
     if source == material_options.rebar:
-        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
-        gb_val = [x["gb"] for x in source if x["value"] == value][0] * unit_value
+        # gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        # gb_val = [x["gb"] for x in source if x["value"] == value][0] * unit_value
 
         epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
         epic_val = [x["epic"] for x in source if x["value"] == value][0] * unit_value
@@ -354,7 +333,7 @@ def rebar(value, unit_value, source=material_options.rebar):
 
         colors = [x["color"] for x in source if x["value"] == value][0]
 
-        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return epic_val, epic_submat, ice_val, ice_submat, colors
     else:
         sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
         colors = [x["color"] for x in source if x["value"] == float(value)][0]
@@ -377,8 +356,8 @@ def steel(value, unit_value, source=material_options.steel):
         float: embodied carbon value to be append
     """
     if source == material_options.steel:
-        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
-        gb_val = [x["gb"] for x in source if x["value"] == value][0] * unit_value
+        # gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        # gb_val = [x["gb"] for x in source if x["value"] == value][0] * unit_value
 
         epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
         epic_val = [x["epic"] for x in source if x["value"] == value][0] * unit_value
@@ -388,7 +367,7 @@ def steel(value, unit_value, source=material_options.steel):
 
         colors = [x["color"] for x in source if x["value"] == value][0]
 
-        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return epic_val, epic_submat, ice_val, ice_submat, colors
     else:
         sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
         color = [x["color"] for x in source if x["value"] == float(value)][0]
@@ -411,8 +390,8 @@ def timber(value, mass, vol, source=material_options.timber, ice=False):
         float: embodied carbon value to be append
     """
     if source == material_options.timber:
-        gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
-        gb_val = [x["gb"] for x in source if x["value"] == value][0] * vol
+        # gb_submat = [x["gb_label"] for x in source if x["value"] == value][0]
+        # gb_val = [x["gb"] for x in source if x["value"] == value][0] * vol
 
         epic_submat = [x["epic_label"] for x in source if x["value"] == value][0]
         epic_val = [x["epic"] for x in source if x["value"] == value][0] * vol
@@ -422,7 +401,7 @@ def timber(value, mass, vol, source=material_options.timber, ice=False):
 
         colors = [x["color"] for x in source if x["value"] == value][0]
 
-        return gb_val, gb_submat, epic_val, epic_submat, ice_val, ice_submat, colors
+        return epic_val, epic_submat, ice_val, ice_submat, colors
     else:
         sub_material = [x["label"] for x in source if x["value"] == float(value)][0]
         colors = [x["color"] for x in source if x["value"] == float(value)][0]

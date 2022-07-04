@@ -10,9 +10,6 @@ from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 
-from src import greenbook_options
-
-
 # callback for analysis comparison
 # kinda confusing but the callback is to generate graphs
 # if => prevents update
@@ -20,8 +17,8 @@ from src import greenbook_options
 # else => updates all db with data, this requires users to open all the pages
 @callback(
     [
-        Output("gb_analysis_comp_pie", "figure"),
-        Output("gb_analysis_comp_bar", "figure"),
+        # Output("gb_analysis_comp_pie", "figure"),
+        # Output("gb_analysis_comp_bar", "figure"),
         Output("epic_analysis_comp_pie", "figure"),
         Output("epic_analysis_comp_bar", "figure"),
         Output("ice_analysis_comp_pie", "figure"),
@@ -197,63 +194,6 @@ comparison = html.Div(
                     [
                         dbc.Col(
                             [
-                                html.H3("Green Book DB", className="mt-3 mb-5"),
-                                dbc.Row(
-                                    children=[
-                                        dbc.Col(
-                                            [
-                                                html.Div(
-                                                    [
-                                                        html.H4(
-                                                            "Calculating...",
-                                                            id="gb_analysis_comp_total",
-                                                            className="m-0",
-                                                        ),
-                                                        html.Strong(" kgCO₂e"),
-                                                        html.P("Total EC"),
-                                                    ],
-                                                ),
-                                            ],
-                                            class_name="text-center",
-                                        ),
-                                        dbc.Col(
-                                            [
-                                                html.Div(
-                                                    [
-                                                        html.H4(
-                                                            "Calculating...",
-                                                            id="gb_analysis_comp_benchmark",
-                                                            className="m-0",
-                                                        ),
-                                                        html.Strong(" kgCO₂e/m²"),
-                                                        html.P("Benchmark per NLA"),
-                                                    ]
-                                                ),
-                                            ],
-                                            class_name="text-center",
-                                        ),
-                                    ],
-                                ),
-                                dmc.LoadingOverlay(
-                                    dcc.Graph(id="gb_analysis_comp_pie", config=config),
-                                    loaderProps={
-                                        "color": "blue",
-                                        "variant": "oval",
-                                    },
-                                ),
-                                dmc.LoadingOverlay(
-                                    dcc.Graph(id="gb_analysis_comp_bar", config=config),
-                                    loaderProps={
-                                        "color": "blue",
-                                        "variant": "oval",
-                                    },
-                                ),
-                            ],
-                            xxl=4,
-                            md=12,
-                        ),
-                        dbc.Col(
-                            [
                                 html.H3("EPiC DB", className="mt-3 mb-5"),
                                 html.Div(
                                     [
@@ -290,7 +230,7 @@ comparison = html.Div(
                                     },
                                 ),
                             ],
-                            xxl=4,
+                            xxl=6,
                             md=12,
                         ),
                         dbc.Col(
@@ -351,7 +291,7 @@ comparison = html.Div(
                                     },
                                 ),
                             ],
-                            xxl=4,
+                            xxl=6,
                             md=12,
                         ),
                     ]
