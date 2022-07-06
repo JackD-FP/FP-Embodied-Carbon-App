@@ -93,12 +93,24 @@ sidebar = html.Div(
             className="display-6",
         ),
         html.Hr(),
-        # dmc.Button(
-        #     "Settings",
-        #     variant="outline",
-        #     leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
-        #     id="settings-button",
-        # ),
+        dmc.Group(
+            [
+                html.H5("Rebar Settings", className="mb-5 display-6 fs-3"),
+                dmc.Tooltip(
+                    wrapLines=True,
+                    width=220,
+                    withArrow=True,
+                    transition="fade",
+                    transitionDuration=200,
+                    closeDelay=500,
+                    label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (1000 m³).",
+                    children=[DashIconify(icon="feather:info")],
+                ),
+            ],
+            direction="row",
+            align="flex-start",
+        ),
+        drawer.settings_ui,
         dmc.Affix(
             dmc.Tooltip(
                 label="Send some feedback!",
@@ -216,6 +228,34 @@ def gia_store_update(gia_mts, gia):
         raise PreventUpdate
     else:
         return gia
+
+
+# updates the setting data with sliders
+@app.callback(
+    [
+        Output("ratio_beam", "children"),
+        Output("ratio_column", "children"),
+        Output("ratio_slab", "children"),
+        Output("ratio_wall", "children"),
+        Output("ratio_stair", "children"),
+    ],
+    [
+        Input("beam_slider", "value"),
+        Input("column_slider", "value"),
+        Input("slab_slider", "value"),
+        Input("wall_slider", "value"),
+        Input("stair_slider", "value"),
+    ],
+    prevent_initial_call=True,
+)
+def drawer_update(beam, column, slab, wall, stair):
+    return (
+        "Beam: {}".format(beam),
+        "Column: {}".format(column),
+        "Slab: {}".format(slab),
+        "Wall: {}".format(wall),
+        "Stair: {}".format(stair),
+    )
 
 
 # routing stuff also 404 page

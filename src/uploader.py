@@ -47,6 +47,11 @@ def parse_contents(contents, filename, date, id, id_name):
                 "marginLeft": "73%",
             },
         )
+    # cleaning dataset removes the header
+    # TODO:
+    # - make a cleaning script that removes header (Done)
+    # - make script for users to chose which columns are which
+
     df = df.rename(
         columns=df.iloc[0],
     )

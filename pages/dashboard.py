@@ -20,7 +20,7 @@ layout = html.Div(
         html.Hr(),
         html.P(
             "The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. \
-        It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of materials are necessary for structural stability, \
+        It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of Material are necessary for structural stability, \
         the answer is less obvious. We should all strive to minimise our design's embodied carbon, however, not compromise with structural stability and design excellence.\
         The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the later. \
         It can also help identify what floor is causing the issue if a redesign or alteration is required.\
@@ -106,8 +106,8 @@ def make_graphs(
     elif data is not None:
         df_ = pd.read_json(data, orient="split")
         df_o = df_.reset_index()
-
-        df = df_.groupby(by=["Building Materials (All)"], as_index=False).sum()
+        # df_.to_excel("temp-df-store.xlsx") # just for testing
+        df = df_.groupby(by=["Material"], as_index=False).sum()
 
         # new calculations for carbon intensity
         mat, vol, mass, floor, element, epicec, iceec = funcs.mat_interpreter(
@@ -117,7 +117,7 @@ def make_graphs(
             {
                 "Floor Level": floor,
                 "Element": element,
-                "Materials": mat,
+                "Material": mat,
                 "Mass": mass,
                 "Volume": vol,
                 "EPiC EC": epicec,
@@ -132,7 +132,7 @@ def make_graphs(
         ice_sum = df_new["ICE EC"].sum()
 
         df_new_grouped = df_new.groupby(
-            by=["Element", "Materials"],
+            by=["Element", "Material"],
             as_index=False,
         ).sum()
         # there should be a better way to do this

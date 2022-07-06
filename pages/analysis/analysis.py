@@ -15,6 +15,10 @@ from src import analysis_comparison, funcs, material_options, drawer
 
 
 class table:
+    """
+    This class generates the table and store some values to help in the calculation of the embodied carbon.
+    """
+
     def __init__(
         self,
         id,
@@ -43,11 +47,8 @@ class table:
                 html.Tr(
                     [
                         html.Th(
-                            "Materials", style={"width": "40%", "textAlign": "Start"}
+                            "Material", style={"width": "40%", "textAlign": "Start"}
                         ),
-                        # html.Th(
-                        #     "Green Book", style={"width": "20%", "textAlign": "end"}
-                        # ),
                         html.Th("EPiC", style={"width": "20%", "textAlign": "end"}),
                         html.Th("ICE", style={"width": "20%", "textAlign": "end"}),
                     ]
@@ -94,16 +95,6 @@ class table:
                             ]
                         )
                     ),
-                    # html.Td(
-                    #     mat_val[i],
-                    #     id="gb-val-{}-{}".format(
-                    #         self.id, labels[i]["name"].replace(" ", "-")
-                    #     ),
-                    #     style={
-                    #         "verticalAlign": "bottom",
-                    #         "textAlign": "end",
-                    #     },
-                    # ),
                     html.Td(
                         mat_val[i],
                         id="epic-val-{}-{}".format(
@@ -262,12 +253,11 @@ def analysis_update(
     else:
         df = pd.read_json(data, orient="split")
         df.drop(columns=["EPiC EC", "ICE EC"], inplace=True)
+        df.to_excel("analysis.xlsx")
 
-        # gb_sub_materials = []
         epic_sub_materials = []
         ice_sub_materials = []
 
-        # gb_ec = []
         epic_ec = []
         ice_ec = []
 
@@ -283,11 +273,11 @@ def analysis_update(
                         beam_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                epic_ec.append(material_dict.get(row["Materials"])[0])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
-                ice_ec.append(material_dict.get(row["Materials"])[2])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
-                colors.append(material_dict.get(row["Materials"])[4])
+                epic_ec.append(material_dict.get(row["Material"])[0])
+                epic_sub_materials.append(material_dict.get(row["Material"])[1])
+                ice_ec.append(material_dict.get(row["Material"])[2])
+                ice_sub_materials.append(material_dict.get(row["Material"])[3])
+                colors.append(material_dict.get(row["Material"])[4])
 
             if row["Element"] == "Column":
                 material_dict = {
@@ -298,11 +288,11 @@ def analysis_update(
                         col_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                epic_ec.append(material_dict.get(row["Materials"])[0])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
-                ice_ec.append(material_dict.get(row["Materials"])[2])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
-                colors.append(material_dict.get(row["Materials"])[4])
+                epic_ec.append(material_dict.get(row["Material"])[0])
+                epic_sub_materials.append(material_dict.get(row["Material"])[1])
+                ice_ec.append(material_dict.get(row["Material"])[2])
+                ice_sub_materials.append(material_dict.get(row["Material"])[3])
+                colors.append(material_dict.get(row["Material"])[4])
 
             if row["Element"] == "Slab":
                 material_dict = {
@@ -313,11 +303,11 @@ def analysis_update(
                         slab_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                epic_ec.append(material_dict.get(row["Materials"])[0])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
-                ice_ec.append(material_dict.get(row["Materials"])[2])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
-                colors.append(material_dict.get(row["Materials"])[4])
+                epic_ec.append(material_dict.get(row["Material"])[0])
+                epic_sub_materials.append(material_dict.get(row["Material"])[1])
+                ice_ec.append(material_dict.get(row["Material"])[2])
+                ice_sub_materials.append(material_dict.get(row["Material"])[3])
+                colors.append(material_dict.get(row["Material"])[4])
 
             if row["Element"] == "Wall":
                 material_dict = {
@@ -328,11 +318,11 @@ def analysis_update(
                         wall_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                epic_ec.append(material_dict.get(row["Materials"])[0])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
-                ice_ec.append(material_dict.get(row["Materials"])[2])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
-                colors.append(material_dict.get(row["Materials"])[4])
+                epic_ec.append(material_dict.get(row["Material"])[0])
+                epic_sub_materials.append(material_dict.get(row["Material"])[1])
+                ice_ec.append(material_dict.get(row["Material"])[2])
+                ice_sub_materials.append(material_dict.get(row["Material"])[3])
+                colors.append(material_dict.get(row["Material"])[4])
 
             if row["Element"] == "Stairs":
                 material_dict = {
@@ -343,11 +333,11 @@ def analysis_update(
                         stair_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                epic_ec.append(material_dict.get(row["Materials"])[0])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[1])
-                ice_ec.append(material_dict.get(row["Materials"])[2])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[3])
-                colors.append(material_dict.get(row["Materials"])[4])
+                epic_ec.append(material_dict.get(row["Material"])[0])
+                epic_sub_materials.append(material_dict.get(row["Material"])[1])
+                ice_ec.append(material_dict.get(row["Material"])[2])
+                ice_sub_materials.append(material_dict.get(row["Material"])[3])
+                colors.append(material_dict.get(row["Material"])[4])
 
         df.insert(loc=1, column="EPiC Material", value=epic_sub_materials)
         df.insert(loc=2, column="ICE Material", value=ice_sub_materials)
@@ -360,269 +350,257 @@ def analysis_update(
         return (
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Concrete"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Reinforcement Bar"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam") & (df["Materials"] == "Structural Steel"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam") & (df["Materials"] == "Structural Steel"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Structural Steel"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam")
-                    & (df["Materials"] == "Structural Timber"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Structural Timber"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Beam")
-                    & (df["Materials"] == "Structural Timber"),
+                    (df["Element"] == "Beam") & (df["Material"] == "Structural Timber"),
                     "ICE EC",
                 ].sum()
             ),
             # columns
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Column") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Column") & (df["Material"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Column") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Column") & (df["Material"] == "Concrete"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    & (df["Material"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    & (df["Material"] == "Reinforcement Bar"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column")
-                    & (df["Materials"] == "Structural Steel"),
+                    & (df["Material"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column")
-                    & (df["Materials"] == "Structural Steel"),
+                    & (df["Material"] == "Structural Steel"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column")
-                    & (df["Materials"] == "Structural Timber"),
+                    & (df["Material"] == "Structural Timber"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Column")
-                    & (df["Materials"] == "Structural Timber"),
+                    & (df["Material"] == "Structural Timber"),
                     "ICE EC",
                 ].sum()
             ),
             # Slab
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Concrete"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Reinforcement Bar"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab") & (df["Materials"] == "Structural Steel"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab") & (df["Materials"] == "Structural Steel"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Structural Steel"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab")
-                    & (df["Materials"] == "Structural Timber"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Structural Timber"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Slab")
-                    & (df["Materials"] == "Structural Timber"),
+                    (df["Element"] == "Slab") & (df["Material"] == "Structural Timber"),
                     "ICE EC",
                 ].sum()
             ),
             # Wall
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Concrete"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Reinforcement Bar"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall") & (df["Materials"] == "Structural Steel"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall") & (df["Materials"] == "Structural Steel"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Structural Steel"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall")
-                    & (df["Materials"] == "Structural Timber"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Structural Timber"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Wall")
-                    & (df["Materials"] == "Structural Timber"),
+                    (df["Element"] == "Wall") & (df["Material"] == "Structural Timber"),
                     "ICE EC",
                 ].sum()
             ),
             # stair
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Stairs") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Stairs") & (df["Material"] == "Concrete"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
-                    (df["Element"] == "Stairs") & (df["Materials"] == "Concrete"),
+                    (df["Element"] == "Stairs") & (df["Material"] == "Concrete"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    & (df["Material"] == "Reinforcement Bar"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Reinforcement Bar"),
+                    & (df["Material"] == "Reinforcement Bar"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Structural Steel"),
+                    & (df["Material"] == "Structural Steel"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Structural Steel"),
+                    & (df["Material"] == "Structural Steel"),
                     "ICE EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Structural Timber"),
+                    & (df["Material"] == "Structural Timber"),
                     "EPiC EC",
                 ].sum()
             ),
             "{:,.2f}".format(
                 df.loc[
                     (df["Element"] == "Stairs")
-                    & (df["Materials"] == "Structural Timber"),
+                    & (df["Material"] == "Structural Timber"),
                     "ICE EC",
                 ].sum()
             ),
@@ -634,9 +612,6 @@ def analysis_update(
 # updates the % difference between old values and new values
 @callback(
     [
-        # Output("gb_analysis_current_total", "children"),
-        # Output("gb_analysis_prev_total", "children"),
-        # Output("gb_badge", "children"),
         Output("epic_analysis_current_total", "children"),
         Output("epic_analysis_prev_total", "children"),
         Output("epic_badge", "children"),
@@ -652,8 +627,6 @@ def analysis_update(
 )
 def totals_update(analysis_store, ec_prev):
     df = pd.read_json(analysis_store, orient="split")
-    # df.to_excel("test.xlsx")
-    # gb_total = df["Green Book EC"].sum()
     epic_total = df["EPiC EC"].sum()
     ice_total = df["ICE EC"].sum()
     tots_2_json = json.dumps(
@@ -667,7 +640,6 @@ def totals_update(analysis_store, ec_prev):
 
     if ec_prev is not None:  # if there is a previous ec value
         data = json.loads(ec_prev)  # convert load from json
-        # gb_percent = funcs.percent_diff(gb_total, data["gb"])
         epic_percent = funcs.percent_diff(epic_total, data["epic"])
         ice_percent = funcs.percent_diff(ice_total, data["ice"])
 
@@ -720,7 +692,7 @@ def db_download_update(n_clicks, data):
 )
 def table_update(data):
     df = pd.read_json(data, orient="split")
-    df_grouped = df.groupby(["Element", "Materials"], as_index=False).sum().round(2)
+    df_grouped = df.groupby(["Element", "Material"], as_index=False).sum().round(2)
     return dmc.Table(
         funcs.create_table(df_grouped), highlightOnHover=True, class_name="my-5"
     )
@@ -884,11 +856,6 @@ gen_analysis = dbc.Row(
                             icon=[DashIconify(icon="iconoir:graph-up")],
                             children=totals_ui,
                         ),
-                        dmc.Tab(
-                            label="Rebar Setting",
-                            icon=[DashIconify(icon="ep:setting")],
-                            children=drawer.settings_ui,
-                        ),
                     ]
                 ),
             ],
@@ -925,16 +892,6 @@ analysis_layout = html.Div(
             ],
             color="blue",
             active=0,
-        ),
-        dmc.Paper(
-            children=[
-                html.H3("Reinforced Concrete & Concrete Ratio"),
-                html.Div("asdasdaosd"),
-            ],
-            shadow="sm",
-            radius="md",
-            withBorder=True,
-            class_name="p-5 my-5",
         ),
     ]
 )

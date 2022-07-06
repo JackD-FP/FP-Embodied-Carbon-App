@@ -42,7 +42,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
     epic_timber=epic_options.timber[1]["value"],
     ice_timber=ice_options.timber[1]["value"],
 ) -> tuple:
-    """interprets the materials in the schedule
+    """interprets the Material in the schedule
 
     Args:
         df ( pd dataframe ): uploaded schedule
@@ -64,19 +64,17 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
     ice_ec = []
 
     for i, row in df.iterrows():
-        if re.search(
-            r"(concrete)|(conc)", row["Building Materials (All)"], re.IGNORECASE
-        ) or re.search(r"(concrete)|(conc)", row["Layer"], re.IGNORECASE):
+        if re.search(r"(concrete)|(conc)", row["Material"], re.IGNORECASE) or re.search(
+            r"(concrete)|(conc)", row["Layer"], re.IGNORECASE
+        ):
             # TODO: refactor the if statments
             # FIXME: there are too many repeating append statements
 
             # --------- check if the layer is BEAMS
             if re.search(
                 r"(beam)|(BEAM)|(Beam)", row["Layer"], re.IGNORECASE
-            ) or re.search(
-                r"(beam)|(BEAM)|(Beam)", row["Building Materials (All)"], re.IGNORECASE
-            ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], beam_slider / 1000)
+            ) or re.search(r"(beam)|(BEAM)|(Beam)", row["Material"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Volume"], beam_slider / 1000)
 
                 # add concrete volume
                 mat.append("Concrete")
@@ -84,7 +82,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(
                     2360 * vol_conc
                 )  # 2360 is the density of average concrete density from EPiC
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Beam")
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -95,7 +93,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mass.append(
                     7740 * vol_rebar
                 )  # 7740 is the density of average rebar density from EPiC
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Beam")
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -105,15 +103,15 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 r"(column)|(COLUMN)|(Column)", row["Layer"], re.IGNORECASE
             ) or re.search(
                 r"(column)|(COLUMN)|(Column)",
-                row["Building Materials (All)"],
+                row["Material"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], column_slider / 1000)
+                vol_conc, vol_rebar = find_vols(row["Volume"], column_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Column")
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -122,7 +120,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Column")
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -130,15 +128,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             # --------- Check if the layer is SLAB
             elif re.search(
                 r"(slab)|(Slab)|(SLAB)", row["Layer"], re.IGNORECASE
-            ) or re.search(
-                r"(slab)|(Slab)|(SLAB)", row["Building Materials (All)"], re.IGNORECASE
-            ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], slab_slider / 1000)
+            ) or re.search(r"(slab)|(Slab)|(SLAB)", row["Material"], re.IGNORECASE):
+                vol_conc, vol_rebar = find_vols(row["Volume"], slab_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Slab")
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -147,21 +143,21 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Slab")
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is WALLS
             elif re.match(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.match(
-                "concrete", row["Building Materials (All)"], re.IGNORECASE
+                "concrete", row["Material"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], wall_slider / 1000)
+                vol_conc, vol_rebar = find_vols(row["Volume"], wall_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Wall")
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -170,7 +166,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Wall")
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
@@ -180,15 +176,15 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 r"(stair)|(Stair)|(STAIR)", row["Layer"], re.IGNORECASE
             ) or re.search(
                 r"(stair)|(Stair)|(STAIR)",
-                row["Building Materials (All)"],
+                row["Material"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(row["Net Volume"], stair_slider / 1000)
+                vol_conc, vol_rebar = find_vols(row["Volume"], stair_slider / 1000)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
                 mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Stairs")
                 epic_ec.append(vol_conc * epic_conc)
                 ice_ec.append(vol_conc * ice_conc)
@@ -197,34 +193,34 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
                 mass.append(mass_rebar := row["Mass"] - mass_conc)
-                floor.append(row["Home Story Name"])
+                floor.append(row["Level"])
                 element.append("Stairs")
                 epic_ec.append(mass_rebar * epic_rebar)
                 ice_ec.append(mass_rebar * ice_rebar)
 
         # Appends timber values from layer
         elif re.search("timber", row["Layer"], re.IGNORECASE) or re.search(
-            "timber", row["Building Materials (All)"], re.IGNORECASE
+            "timber", row["Material"], re.IGNORECASE
         ):
             mat.append("Structural Timber")
-            vol.append(row["Net Volume"])
+            vol.append(row["Volume"])
             mass.append(row["Mass"])
-            floor.append(row["Home Story Name"])
+            floor.append(row["Level"])
             element.append(
                 element_check(row["Layer"])
             )  # TODO: add function to define what element is being used
-            epic_ec.append(row["Net Volume"] * epic_timber)
+            epic_ec.append(row["Volume"] * epic_timber)
             ice_ec.append(row["Mass"] * ice_timber)
 
         # Appends steel values from layer
         elif re.search("steel", row["Layer"], re.IGNORECASE) or re.search(
-            "steel", row["Building Materials (All)"], re.IGNORECASE
+            "steel", row["Material"], re.IGNORECASE
         ):
             mat.append("Structural Steel")
-            # mat.append(row["Building Materials (All)"])
-            vol.append(row["Net Volume"])
+            # mat.append(row["Material"])
+            vol.append(row["Volume"])
             mass.append(row["Mass"])
-            floor.append(row["Home Story Name"])
+            floor.append(row["Level"])
             element.append(
                 element_check(row["Layer"])
             )  # TODO: add function to define what element is being used
@@ -284,7 +280,7 @@ def concrete(value, vol, source=material_options.concrete):
         source ( dict ): values of the dropdown and ec
 
     Returns:
-        str : sub-materials to be append
+        str : sub-Material to be append
         float: embodied carbon value to be append
     """
     if source == material_options.concrete:
@@ -318,7 +314,7 @@ def rebar(value, unit_value, source=material_options.rebar):
         unit_value ( float ): value of the unit for rebar (Greenbook - kilogram kg) (epic - kilogram kg) (ice - kilogram kg)
 
     Returns:
-        str : sub-materials to be append
+        str : sub-Material to be append
         float: embodied carbon value to be append
     """
     if source == material_options.rebar:
@@ -352,7 +348,7 @@ def steel(value, unit_value, source=material_options.steel):
         unit_value ( float ): value of the unit for steel (Greenbook - kilogram kg) (epic - kilogram kg) (ice - kilogram kg)
 
     Returns:
-        str : sub-materials to be append
+        str : sub-Material to be append
         float: embodied carbon value to be append
     """
     if source == material_options.steel:
@@ -386,7 +382,7 @@ def timber(value, mass, vol, source=material_options.timber, ice=False):
         unit_value ( float ): value of the unit for timber (Greenbook - Volume) (epic - Volume) (ice - Volume)
 
     Returns:
-        str : sub-materials to be append
+        str : sub-Material to be append
         float: embodied carbon value to be append
     """
     if source == material_options.timber:
@@ -466,7 +462,7 @@ class table:
             html.Thead(
                 html.Tr(
                     [
-                        html.Th("Materials"),
+                        html.Th("Material"),
                         html.Th("Embodied Carbon", style={"width": "30%"}),
                     ]
                 )

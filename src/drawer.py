@@ -5,22 +5,6 @@ from dash_iconify import DashIconify
 
 settings_ui = html.Div(
     children=[
-        dmc.Group(
-            [
-                dmc.Text("Rebar Concrete Ratio Settings", weight=700, size="lg"),
-                dmc.Tooltip(
-                    wrapLines=True,
-                    width=220,
-                    withArrow=True,
-                    transition="fade",
-                    transitionDuration=200,
-                    # delay=250,
-                    label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (1000 m³).",
-                    children=[DashIconify(icon="feather:info")],
-                ),
-            ],
-            direction="row",
-        ),
         html.Div(
             children=[
                 dmc.Text("Beam: 39", id="ratio_beam"),
@@ -97,7 +81,7 @@ settings_ui = html.Div(
             className="my-3",
         ),
     ],
-    className="px-5",
+    className="px-3",
 )
 
 drawer_layout = html.Div(
@@ -111,35 +95,3 @@ drawer_layout = html.Div(
         )
     ]
 )
-
-
-# updates the setting data with sliders
-@callback(
-    [
-        Output("ratio_beam", "children"),
-        Output("ratio_column", "children"),
-        Output("ratio_slab", "children"),
-        Output("ratio_wall", "children"),
-        Output("ratio_stair", "children"),
-    ],
-    [
-        Input("beam_slider", "value"),
-        Input("column_slider", "value"),
-        Input("slab_slider", "value"),
-        Input("wall_slider", "value"),
-        Input("stair_slider", "value"),
-        Input("url", "pathname"),
-    ],
-    prevent_initial_call=True,
-)
-def drawer_update(beam, column, slab, wall, stair, url):
-    if url != "pages/analysis":
-        raise PreventUpdate
-    else:
-        return (
-            "Beam: {}".format(beam),
-            "Column: {}".format(column),
-            "Slab: {}".format(slab),
-            "Wall: {}".format(wall),
-            "Stair: {}".format(stair),
-        )
