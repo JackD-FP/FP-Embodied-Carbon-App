@@ -10,6 +10,7 @@ dash-bootstrap-components==1.0.3
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-iconify==0.1.2
+dash-mantine-components==0.10.2
 dash-table==5.0.0
 dill==0.3.4
 et-xmlfile==1.1.0
@@ -44,7 +45,7 @@ six==1.16.0
 tenacity==8.0.1
 tk==0.1.0
 tomli==2.0.1
-typing-extensions==4.1.1
+typing_extensions==4.1.1
 Werkzeug==2.0.2
 wrapt==1.14.0
 xlrd==2.0.1
