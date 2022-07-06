@@ -8,7 +8,7 @@ from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
-from src import drawer
+from src import settings
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -110,7 +110,7 @@ sidebar = html.Div(
             direction="row",
             align="flex-start",
         ),
-        drawer.settings_ui,
+        settings.settings_ui,
         dmc.Affix(
             dmc.Tooltip(
                 label="Send some feedback!",

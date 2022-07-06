@@ -26,7 +26,7 @@ def find_vols(vol, ratio):
     return vol_conc, vol_rebar
 
 
-def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE CODE
+def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO SHORTEN THE CODE
     df: pd.DataFrame,
     beam_slider: float,
     column_slider: float,
