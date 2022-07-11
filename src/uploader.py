@@ -32,9 +32,7 @@ def parse_contents(contents, filename, date, id, id_name):
                 html.P(str(e)),
                 html.P(
                     [
-                        "There is some error with the file you uploaded. Check ",
-                        html.A("reference page", href="/pages/reference"),
-                        " for more info.",
+                        "There is some error with the file you uploaded",
                     ],
                     className="fs-3 p-3",
                 ),
@@ -74,6 +72,7 @@ def parse_contents(contents, filename, date, id, id_name):
                 ],
                 is_open=True,
                 dismissable=True,
+                duration=1500,
                 className="fixed-top w-25 mt-5 p-3",
                 style={
                     "zIndex": "10",
