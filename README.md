@@ -1,4 +1,4 @@
-## Introduction
+# Introduction
 Welcome to the public github repo for the app. This is a variation of our internal app that does not have The Footprint Company's Green Book Database. Reason being is that it require a license to use it. 
 
 The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of Material are necessary for structural stability, the answer is less obvious. We should all strive to minimise our design's embodied carbon, but not compromise structural stability and design excellence. 
