@@ -1,26 +1,20 @@
+import pandas as pd
 import pytest
-from src import funcs, material_options
+
+from src import error_handling
+
+data = pd.read_csv("https://media.geeksforgeeks.org/wp-content/uploads/nba.csv")
 
 
-def test1():
-    assert funcs.rebar("rebar", 1000)[0] == 1733
-
-
-def test2():
-    assert funcs.rebar("rebar", 1000)[1] == "Over 65% Recycled Content"
-
-
-def test3():
-    assert funcs.rebar("rebar", 1000)[2] == 2900
-
-
-def test4():
-    assert funcs.rebar("rebar", 1000)[3] == "Steel reinforcement bar "
-
-
-def test5():
-    assert funcs.rebar("rebar", 1000)[4] == 1990
-
-
-def test6():
-    assert funcs.rebar("rebar", 1000)[5] == "Steel Rebar recycled "
+def test1(data):
+    assert error_handling.head_check(data) == [
+        "Name",
+        "Team",
+        "Number",
+        "Position",
+        "age",
+        "Height",
+        "Weight",
+        "College",
+        "Salary",
+    ]

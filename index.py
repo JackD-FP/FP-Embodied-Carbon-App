@@ -61,7 +61,7 @@ sidebar = html.Div(
         dcc.Store(id="gb_analysis_store", storage_type="session"),
         dcc.Store(id="epic_analysis_store", storage_type="session"),
         dcc.Store(id="ice_analysis_store", storage_type="session"),
-        html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
+        html.Img(src="/assets/FP.png", className="img-fluid w-25 d-block mx-auto"),
         html.H5("Embodied Carbon", className="mt-5 display-6", style={"font": "2rem"}),
         html.H5("Structure", className="mb-5 display-6 fs-3"),
         html.Hr(),
