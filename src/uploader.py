@@ -6,6 +6,8 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dash_table, dcc, html
 
+from src import error_handling
+
 
 def check_title(bool, id, data):
     if bool is False:
@@ -32,9 +34,7 @@ def parse_contents(contents, filename, date, id, id_name):
                 html.P(str(e)),
                 html.P(
                     [
-                        "There is some error with the file you uploaded. Check ",
-                        html.A("reference page", href="/pages/reference"),
-                        " for more info.",
+                        "There is some error with the file you uploaded",
                     ],
                     className="fs-3 p-3",
                 ),
@@ -57,6 +57,7 @@ def parse_contents(contents, filename, date, id, id_name):
     )
     df = df.drop([0, 0])
     df = df.replace("---", 0)
+    error_handling.head_check(df)
 
     return html.Div(
         [
@@ -74,40 +75,12 @@ def parse_contents(contents, filename, date, id, id_name):
                 ],
                 is_open=True,
                 dismissable=True,
+                duration=1500,
                 className="fixed-top w-25 mt-5 p-3",
                 style={
                     "zIndex": "10",
                     "marginLeft": "73%",
                 },
-            ),
-        ]
-    )
-
-
-def parse_contents_2(contents, filename):
-    content_type, content_string = contents.split(",")
-
-    decoded = base64.b64decode(content_string)
-    try:
-        if "csv" in filename:
-            # Assume that the user uploaded a CSV file
-            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
-        elif "xls" in filename:
-            # Assume that the user uploaded an excel file
-            df = pd.read_excel(io.BytesIO(decoded))
-    except Exception as e:
-        print(e)
-        return html.Div(["There was an error processing this file."])
-
-    return html.Div(
-        [
-            html.H5(filename),
-            html.Hr(),  # horizontal line
-            # For debugging, display the raw contents provided by the web browser
-            html.Div("Raw Content"),
-            html.Pre(
-                contents[0:200] + "...",
-                style={"whiteSpace": "pre-wrap", "wordBreak": "break-all"},
             ),
         ]
     )

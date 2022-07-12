@@ -188,59 +188,22 @@ def cards_update(data):
         return epic, ice, epic_benchmark, ice_benchmark
 
 
-# Green Book callback
-# @callback(
-#     Output("gb_nla", "error"),
-#     Output("gb_benchmark", "children"),
-#     Output("gb_benchmark_result", "children"),
-#     Input("gb_nla", "value"),
-#     Input("gb_building_type", "value"),
-#     State("proc_store", "data"),
-# )
-# def gb_benchmarks_update(gb_nla, gb_value, data):
-#     if gb_nla is None or gb_nla == "" or gb_nla == 0:
-#         return "NLA cannot be empty or 0", "No Value", "No Value"
-#     else:
-#         # Gets Label of selection for variable
-#         label = building_type_option.gb_types[gb_value]
-
-#         df = pd.read_json(data, orient="split")
-#         gb_sum = df["Green Book EC"].sum()
-#         gb_benchmark = gb_sum / gb_nla
-
-#         children = [
-#             html.H3(
-#                 [
-#                     "The Foot Print Company Requires ",
-#                     html.Strong("{}".format(label)),
-#                     " to be less than",
-#                     html.Strong(
-#                         " < {} kgCO₂e per m²".format(
-#                             building_type_option.gb_benchmark(gb_value)["5 star"]
-#                         ),
-#                     ),
-#                     " for 5 stars",
-#                 ],
-#                 className="display-6 fs-5 mb-3 text-center",
-#             ),
-#             html.H3(
-#                 ["Currect rating is:"],
-#                 className="display-6 fs-5 mb-5 text-center",
-#             ),
-#             building_type_option.gb_benchmark_calc(gb_value, gb_benchmark),
-#             html.P(
-#                 building_type_option.gb_benchmark_optimum(gb_value, gb_benchmark),
-#                 className="display-6 fs-5 text-center my-5",
-#             ),
-#             dcc.Store(id="temp_gb_nla", data=gb_nla),
-#             dcc.Store(id="temp_gb_blt_type", data=gb_value),
-#         ]
-
-#         return (
-#             False,
-#             "{:,}".format(np.around(gb_benchmark, 2)),
-#             children,
-#         )
+@callback(
+    Output("epic_benchmark", "children"),
+    Input("epic_area", "value"),
+    State("proc_store", "data"),
+)
+def epic_benchmark_update(area, data):
+    if data is None:
+        raise PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        if area is None:
+            raise PreventUpdate
+        else:
+            area = float(area)
+            epic_benchmark = df["EPiC EC"].sum() / area
+            return "{:,}".format(np.around(epic_benchmark, 2))
 
 
 # ICE callback
