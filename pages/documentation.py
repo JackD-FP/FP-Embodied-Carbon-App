@@ -252,9 +252,9 @@ layout = html.Div(
                             """
                             the first two rows are headers, with the actual data starting in the third row 
 
-                            - **columns** must have identical headings to the above (case sensitive) 
-                            - **Level** - used for floor-by-floor analysis 
-                            - **Layer** - each element must contain one of the following in its name: 'Beam', 'Column', 'Slab', 'Wall' or 'Stair'. (not case sensitive) Note: For some software this could be the element classification 
+                            - Columns must have identical headings to the above (case sensitive) 
+                            - **Level** - Used for floor-by-floor analysis 
+                            - **Layer** - Each element must contain one of the following in its name: 'Beam', 'Column', 'Slab', 'Wall' or 'Stair'. (not case sensitive) Note: For some software this could be the element classification 
                             - **Mass** & **Volume** - Both columns are used for calculations as sometimes the databases use differing units 
                             - **Material** - Used to separate out elements in addition to Classification
                             """
