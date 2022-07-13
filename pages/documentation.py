@@ -1,6 +1,71 @@
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash import Input, Output, callback, dcc, html
+from dash_iconify import DashIconify
+
+header = [
+    html.Thead(
+        html.Tr(
+            [
+                html.Th("Level"),
+                html.Th("Layer"),
+                html.Th("Mass"),
+                html.Th("Volume"),
+                html.Th("Material"),
+            ]
+        )
+    )
+]
+
+
+row1 = html.Tr(
+    [
+        html.Td("Ground Level"),
+        html.Td("Column - Timber"),
+        html.Td("123456"),
+        html.Td("123456"),
+        html.Td("TIMBER - STRUCTURAL"),
+    ]
+)
+row2 = html.Tr(
+    [
+        html.Td("Ground Level"),
+        html.Td("Column - Timber"),
+        html.Td("123456"),
+        html.Td("123456"),
+        html.Td("TIMBER - STRUCTURAL"),
+    ]
+)
+row3 = html.Tr(
+    [
+        html.Td("Ground Level"),
+        html.Td("Column - Timber"),
+        html.Td("123456"),
+        html.Td("123456"),
+        html.Td("TIMBER - STRUCTURAL"),
+    ]
+)
+row4 = html.Tr(
+    [
+        html.Td("Ground Level"),
+        html.Td("Column - Timber"),
+        html.Td("123456"),
+        html.Td("123456"),
+        html.Td("TIMBER - STRUCTURAL"),
+    ]
+)
+row5 = html.Tr(
+    [
+        html.Td("Ground Level"),
+        html.Td("Column - Timber"),
+        html.Td("123456"),
+        html.Td("123456"),
+        html.Td("TIMBER - STRUCTURAL"),
+    ]
+)
+
+body = [html.Tbody([row1, row2, row3, row4, row5])]
+
 
 layout = html.Div(
     [
@@ -64,6 +129,7 @@ layout = html.Div(
                         ),
                     ],
                 ),
+                dcc.Download(id="download_SS"),
                 html.H3("Setting up ArchiCAD Schedule", className="display-4, mt-5"),
                 html.Hr(className="mb-5"),
                 html.P(
@@ -160,73 +226,62 @@ layout = html.Div(
             The application is only as good as the model itself. A cleaner and well-maintained \
             model would make the experience seamless and better in general. \
             The most common problem is that the application ",
-                        html.Strong('hates empty cells in "Building Materials (All)"'),
+                        html.Strong('hates empty cells in "Material"'),
                         ". The best way to ensure that this does not happen is to have ",
                         html.Strong("materials assigned to all elements"),
                         ". You can also filter it out in the Components Schedule or delete it on Excel. \
             Another thing to note is that the App looks for key words such as ",
-                        html.Strong("as concrete, steel and Timber"),
+                        html.Strong("as concrete, steel and timber"),
                         ". Because of this, materials such as sketch-black, terracotta and etc, will just be considered as concrete.",
                     ]
                 ),
                 html.H3("The Embodied Carbon App", className="display-4, mt-5"),
                 html.Hr(className="mb-5"),
-                html.P(
-                    "There are 3 main pages to the application. \
-            These are the Dashboard, Analysis and Comparison, \
-            each of them has their unique usage and purpose. "
+                dmc.Blockquote(
+                    "**We've tried to make this as generic as possible so that it can be adapted to any BIM software. However, as a disclaimer – we work in ArchiCAD, so please forgive the vocabulary!",
+                    cite="- Wiley the office puppy",
                 ),
                 html.P(
-                    [
-                        "To use the app, you can either drop the file in the box or click on it. \
-            To upload your schedule or the ",
-                        html.Strong("example schedule"),
-                        " that we provided.",
-                    ]
+                    "In order for the App to be correctly read, your dataset should be formatted as below:  "
                 ),
-                dbc.Button(
-                    "Download",
-                    id="example_btn",
-                    outline=True,
-                    color="primary",
-                    className="my-3 d-block mx-auto",
+                dmc.Table(header + body),
+                dmc.Blockquote(
+                    children=[
+                        html.H3("Important Notes"),
+                        dcc.Markdown(
+                            """
+                            the first two rows are headers, with the actual data starting in the third row 
+
+                            - Columns must have identical headings to the above (case sensitive) 
+                            - **Level** - Used for floor-by-floor analysis 
+                            - **Layer** - Each element must contain one of the following in its name: 'Beam', 'Column', 'Slab', 'Wall' or 'Stair'. (not case sensitive) Note: For some software this could be the element classification 
+                            - **Mass** & **Volume** - Both columns are used for calculations as sometimes the databases use differing units 
+                            - **Material** - Used to separate out elements in addition to Classification
+                            """
+                        ),
+                    ],
+                    icon=[DashIconify(icon="akar-icons:triangle-alert", width=30)],
+                    color="red",
+                    class_name="my-5",
                 ),
-                dcc.Download(id="exmaple"),
-                html.P(
-                    [
-                        html.Strong("Dashboard"),
-                        " helps you see the overview of the whole structure's embodied carbon. \
-            What material has is taking up most of the embodied carbon as well as compare the embodied \
-            carbon with other databases like Green Book, Ice and EPiC.",
-                    ]
-                ),
-                html.Img(
-                    src="/assets/Dashboard.gif",
-                    className="img-fluid w-75 d-block mx-auto mb-5",
-                ),
-                html.P(
-                    [
-                        html.Strong("Analysis"),
-                        " provides an in-depth look to see the embodied \
-            carbon of each floor and which material can you swap with. \
-            As well as homing in or comparing to specific embodied carbon databases.",
-                    ]
-                ),
-                html.Img(
-                    src="/assets/Analysis.gif",
-                    className="img-fluid w-75 d-block mx-auto mb-5",
-                ),
-                html.P(
-                    [
-                        "Finally ",
-                        html.Strong("Comparison"),
-                        ", where you can compare the project with other projects \
-            or reuse the same project to see how other materials affect the carbon intensity.",
-                    ]
-                ),
-                html.Img(
-                    src="/assets/comparison.gif",
-                    className="img-fluid w-75 d-block mx-auto mb-5",
+                dcc.Markdown(
+                    """
+                    The Embodied Carbon App results will only ever be as accurate as your data/model. So to maximise accuracy, we'd recommend conducting some model audits before exporting.  
+
+                    Exactly how this is done is very dependent on your software, but as a quick guide, this is what we did (in ArchiCAD): 
+
+                    - Isolate the materials in the model to more easily conduct a visual check of steel/concrete/timber. This was done with a series of corresponding layer combinations
+                    - Set up a series of schedules and 3d views (based on same layer combinations) with graphic overrides ato easily conduct a visual check of the structural elements
+
+                    Some specific things you might need to look out for: 
+
+                    - Overlapping elements - eg slabs/beams/columns - are they being calculated more than once?
+                    - Objects on incorrect layers/classification/etc - depending on how your final schedule is collated, there may be extraneous or missing items 
+                    - Consistent material names
+
+                    **A few things to note **
+                    Staging/renovation status: demolished/existing/new elements are not differentiated. So, to separate these out youlll need to have separate datasets.  
+                    """
                 ),
             ],
             className="w-50",
@@ -252,12 +307,11 @@ def func(n, n2):
 
 
 @callback(
-    Output("exmaple", "data"),
-    Input("example_btn", "n_clicks"),
+    Output("download_SS", "data"),
     Input("example2_btn", "n_clicks"),
     prevent_initial_call=True,
 )
-def download_schedule(n, n2):
+def download_schedule(n):
     return dcc.send_file(
-        "./example_schedule.xls",
+        "./assets/Example Structure Schedule.xlsx",
     )

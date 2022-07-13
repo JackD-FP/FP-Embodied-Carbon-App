@@ -8,7 +8,7 @@ from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
-from src import settings
+from src import disclaimer
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
@@ -58,10 +58,11 @@ SIDEBAR_STYLE = {
 # ----------------------- side bar stuff -----------------------------------------
 sidebar = html.Div(
     [
+        disclaimer.modal_layout,
         dcc.Store(id="gb_analysis_store", storage_type="session"),
         dcc.Store(id="epic_analysis_store", storage_type="session"),
         dcc.Store(id="ice_analysis_store", storage_type="session"),
-        html.Img(src="/assets/FP.png", className="img-fluid w-25 d-block mx-auto"),
+        html.Img(src="/assets/fp-eca.png", className="img-fluid d-block mx-auto"),
         html.H5("Embodied Carbon", className="mt-5 display-6", style={"font": "2rem"}),
         html.H5("Structure", className="mb-5 display-6 fs-3"),
         html.Hr(),
@@ -93,24 +94,24 @@ sidebar = html.Div(
             className="display-6",
         ),
         html.Hr(),
-        dmc.Group(
-            [
-                html.H5("Rebar Settings", className="mb-5 display-6 fs-3"),
-                dmc.Tooltip(
-                    wrapLines=True,
-                    width=220,
-                    withArrow=True,
-                    transition="fade",
-                    transitionDuration=200,
-                    closeDelay=500,
-                    label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (1000 m³).",
-                    children=[DashIconify(icon="feather:info")],
-                ),
-            ],
-            direction="row",
-            align="flex-start",
-        ),
-        settings.settings_ui,
+        # dmc.Group(
+        #     [
+        #         html.H5("Rebar Settings", className="mb-5 display-6 fs-3"),
+        #         dmc.Tooltip(
+        #             wrapLines=True,
+        #             width=220,
+        #             withArrow=True,
+        #             transition="fade",
+        #             transitionDuration=200,
+        #             closeDelay=500,
+        #             label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (1000 m³).",
+        #             children=[DashIconify(icon="feather:info")],
+        #         ),
+        #     ],
+        #     direction="row",
+        #     align="flex-start",
+        # ),
+        # settings.settings_ui,
         dmc.Affix(
             dmc.Tooltip(
                 label="Send some feedback!",
@@ -127,7 +128,7 @@ sidebar = html.Div(
                             radius="xl",
                             size="lg",
                         ),
-                        href="mailto:jackd@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
+                        href="mailto:enquiries@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
                     ),
                 ],
             ),
@@ -230,32 +231,45 @@ def gia_store_update(gia_mts, gia):
         return gia
 
 
-# updates the setting data with sliders
 @app.callback(
-    [
-        Output("ratio_beam", "children"),
-        Output("ratio_column", "children"),
-        Output("ratio_slab", "children"),
-        Output("ratio_wall", "children"),
-        Output("ratio_stair", "children"),
-    ],
-    [
-        Input("beam_slider", "value"),
-        Input("column_slider", "value"),
-        Input("slab_slider", "value"),
-        Input("wall_slider", "value"),
-        Input("stair_slider", "value"),
-    ],
-    prevent_initial_call=True,
+    Output("disclaimer_modal", "opened"),
+    Input("url", "pathname"),
+    Input("dashboard", "n_clicks"),
 )
-def drawer_update(beam, column, slab, wall, stair):
-    return (
-        "Beam: {}".format(beam),
-        "Column: {}".format(column),
-        "Slab: {}".format(slab),
-        "Wall: {}".format(wall),
-        "Stair: {}".format(stair),
-    )
+def disclaimer_modal_update(pathname, n):
+    if pathname == "/pages/dashboard":
+        if n is None or n == 0:
+            return True
+    else:
+        return False
+
+
+# updates the setting data with sliders
+# @app.callback(
+#     [
+#         Output("ratio_beam", "children"),
+#         Output("ratio_column", "children"),
+#         Output("ratio_slab", "children"),
+#         Output("ratio_wall", "children"),
+#         Output("ratio_stair", "children"),
+#     ],
+#     [
+#         Input("beam_slider", "value"),
+#         Input("column_slider", "value"),
+#         Input("slab_slider", "value"),
+#         Input("wall_slider", "value"),
+#         Input("stair_slider", "value"),
+#     ],
+#     prevent_initial_call=True,
+# )
+# def drawer_update(beam, column, slab, wall, stair):
+#     return (
+#         "Beam: {}".format(beam),
+#         "Column: {}".format(column),
+#         "Slab: {}".format(slab),
+#         "Wall: {}".format(wall),
+#         "Stair: {}".format(stair),
+#     )
 
 
 # routing stuff also 404 page
