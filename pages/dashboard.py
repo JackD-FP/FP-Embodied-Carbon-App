@@ -1,6 +1,4 @@
 # saving this because of the ^3 (m³)
-import re
-
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import numpy as np
@@ -12,20 +10,22 @@ from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
-from src import dashboard_cards, funcs, uploader
+from src import dashboard_cards, funcs, markdown, uploader
 
 layout = html.Div(
     [
+        html.Div(id="disclaimer"),
         html.H1("Dashboard", className="display-2 mb-5 "),
         html.Hr(),
-        html.P(
-            "The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. \
-        It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of Material are necessary for structural stability, \
-        the answer is less obvious. We should all strive to minimise our design's embodied carbon, however, not compromise with structural stability and design excellence.\
-        The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the later. \
-        It can also help identify what floor is causing the issue if a redesign or alteration is required.\
-        This app free and open source for anyone. At Fitzpatrick and Partners, \
-        we believe this is the way to help our industry move forward and achieve a better and sustainable tomorrow."
+        html.H3("Introduction"),
+        dmc.Text(
+            """
+            Welcome to F+P Embodied Carbon Structure Calculator. This is a variation of our internal app that does not have The Footprint Company's Green Book Database, due to licensing requirements. 
+
+The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of Material are necessary for structural stability, the answer is less obvious. We should all strive to minimise our design's embodied carbon, but not compromise structural stability and design excellence. 
+
+The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the latter. It can also help identify what floor is causing the issue, if a redesign or alteration is required. This app is free and open source for anyone. At Fitzpatrick and Partners, we believe this is the way to help our industry move forward and achieve a better and sustainable tomorrow.
+            """
         ),
         dcc.Upload(
             id="upload-data",
@@ -91,15 +91,16 @@ def percent_check_return(lo, hi):
     Output("dashboard_graph", "children"),
     [
         Input("main_store", "data"),
-        Input("beam_slider", "value"),
-        Input("column_slider", "value"),
-        Input("slab_slider", "value"),
-        Input("wall_slider", "value"),
-        Input("stair_slider", "value"),
+        # Input("beam_slider", "value"),
+        # Input("column_slider", "value"),
+        # Input("slab_slider", "value"),
+        # Input("wall_slider", "value"),
+        # Input("stair_slider", "value"),
     ],
 )
 def make_graphs(
-    data, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
+    data,
+    # , beam_slider, column_slider, slab_slider, wall_slider, stair_slider
 ):
     if data is None:
         raise PreventUpdate
@@ -111,7 +112,13 @@ def make_graphs(
 
         # new calculations for carbon intensity
         mat, vol, mass, floor, element, epicec, iceec = funcs.mat_interpreter(
-            df_, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
+            df_,
+            39,
+            41,
+            13,
+            11,
+            19.5,
+            # , beam_slider, column_slider, slab_slider, wall_slider, stair_slider
         )
         df_new = pd.DataFrame(
             {

@@ -223,11 +223,11 @@ stairs = table(
         Input("sel-Stairs-Rebar", "value"),
         Input("sel-Stairs-Structural-Steel", "value"),
         Input("sel-Stairs-Structural-Timber", "value"),
-        Input("beam_slider", "value"),
-        Input("column_slider", "value"),
-        Input("slab_slider", "value"),
-        Input("wall_slider", "value"),
-        Input("stair_slider", "value"),
+        # Input("beam_slider", "value"),
+        # Input("column_slider", "value"),
+        # Input("slab_slider", "value"),
+        # Input("wall_slider", "value"),
+        # Input("stair_slider", "value"),
     ],
     State("main_store", "data"),
     prevent_initial_call=True,
@@ -253,11 +253,11 @@ def analysis_update(
     stair_rebar,
     stair_steel,
     stair_timber,
-    beam_slider,
-    column_slider,
-    slab_slider,
-    wall_slider,
-    stair_slider,
+    # beam_slider,
+    # column_slider,
+    # slab_slider,
+    # wall_slider,
+    # stair_slider,
     data,
 ):
     if data is None:
@@ -266,7 +266,13 @@ def analysis_update(
         df = pd.read_json(data, orient="split")
 
         mat, vol, mass, floor, element, epicec, iceec = funcs.mat_interpreter(
-            df, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
+            df,
+            39,
+            41,
+            13,
+            11,
+            19.5,
+            # , beam_slider, column_slider, slab_slider, wall_slider, stair_slider
         )
         df_new = pd.DataFrame(
             {

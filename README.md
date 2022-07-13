@@ -1,11 +1,11 @@
-## Introduction
-Welcome to the public github repo for the app. This is a variation of our internal app that does not have The Footprint Company's Green Book Database. Reason being is that it require a license to use it. 
+# Introduction
+Welcome to F+P Embodied Carbon Structure Calculator. This is a variation of our internal app that does not have The Footprint Company's Green Book Database, due to licensing requirements. 
 
 The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of Material are necessary for structural stability, the answer is less obvious. We should all strive to minimise our design's embodied carbon, but not compromise structural stability and design excellence. 
 
-The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the later. It can also help identify what floor is causing the issue if a redesign or alteration is required. This app free and open source for anyone. At Fitzpatrick and Partners, we believe this is the way to help our industry move forward and achieve a better and sustainable tomorrow.
+The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the latter. It can also help identify what floor is causing the issue, if a redesign or alteration is required. This app is free and open source for anyone. At Fitzpatrick and Partners, we believe this is the way to help our industry move forward and achieve a better and sustainable tomorrow.
 
-## The Purpose of the Tool
+# The Purpose of the Tool
 This tool aims to achieve a number of things;
 1.	Grow the general knowledge of Embodied Carbon within the architectural community.
 2.	Compare early stage design options for the embodied carbon of different structural solutions.
@@ -17,13 +17,13 @@ You will notice once you extract data from this tool that the two data bases giv
 In light of the above aims the differences between the two data sets are less important than if we were seeking to benchmark or contrast numbers from one to the other. (this is not an aim of this tool).
 Below we give some pointers as to why and where to from here;
 
-## EPIC Database
+# EPIC Database
 Developed by researchers at The University of Melbourne
 Published in 2019 
 The EPIC database uses a Hybrid method to arrive at an EPiC coefficient to define the kgCO2e/m2 of a given material;
 This Hybrid seeks to capture both bottom up process input and output data together with macro-economic impacts by sector.
 
-## ICE Database (Inventory of Carbon & Energy)
+# ICE Database (Inventory of Carbon & Energy)
 Originally published in 2005 and last updated in Nov 2019
 Developed by researchers at the University of Bath in the UK
 The data in the ICE database is A1-A3 Cradle to Gate and is based on EN15804 data which harmonises the structure of EPD’s for all construction products.
@@ -62,7 +62,7 @@ The data should be relied on only for the purposes noted above.
 Create a copy of any of the branch. Production branch tends to be more uptodate as that's the branch I'm 
 
 
-## Using the App
+# Using the App
 The App primarily uses schedules from your BIM program of choise. The files can either be a XLSX, XLS or CSV. Schedules should also look like the table below.
 
 |Structure Schedule|   ||||
@@ -86,18 +86,18 @@ Volume is the net volume of the element.
 
 Mass is the mass of the element. To set this you can set up the mass through density of the material in the attribute manager in ArchiCAD. The densities of materials could be found in the [EPiC's database pdf](https://melbourne.figshare.com/ndownloader/files/30569184)
 
-## Road Map
+# Road Map
 - Create Error Handling that notify users of errors in the database. check for null values, wrong column names, Missing Columns
 - In App editing of the uploaded excel
 - Material List disappears whenever there isn't a material.
 
 
-## Issues
+# Issues
 |Isues|Description|
 |---|---|
 |Cleaning data| Create modal/drawer to setup the excel upload. a ui that tells which column names are which. |
 | error logs | have a way to report error better. some way to pop up or download raised errors. |
-## Resources
+# Resources
 Here are the most common resources used to build the app. However, You can join the community and chat down at the discord server.
 
 [Join and Chat with use in discord](https://discord.gg/vEcqYpmK)
