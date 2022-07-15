@@ -100,7 +100,7 @@ Mass is the mass of the element. To set this you can set up the mass through den
 ## Resources
 Here are the most common resources used to build the app. However, You can join the community and chat down at the discord server.
 
-[Join and Chat with use in discord](https://discord.gg/vEcqYpmK)
+[Join and Chat with use in discord](https://discordapp.com/channels/994116660753608714/994116660753608720)
 
 
 | Titles          | Links |
