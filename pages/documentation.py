@@ -101,8 +101,24 @@ layout = html.Div(
                                     style={"textAlign": "center"},
                                 ),
                                 dbc.Button(
-                                    "Example Schedule.xlsx",
-                                    id="example2_btn",
+                                    "All Concrete Schedule.xlsx",
+                                    id="all_concrete_btn",
+                                    outline=True,
+                                    color="primary",
+                                    className="my-3 d-block mx-auto",
+                                    style={"display": "block", "margin": "Auto"},
+                                ),
+                                dbc.Button(
+                                    "All Timber Schedule.xlsx",
+                                    id="all_timber_btn",
+                                    outline=True,
+                                    color="primary",
+                                    className="my-3 d-block mx-auto",
+                                    style={"display": "block", "margin": "Auto"},
+                                ),
+                                dbc.Button(
+                                    "Concrete & Timber Schedule.xlsx",
+                                    id="mix_btn",
                                     outline=True,
                                     color="primary",
                                     className="my-3 d-block mx-auto",
@@ -129,7 +145,9 @@ layout = html.Div(
                         ),
                     ],
                 ),
-                dcc.Download(id="download_SS"),
+                dcc.Download(id="download_all_concrete"),
+                dcc.Download(id="download_all_timber"),
+                dcc.Download(id="download_mix"),
                 html.H3("Setting up ArchiCAD Schedule", className="display-4, mt-5"),
                 html.Hr(className="mb-5"),
                 html.P(
@@ -307,11 +325,33 @@ def func(n, n2):
 
 
 @callback(
-    Output("download_SS", "data"),
-    Input("example2_btn", "n_clicks"),
+    Output("download_all_concrete", "data"),
+    Input("all_concrete_btn", "n_clicks"),
     prevent_initial_call=True,
 )
-def download_schedule(n):
-    return dcc.send_file(
-        "./assets/Example Structure Schedule.xlsx",
-    )
+def download_schedule(n_conc):
+    if n_conc:
+        return dcc.send_file("./assets/Option 1 - All Concrete.xlsx")
+
+
+@callback(
+    Output("download_all_timber", "data"),
+    Input("all_timber_btn", "n_clicks"),
+    prevent_initial_call=True,
+)
+def download_schedule(n_timber):
+    if n_timber:
+        return dcc.send_file("./assets/Option 2 - All Timber.xlsx")
+
+
+@callback(
+    Output("download_mix", "data"),
+    Input("mix_btn", "n_clicks"),
+    prevent_initial_call=True,
+)
+def download_schedule(n_mix):
+
+    if n_mix:
+        return dcc.send_file(
+            "./assets/Option 3 - Timber Structure, Conc Core 6x8.5 Grid).xlsx"
+        )
