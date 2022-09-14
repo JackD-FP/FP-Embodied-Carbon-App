@@ -86,9 +86,8 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(
-                    2360 * vol_conc
-                )  # 2360 is the density of average concrete density from EPiC
+                # mass.append( 2360 * vol_conc )  # 2360 is the density of average concrete density from EPiC
+                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
                 floor.append(row["Home Story Name"])
                 element.append("Beam")
                 gb_ec.append(vol_conc * gb_conc)
@@ -98,9 +97,10 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(
-                    7740 * vol_rebar
-                )  # 7740 is the density of average rebar density from EPiC
+                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                # mass.append(
+                #     7740 * vol_rebar
+                # )  # 7740 is the density of average rebar density from EPiC
                 floor.append(row["Home Story Name"])
                 element.append("Beam")
                 gb_ec.append(mass_rebar * gb_rebar)
