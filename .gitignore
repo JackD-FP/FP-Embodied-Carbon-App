@@ -9,3 +9,4 @@
 /src/Greenbook _reduced.csv
 /.winenv
 __pycache__
+/creds
