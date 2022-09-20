@@ -10,7 +10,7 @@ from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
-from src import drawer
+from src import drawer, save_file
 
 cred = credentials.Certificate("creds/creds.json")
 app = firebase_admin.initialize_app(cred)
@@ -103,11 +103,27 @@ sidebar = html.Div(
             className="display-6",
         ),
         html.Hr(),
-        dmc.Button(
-            "Settings",
-            variant="outline",
-            leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
-            id="settings-button",
+        dmc.Group(
+            [
+                dmc.Button(
+                    "Settings",
+                    variant="outline",
+                    leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
+                    id="settings-button",
+                ),
+                dmc.Button(
+                    "Save",
+                    variant="outline",
+                    leftIcon=[DashIconify(icon="fluent:save-24-regular")],
+                    id="save-button",
+                ),
+                dmc.Button(
+                    "Load",
+                    variant="outline",
+                    leftIcon=[DashIconify(icon="fluent:open-folder-24-regular")],
+                    id="load-button",
+                ),
+            ],
         ),
         drawer.drawer_layout,
         dmc.Affix(
@@ -136,17 +152,6 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 # ---------------------------- callback functions ----------------------------
-@app.callback(
-    Output("save", "is_open"),
-    Input("save_session", "n_clicks"),
-    Input("cancel_btn", "n_clicks"),
-    State("save", "is_open"),
-)
-def save_session_update(n1, n2, is_open):
-    if n1 or n2:
-        return not is_open
-    return is_open
-
 
 # passes store to main_store
 @app.callback(Output("main_store", "data"), Input("temp-df-store", "data"))

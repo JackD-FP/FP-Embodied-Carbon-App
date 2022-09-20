@@ -886,7 +886,7 @@ def totals_update(analysis_store, ec_prev):
 )
 def db_download_update(n_clicks, data):
     df = pd.read_json(data, orient="split")
-    return dcc.send_data_frame(df.to_json, "EC_Analysis_{}".format(n_clicks))
+    return dcc.send_data_frame(df.to_excel, "EC_Analysis_{}.xlsx".format(n_clicks))
     # return dcc.send_data_frame(df.to_json, "EC_Analysis_{}.json".format(n_clicks))
 
 
@@ -903,6 +903,9 @@ def table_update(data):
     )
 
 
+# upddates and show save modal
+
+# ----- UI ELEMENTS -----
 totals_ui = [
     dmc.Paper(  # GreenBook
         [
@@ -999,96 +1002,8 @@ totals_ui = [
         "Download Database",
         leftIcon=[DashIconify(icon="ant-design:download-outlined")],
         id="analysis_btn_download",
-        class_name="mx-4",
     ),
 ]
-
-# settings_ui = html.Div(
-#     children=[
-#         dmc.Group(
-#             [
-#                 dmc.Text("Rebar Concrete Ratio Settings", weight=700, size="lg"),
-#                 dmc.Tooltip(
-#                     wrapLines=True,
-#                     width=220,
-#                     withArrow=True,
-#                     transition="fade",
-#                     transitionDuration=200,
-#                     delay=250,
-#                     label="Ratio is the volumn of Reinforcement Bars (m³) per volumn of Concrete (1000 m³).",
-#                     children=[DashIconify(icon="feather:info")],
-#                 ),
-#             ],
-#             direction="row",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("Beam: 0", id="ratio_beam"),
-#                 dmc.Slider(
-#                     id="beam_slider",
-#                     value=0.039,
-#                     min=0.032,
-#                     max=0.045,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("Column: 0", id="ratio_column"),
-#                 dmc.Slider(
-#                     id="column_slider",
-#                     value=0.041,
-#                     min=0.025,
-#                     max=0.057,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("Slab: 0", id="ratio_slab"),
-#                 dmc.Slider(
-#                     id="slab_slider",
-#                     value=0.013,
-#                     min=0.009,
-#                     max=0.017,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("wall: 0", id="ratio_wall"),
-#                 dmc.Slider(
-#                     id="wall_slider",
-#                     value=0.011,
-#                     min=0.009,
-#                     max=0.013,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#         html.Div(
-#             children=[
-#                 dmc.Text("stair: 0", id="ratio_stair"),
-#                 dmc.Slider(
-#                     id="stair_slider",
-#                     value=0.0195,
-#                     min=0.017,
-#                     max=0.022,
-#                     step=0.0001,
-#                 ),
-#             ],
-#             className="my-3",
-#         ),
-#     ],
-#     className="px-5",
-# )
 
 # create the layout for the cards
 # gen_analysis was separated from analysis_layout just to make it cleaner to read
