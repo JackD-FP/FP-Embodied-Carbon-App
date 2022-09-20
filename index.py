@@ -1,14 +1,24 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import firebase_admin
 from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
+from firebase_admin import credentials, firestore
 from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
 from src import drawer
+
+cred = credentials.Certificate("creds/creds.json")
+app = firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+doc_ref = db.collection("users").document("alovelace")
+doc_ref.set({"first": "Ada", "last": "Lovelace", "born": 1815})
+
 
 # server shit
 external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
