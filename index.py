@@ -10,7 +10,7 @@ from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
-from src import drawer, save_file
+from src import drawer, load_file, save_file
 
 cred = credentials.Certificate("creds/creds.json")
 app = firebase_admin.initialize_app(cred)
@@ -124,7 +124,10 @@ sidebar = html.Div(
                     id="load-button",
                 ),
             ],
+            direction="column",
         ),
+        load_file.load_modal,
+        save_file.save_modal,
         drawer.drawer_layout,
         dmc.Affix(
             dmc.Tooltip(
@@ -270,6 +273,28 @@ def drawer_update(
         "Wall: {}".format(wall),
         "Stair: {}".format(stair),
     )
+
+
+# OPEN SAVE MODAL
+@app.callback(
+    Output("save-modal", "opened"),
+    Input("save-button", "n_clicks"),
+    State("save-modal", "opened"),
+    prevent_initial_call=True,
+)
+def open_save_modal(n, opened):
+    return not opened
+
+
+# OPEN LOAD MODAL
+@app.callback(
+    Output("load-modal", "opened"),
+    Input("load-button", "n_clicks"),
+    State("save-modal", "opened"),
+    prevent_initial_call=True,
+)
+def definition(n, opened):
+    return not opened
 
 
 # routing stuff also 404 page
