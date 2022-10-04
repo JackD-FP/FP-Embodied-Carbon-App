@@ -62,6 +62,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO SHORTEN THE CODE
     element = []
     epic_ec = []
     ice_ec = []
+    mass_rebar = 0
 
     for i, row in df.iterrows():
         if re.search(r"(concrete)|(conc)", row["Material"], re.IGNORECASE) or re.search(
