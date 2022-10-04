@@ -79,35 +79,20 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
-def percent_check_return(lo, hi):
-    if hi == lo:
-        return "Lowest total EC"
-    else:
-        sub = (hi - lo) * 100
-        return "+{}% more than lowest".format(np.around(sub / hi, 2))
-
-
 @callback(
     Output("dashboard_graph", "children"),
     [
         Input("main_store", "data"),
-        # Input("beam_slider", "value"),
-        # Input("column_slider", "value"),
-        # Input("slab_slider", "value"),
-        # Input("wall_slider", "value"),
-        # Input("stair_slider", "value"),
     ],
 )
 def make_graphs(
     data,
-    # , beam_slider, column_slider, slab_slider, wall_slider, stair_slider
 ):
     if data is None:
         raise PreventUpdate
     elif data is not None:
         df_ = pd.read_json(data, orient="split")
         df_o = df_.reset_index()
-        # df_.to_excel("temp-df-store.xlsx") # just for testing
         df = df_.groupby(by=["Material"], as_index=False).sum()
 
         # new calculations for carbon intensity
@@ -118,7 +103,6 @@ def make_graphs(
             13,
             11,
             19.5,
-            # , beam_slider, column_slider, slab_slider, wall_slider, stair_slider
         )
         df_new = pd.DataFrame(
             {
@@ -131,7 +115,6 @@ def make_graphs(
                 "ICE EC": iceec,
             }
         )
-        # df_new.to_csv(".testing/df_new.csv")  # FIXME: for testing purposes
 
         colour_list = ["#064789", "#F8CC0D", "#FB3640", "#35A746"]
 

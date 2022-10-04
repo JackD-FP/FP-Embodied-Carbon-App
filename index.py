@@ -1,6 +1,7 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
+import pandas as pd
 from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
@@ -281,32 +282,31 @@ def disclaimer_modal_update(pathname, n):
         return False
 
 
-# updates the setting data with sliders
-# @app.callback(
-#     [
-#         Output("ratio_beam", "children"),
-#         Output("ratio_column", "children"),
-#         Output("ratio_slab", "children"),
-#         Output("ratio_wall", "children"),
-#         Output("ratio_stair", "children"),
-#     ],
-#     [
-#         Input("beam_slider", "value"),
-#         Input("column_slider", "value"),
-#         Input("slab_slider", "value"),
-#         Input("wall_slider", "value"),
-#         Input("stair_slider", "value"),
-#     ],
-#     prevent_initial_call=True,
-# )
-# def drawer_update(beam, column, slab, wall, stair):
-#     return (
-#         "Beam: {}".format(beam),
-#         "Column: {}".format(column),
-#         "Slab: {}".format(slab),
-#         "Wall: {}".format(wall),
-#         "Stair: {}".format(stair),
-#     )
+@app.callback(
+    Output("missing_header_notification", "children"),
+    Input("main_store", "data"),
+)
+def header_check(data):
+    df = pd.read_json(data, orient="split")
+    columns = [
+        "Level",
+        "Layer",
+        "Volume",
+        "Material",
+        "Mass",
+    ]
+    for i in columns:
+        if i in df.columns:
+            pass
+        else:
+            return dmc.Notification(
+                title="Missing column name: {}".format(i),
+                id="header_notification",
+                action="show",
+                message="The Column is missing from the uploaded file. Please check the file and try again.",
+                color="red",
+                icon=[DashIconify(icon="bxs:error")],
+            )
 
 
 # routing stuff also 404 page
@@ -358,7 +358,7 @@ def render_page_content(pathname):
     )
 
 
-app.layout = html.Div(
+app.layout = dmc.NotificationsProvider(
     [
         dcc.Store(id="analysis_store", storage_type="session"),
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
@@ -376,6 +376,7 @@ app.layout = html.Div(
         dcc.Location(id="url", refresh=False),
         sidebar,
         html.Div(id="content-id", style=CONTENT_STYLE),
+        html.Div(id="missing_header_notification"),
     ]
 )
 

@@ -3,10 +3,9 @@ import datetime
 import io
 
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 import pandas as pd
 from dash import dash_table, dcc, html
-
-from src import error_handling
 
 
 def check_title(bool, id, data):
@@ -57,30 +56,28 @@ def parse_contents(contents, filename, date, id, id_name):
     )
     df = df.drop([0, 0])
     df = df.replace("---", 0)
-    error_handling.head_check(df)
-
     return html.Div(
         [
             dcc.Store(id=id, data=df.to_json(date_format="iso", orient="split")),
             dcc.Store(id=id_name, data=filename),
-            dbc.Alert(
-                [
-                    html.H1("Upload is SUCCESSFUL!"),
-                    html.Hr(),
-                    html.P(
-                        "{} has been uploaded succesfully".format(filename),
-                        className="fs-5",
-                    ),
-                    html.P("Happy designing! 😁"),
-                ],
-                is_open=True,
-                dismissable=True,
-                duration=1500,
-                className="fixed-top w-25 mt-5 p-3",
-                style={
-                    "zIndex": "10",
-                    "marginLeft": "73%",
-                },
-            ),
+            # dbc.Alert(
+            #     [
+            #         html.H1("Upload is SUCCESSFUL!"),
+            #         html.Hr(),
+            #         html.P(
+            #             "{} has been uploaded succesfully".format(filename),
+            #             className="fs-5",
+            #         ),
+            #         html.P("Happy designing! 😁"),
+            #     ],
+            #     is_open=True,
+            #     dismissable=True,
+            #     duration=1500,
+            #     className="fixed-top w-25 mt-5 p-3",
+            #     style={
+            #         "zIndex": "10",
+            #         "marginLeft": "73%",
+            #     },
+            # ),
         ]
     )
