@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, State, dcc, html
+from dash import Input, Output, State, callback, dcc, html
 from dash_iconify import DashIconify
 
 settings_ui = html.Div(
@@ -110,3 +110,29 @@ drawer_layout = html.Div(
         )
     ]
 )
+
+print_layout = html.Div(children=[], id="print-layout")
+
+drawer_print = html.Div(
+    children=[
+        dmc.Drawer(
+            id="print-drawer",
+            padding="md",
+            size="full",
+            withCloseButton=False,
+            children=print_layout,
+        )
+    ]
+)
+
+
+@callback(
+    Output("print-layout", "children"),
+    Input("print-button", "n_clicks"),
+    State("proc_store", "data"),
+    prevent_initial_call=True,
+)
+def update_print_layout(n_clicks, proc_store):
+    layout = [dcc.Graph(id="gb_analysis_comp_pie_2")]
+
+    return layout

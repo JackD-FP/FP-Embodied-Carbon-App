@@ -60,22 +60,6 @@ def definition(data):
         ice_color_dict = dict(zip(ice_vals, ice_colors))
         # ice_color_names = ice_df_grouped["ICE Material"].unique().tolist()
 
-        # colors = [
-        #     "#FF595E",
-        #     "#36949D",
-        #     "#FF924C",
-        #     "#1982C4",
-        #     "#FFCA3A",
-        #     "#4267AC",
-        #     "#C5CA30",
-        #     "#565AA0",
-        #     "#8AC926",
-        #     "#6A4C93",
-        # ]
-        # gb_color_dict = dict(zip(gb_color_names, colors))
-        # epic_color_dict = dict(zip(epic_color_names, colors))
-        # ice_color_dict = dict(zip(ice_color_names, colors))
-
         gb_fig_pie = px.pie(
             gb_df_grouped,
             values="Green Book EC",

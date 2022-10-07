@@ -4,8 +4,9 @@ config = {  # just tells plotly to save as svg rather than jpeg
         "filename": "custom_image",
         "height": 500,
         "width": 700,
-        "scale": 3,  # Multiply title/legend/axis/canvas sizes by this factor
-    }
+        "scale": 2,  # Multiply title/legend/axis/canvas sizes by this factor
+    },
+    "displaylogo": False,
 }
 
 graph_colors = [

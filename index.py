@@ -1,27 +1,21 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import firebase_admin
 from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
-from firebase_admin import credentials, firestore
 from flask import Flask
 
 from pages import analysis, dashboard, documentation
 from pages.analysis import analysis
 from src import drawer, load_file, save_file
 
-cred = credentials.Certificate("creds/creds.json")
-app = firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-doc_ref = db.collection("users").document("alovelace")
-doc_ref.set({"first": "Ada", "last": "Lovelace", "born": 1815})
-
-
 # server shit
-external_stylesheets = [dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP]  # dbc theme
+external_stylesheets = [
+    dbc.themes.BOOTSTRAP,
+    dbc.icons.BOOTSTRAP,
+    "styles.css",
+]  # dbc theme
 
 server = Flask(__name__)
 app = dash.Dash(
@@ -44,13 +38,18 @@ def dash_app(path):  # but for some reason the page name doesn't work
     return app.index()
 
 
-# #server = app.server
+server = app.server  # this is for flask functionality
 app._favicon = "assets/favicon.ico"
 # --------------------------------------------------------------------------------------------
 
 
 CONTENT_STYLE = {
-    "marginLeft": "26rem",
+    "marginLeft": "15rem",
+    "marginRight": "2rem",
+    "padding": "4rem 2rem",
+}
+CONTENT_STYLE_SMALL = {
+    "marginLeft": "2rem",
     "marginRight": "2rem",
     "padding": "4rem 2rem",
 }
@@ -64,96 +63,263 @@ SIDEBAR_STYLE = {
     "padding": "4rem 2rem",
     "backgroundColor": "#f8f9fa",
 }
+# ----- Header UI -----
+def create_home_link(label):
+    return dmc.Text(
+        label,
+        size="xl",
+        color="gray",
+    )
 
-# ----------------------- side bar stuff -----------------------------------------
-sidebar = html.Div(
-    [
-        dcc.Store(id="gb_analysis_store", storage_type="session"),
-        dcc.Store(id="epic_analysis_store", storage_type="session"),
-        dcc.Store(id="ice_analysis_store", storage_type="session"),
-        html.Img(src="/assets/f+p_mono.svg", className="img-fluid"),
-        html.H5("Embodied Carbon", className="mt-5 display-6", style={"font": "2rem"}),
-        html.H5("Structure", className="mb-5 display-6 fs-3"),
-        html.Hr(),
-        html.P(
-            "Analyse design using this Embodied Carbon Calculator. More information in the reference page below.",
-            className="lead",
-        ),
-        dbc.Nav(
-            [
-                dbc.NavLink(
-                    "Dashboard", href="/pages/dashboard", id="dashboard", active="exact"
+
+header_ui = dmc.Header(
+    height=70,
+    fixed=True,
+    p="md",
+    children=[
+        dmc.Group(
+            position="apart",
+            align="flex-start",
+            children=[
+                dmc.Center(
+                    dcc.Link(
+                        [
+                            dmc.MediaQuery(
+                                create_home_link("Embodied Carbon Tool"),
+                                smallerThan="sm",
+                                styles={"display": "none"},
+                            ),
+                            dmc.MediaQuery(
+                                create_home_link("ECT"),
+                                largerThan="sm",
+                                styles={"display": "none"},
+                            ),
+                        ],
+                        href="/",
+                        style={"paddingTop": 5, "textDecoration": "none"},
+                    ),
                 ),
-                dbc.NavLink(
-                    "Analysis", href="/pages/analysis", id="analysis", active="exact"
-                ),
-                # dbc.NavLink(
-                #     "Comparison", href="/pages/comparison", id="tec", active="exact"
-                # ),
-                dbc.NavLink(
-                    "How To...",
-                    href="/pages/documentation",
-                    id="documentation",
-                    active="exact",
+                dmc.Group(
+                    position="right",
+                    align="center",
+                    spacing="xl",
+                    children=[
+                        html.A(
+                            dmc.Tooltip(
+                                dmc.ThemeIcon(
+                                    DashIconify(
+                                        icon="radix-icons:github-logo",
+                                        width=22,
+                                    ),
+                                    radius=30,
+                                    size=36,
+                                    variant="outline",
+                                    color="gray",
+                                ),
+                                label="Source Code",
+                                position="bottom",
+                            ),
+                            href="https://github.com/JackD-FP/FP-Embodied-Carbon-App",
+                        ),
+                        html.A(
+                            dmc.Tooltip(
+                                dmc.ThemeIcon(
+                                    DashIconify(
+                                        icon="bi:discord",
+                                        width=22,
+                                    ),
+                                    radius=30,
+                                    size=36,
+                                    variant="outline",
+                                ),
+                                label="Discord",
+                                position="bottom",
+                            ),
+                            href="https://discord.gg/CEt4jbqV",
+                        ),
+                    ],
                 ),
             ],
-            vertical=True,
-            pills=True,
-            style={"marginTop": "3rem", "fontSize": "1.5rem"},
-            className="display-6",
-        ),
-        html.Hr(),
+        )
+    ],
+)
+
+# ----- Sidebar UI -----
+def create_main_nav_link(icon, label, href):
+    return dcc.Link(
         dmc.Group(
             [
-                dmc.Button(
-                    "Settings",
-                    variant="outline",
-                    leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
-                    id="settings-button",
+                dmc.ThemeIcon(
+                    DashIconify(icon=icon, width=18),
+                    size=30,
+                    radius=30,
+                    variant="light",
                 ),
-                dmc.Button(
-                    "Save",
-                    variant="outline",
-                    leftIcon=[DashIconify(icon="fluent:save-24-regular")],
-                    id="save-button",
+                dmc.Text(label, size="md", color="gray"),
+            ]
+        ),
+        href=href,
+        style={"textDecoration": "none"},
+    )
+
+
+def create_nav_link(name, path):
+    return dcc.Link(
+        dmc.Text(name, size="md", color="gray"),
+        href=path,
+        id=name,
+        style={"textDecoration": "none"},
+    )
+
+
+def dividers(icon, label):
+    return html.Div(
+        dmc.Divider(
+            label=[
+                dmc.ThemeIcon(
+                    DashIconify(icon=icon, width=18),  # "fluent:app-folder-24-filled"
+                    size=20,
+                    radius=20,
+                    color="gray",
+                    variant="light",
+                    style={"marginRight": "0.5rem"},
                 ),
-                dmc.Button(
-                    "Load",
-                    variant="outline",
-                    leftIcon=[DashIconify(icon="fluent:open-folder-24-regular")],
-                    id="load-button",
+                dmc.Text(label, size="sm", color="gray"),
+            ],
+            style={
+                "marginBottom": 30,
+                "marginTop": 30,
+                "width": "100%",
+            },
+        ),
+    )
+
+
+sidebar_ui_element = html.Div(
+    [
+        dmc.ScrollArea(
+            offsetScrollbars=True,
+            type="scroll",
+            children=[
+                dmc.Group(
+                    direction="column",
+                    children=[
+                        create_main_nav_link(
+                            icon="radix-icons:rocket",
+                            label="Getting Started",
+                            href="/pages/documentation",
+                        ),
+                        # create_main_nav_link(
+                        #     icon="radix-icons:iconjar-logo",
+                        #     label="Dash Iconify",
+                        #     href="/dashiconify",
+                        # ),
+                    ],
+                ),
+                dividers("fluent:app-folder-24-filled", "Analysis"),
+                dmc.Group(
+                    direction="column",
+                    children=[
+                        create_nav_link("Dashboard", "/pages/dashboard"),
+                        create_nav_link("Analysis", "/pages/analysis"),
+                        create_nav_link("Benchmark", "/pages/Benchmark"),
+                    ],
+                ),
+                dividers("fa:folder-open-o", "Data"),
+                dmc.Group(
+                    [
+                        dmc.Button(
+                            "Save",
+                            variant="outline",
+                            leftIcon=[DashIconify(icon="fluent:save-24-regular")],
+                            id="save-button",
+                            color="green",
+                        ),
+                        dmc.Button(
+                            "Load",
+                            variant="outline",
+                            leftIcon=[
+                                DashIconify(icon="fluent:open-folder-24-regular")
+                            ],
+                            id="load-button",
+                            color="blue",
+                            # style={"marginBottom": "3rem"},
+                        ),
+                    ],
+                    direction="column",
+                ),
+                dividers("akar-icons:gear", "settings"),
+                dmc.Group(
+                    [
+                        dmc.Button(
+                            "Print",
+                            variant="outline",
+                            leftIcon=[DashIconify(icon="bytesize:print")],
+                            id="print-button",
+                        ),
+                        dmc.Button(
+                            "Settings",
+                            variant="outline",
+                            leftIcon=[DashIconify(icon="fluent:settings-32-regular")],
+                            id="settings-button",
+                        ),
+                    ],
+                    direction="column",
+                ),
+                load_file.load_modal,
+                save_file.save_modal,
+                drawer.drawer_print,
+                drawer.drawer_layout,
+                dmc.Affix(
+                    dmc.Tooltip(
+                        label="Send some feedback!",
+                        transition="rotate-left",
+                        transitionDuration=300,
+                        transitionTimingFunction="ease",
+                        children=[
+                            html.A(
+                                dmc.Button(
+                                    html.H5(
+                                        className="bi bi-chat-dots-fill translate-middle",
+                                        style={"position": "absolute", "top": "50%"},
+                                    ),
+                                    radius="xl",
+                                    size="lg",
+                                ),
+                                href="mailto:jackd@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
+                            ),
+                        ],
+                    ),
+                    style={"marginRight": "2rem", "marginBottom": "2rem"},
                 ),
             ],
-            direction="column",
-        ),
-        load_file.load_modal,
-        save_file.save_modal,
-        drawer.drawer_layout,
-        dmc.Affix(
-            dmc.Tooltip(
-                label="Send some feedback!",
-                transition="rotate-left",
-                transitionDuration=300,
-                transitionTimingFunction="ease",
-                children=[
-                    html.A(
-                        dmc.Button(
-                            html.H5(
-                                className="bi bi-chat-dots-fill translate-middle",
-                                style={"position": "absolute", "top": "50%"},
-                            ),
-                            radius="xl",
-                            size="lg",
-                        ),
-                        href="mailto:jackd@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
-                    ),
-                ],
-            ),
-            style={"marginRight": "2rem", "marginBottom": "2rem"},
-        ),
+        )
     ],
-    style=SIDEBAR_STYLE,
 )
+
+sidebar_ui = dmc.MediaQuery(
+    children=[
+        dmc.Navbar(
+            fixed=True,  # uncomment this line if you are using this example in your app
+            width={"base": "18rem"},
+            p="md",
+            pl="lg",
+            children=sidebar_ui_element,
+        )
+    ],
+    smallerThan="lg",
+    styles={"display": "none"},
+)
+
+# ----- Main UI -----
+# media query for the main content... expands and contracts depending on the width of the screen
+
+main_ui = dmc.MediaQuery(
+    children=[html.Div(id="content-id", style=CONTENT_STYLE_SMALL)],
+    largerThan="lg",
+    styles=CONTENT_STYLE,
+)
+
 # ---------------------------- callback functions ----------------------------
 
 # passes store to main_store
@@ -297,6 +463,16 @@ def definition(n, opened):
     return not opened
 
 
+@app.callback(
+    Output("print-drawer", "opened"),
+    Input("print-button", "n_clicks"),
+    State("print-drawer", "opened"),
+    prevent_initial_call=True,
+)
+def update_print_drawer(n, opened):
+    return not opened
+
+
 # routing stuff also 404 page
 @app.callback(Output("content-id", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
@@ -304,12 +480,6 @@ def render_page_content(pathname):
         return dcc.Location(pathname="/pages/dashboard", id="doesntmatter")
     elif pathname == "/pages/dashboard":
         return dashboard.layout
-    elif pathname == "/pages/analysis/green_book_db":
-        return analysis.analysis_layout
-    elif pathname == "/pages/analysis/epic_db":
-        return analysis.analysis_layout
-    elif pathname == "/pages/analysis/ice_db":
-        return analysis.analysis_layout
     elif pathname == "/pages/analysis":
         return analysis.analysis_layout
     # elif pathname == "/pages/comparison":
@@ -346,8 +516,9 @@ def render_page_content(pathname):
     )
 
 
-app.layout = html.Div(
+app.layout = dmc.NotificationsProvider(
     [
+        header_ui,
         dcc.Store(id="analysis_store", storage_type="session"),
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
@@ -362,8 +533,9 @@ app.layout = html.Div(
             id="card03_store", storage_type="session"
         ),  # Stores card 3 upload data
         dcc.Location(id="url", refresh=False),
-        sidebar,
-        html.Div(id="content-id", style=CONTENT_STYLE),
+        sidebar_ui,
+        # sidebar,
+        main_ui,
     ]
 )
 

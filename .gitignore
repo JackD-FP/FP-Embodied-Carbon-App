@@ -10,3 +10,4 @@
 /.winenv
 __pycache__
 /creds
+/creds.json

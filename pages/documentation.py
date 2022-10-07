@@ -4,7 +4,7 @@ from dash import Input, Output, callback, dcc, html
 
 layout = html.Div(
     [
-        html.H1("How To...", className="display-2 mb-5 "),
+        html.H1("Getting Started", className="display-2 mb-5 "),
         html.Hr(),
         html.Div(
             [
