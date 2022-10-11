@@ -526,6 +526,9 @@ app.layout = dmc.NotificationsProvider(
         dcc.Store(id="gb_bld_type_store", storage_type="session"),
         dcc.Store(id="gia_store", storage_type="session"),
         dcc.Store(id="project_name", storage_type="session"),
+        # dcc.Store(id="firebase_store_projectNames", storage_type="session"),
+        # dcc.Store(id="firebase_store_variationNames", storage_type="session"),
+        dcc.Store(id="firebase_storage", storage_type="session"),
         dcc.Store(
             id="card02_store", storage_type="session"
         ),  # Stores card 2 upload data
