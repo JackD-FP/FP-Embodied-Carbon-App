@@ -3,11 +3,16 @@ from dash import dcc, html
 markdown_layout = dcc.Markdown(
     """
         # Introduction
-        Welcome to F+P Embodied Carbon Structure Calculator. This is a variation of our internal app that does not have The Footprint Company's Green Book Database, due to licensing requirements. 
+        Welcome to Fitzpatrick and Partner’s Embodied Carbon Calculator App website. Our app is built to help architects, builders and designers identify and source less carbon-intensive solutions. 
 
-        The Embodied Carbon App is built to help architects and designers make informed in order to design a more sustainable building. It is obvious to us that timber is far less carbon intense than concrete and steel. However, when it comes to actual buildings where mixtures of Material are necessary for structural stability, the answer is less obvious. We should all strive to minimise our design's embodied carbon, but not compromise structural stability and design excellence. 
+        While it’s obvious to us that timber is less carbon intensive than concrete and steel, the answer is less obvious when it comes to buildings that need a mixture of materials for structural stability.
 
-        The App can help identify which material is carbon intense and check if there are alternatives less carbon intense to the latter. It can also help identify what floor is causing the issue, if a redesign or alteration is required. This app is free and open source for anyone. At Fitzpatrick and Partners, we believe this is the way to help our industry move forward and achieve a better and sustainable tomorrow.
+        Minimising embodied carbon shouldn’t compromise structural stability and design excellence. This is where our Embodied Carbon Calculator App comes in. It measures the carbon intensity of super-structure and sub-structure materials and helps users understand where the carbon is in their buildings and source more sustainable alternatives. It can also help identify what floor is causing the issue and if a redesign or alteration is required. 
+
+        Our Embodied Carbon Calculator App is free and open source for anyone to use. It can be accessed both as a website and as a source code through Docker and GitHub. At Fitzpatrick and Partners, we want to foster collaboration within our industry to achieve a better and sustainable tomorrow.
+
+        Note: The Embodied Carbon Structure Calculator is a variation of our internal app. Due to licensing requirements, it does not have The Footprint Company's Green Book Database.
+
 
         # The Purpose of the Tool
         This tool aims to achieve a number of things;
