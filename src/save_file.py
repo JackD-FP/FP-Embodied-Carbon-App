@@ -3,6 +3,7 @@ import json
 
 import dash_mantine_components as dmc
 import firebase_admin
+import pandas as pd
 from dash import Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
@@ -109,49 +110,81 @@ db = firestore.client()
 
 # ----- get projects -----
 @callback(
-    # Output("firebase_store_projectNames", "data"),
-    # Output("firebase_store_variationNames", "data"),
     Output("firebase_storage", "data"),
     Input("save-button", "n_clicks"),
     prevent_initial_call=True,
 )
 def load_firestore_data(n_clicks):
-    project_names = []
-    variation_names = []
     projects = {}
     docs = db.collection("projects").stream()
     for doc in docs:
         projects[doc.to_dict().get("project_name")] = doc.to_dict().get(
             "variation_name"
         )
-        # project_names.append(doc.to_dict().get("project_name"))
-        # for i in doc.to_dict().get("variation_name"):
-        #     variation_names.append(i)
-    # print(project_names)
-    # print(variation_names)
-    # return json.dumps(projects)
     return projects
 
 
-# ----- Send Logic -----
+# ----- Save Logic -----
+# TODO: CONSOLIDATE DATA TO SHORTEN IT
+# data is tool long. there my be a way to shorten it.
+def send_data(data, collection, document):
+    """Send data to firestore.
+
+    Args:
+        data (_df_): pandas dataframe of data
+        collection (_Str_): Collection name
+        document (_Str_): Document name
+    """
+    df = pd.read_json(data, orient="split")
+    to_send = df.to_dict("records")
+    to_send = df.to_json(orient="columns")
+    # for key in to_send.keys():
+    #     db.collection(collection).document(key).set({to_send[key]})
+    # db.collection(collection).document(document).set(data)
+    # print(to_send)
+    for i in to_send:
+        db.collection("{} + {}".format(collection, document)).add(i)
+
+
+"""
+# TODO: finish this function
+- add data to projects collection.
+- check if project name is unique.
+- if not append variation name to project name.
+def send_project_data(project_name, variation_name):
+
+    db.collection("projects").add(
+        {
+            "project_name": project_name,
+            "variation_name": [variation_name],
+            "date": [datetime.datetime.now(tz=datetime.timezone.utc)],
+        }
+    )
+"""
+
+
 @callback(
     Output("save_to_firebase_output", "children"),
     Input("save_to_firebase_btn", "n_clicks"),
     Input("project_name_input", "value"),
     Input("variation_name_input", "value"),
+    State("analysis_store", "data"),
     prevent_initial_call=True,
 )
-def save_to_firebase(n_clicks, project_name, variation_name):
-
+def save_to_firebase(n_clicks, project_name, variation_name, data):
+    # send_data(data)
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
-        doc_ref = db.collection("projects").document(project_name)
-        doc_ref.set(
-            {
-                "project_name": project_name,
-                "variation_name": [variation_name],
-                "date": [datetime.datetime.now(tz=datetime.timezone.utc)],
-            }
-        )
+        send_data(data, project_name, variation_name)
+        # db.collection("potato").document("var").delete()
+        # print("sending data to firebase")
+        # doc_ref = db.collection("projects").document(project_name)
+        # doc_ref.set(
+        #     {
+        #         "project_name": project_name,
+        #         "variation_name": [variation_name],
+        #         "date": [datetime.datetime.now(tz=datetime.timezone.utc)],
+        #     }
+        # )
         return (
             dmc.Notification(
                 title="Save Successful",
@@ -193,6 +226,7 @@ def disable_btn(dictionary, key, value):
     Input("project_name_input", "value"),
     Input("variation_name_input", "value"),
     State("firebase_storage", "data"),
+    prevent_initial_call=True,
 )
 def project_name_error(project_name, variation_name, fb_storage):
     if variation_name == "" or project_name == "":

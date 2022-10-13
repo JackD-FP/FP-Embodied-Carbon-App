@@ -886,8 +886,8 @@ def totals_update(analysis_store, ec_prev):
 )
 def db_download_update(n_clicks, data):
     df = pd.read_json(data, orient="split")
-    return dcc.send_data_frame(df.to_excel, "EC_Analysis_{}.xlsx".format(n_clicks))
-    # return dcc.send_data_frame(df.to_json, "EC_Analysis_{}.json".format(n_clicks))
+    # return dcc.send_data_frame(df.to_excel, "EC_Analysis_{}.xlsx".format(n_clicks))
+    return dcc.send_data_frame(df.to_json(), "EC_Analysis_{}.json".format(n_clicks))
 
 
 # updates the table with consolidated data
