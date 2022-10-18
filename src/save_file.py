@@ -360,18 +360,31 @@ def variation_check(data, project_name, variation_name):
         return True
 
 
+def select_check(data, project_select, variation_name):
+    for items in data[project_select]:
+        if variation_name == items:
+            return True
+
+
 # # disables btn callback
 # TODO: add check for existing project.
 @callback(
     Output("save_to_firebase_btn", "disabled"),
     Input("variation_name_input", "error"),
     Input("project_name_input", "error"),
+    Input("project_select", "value"),
+    Input("variation_name_input", "value"),
+    State("firebase_storage", "data"),
 )
-def update_disable_btn(variation_name_error, project_name_error):
-    print(variation_name_error, project_name_error)
+def update_disable_btn(
+    variation_name_error, project_name_error, project_select, variation_value, data
+):
+    # print(str(data))
     if variation_name_error is None or project_name_error is None:
         return True
-    if variation_name_error or project_name_error:
+    elif variation_name_error or project_name_error:
+        return True
+    elif select_check(data, project_select, variation_value):
         return True
     else:
         return False
@@ -391,70 +404,3 @@ def update_project_name_input(proc_data):
         return True, True, error, error
     else:
         return False, False, "", ""
-
-
-# logic to disable the project name exist in database
-# @callback(
-#     Output("save_to_firebase_btn", "disabled"),
-#     Output("project_name_input", "error"),
-#     Input("project_name_input", "value"),
-# )
-
-# @callback(
-#     Input("save_to_firebase_btn", "n_clicks"),
-#     Input("project_name_input", "value"),
-#     Input("variation_name_input", "value"),
-# )
-#         # doc_ref = db.collection("projects").document(project_name)
-#         # doc_ref.set(
-#         #     {
-#         #         "variations": {
-#         #             variation_name: {
-#         #                 "beam": 39,
-#         #                 "column": 41,
-#         #                 "slab": 13,
-#         #             }
-#         #         }
-#         #     }
-#         # )
-
-"""
-# TODO: finish this function
-- add data to projects collection.
-- check if project name is unique.
-- if not append variation name to project name.
-def send_project_data(project_name, variation_name):
-
-    db.collection("projects").add(
-        {
-            "project_name": project_name,
-            "variation_name": [variation_name],
-            "date": [datetime.datetime.now(tz=datetime.timezone.utc)],
-        }
-    )
-"""
-
-# datetime.datetime.now(tz=datetime.timezone.utc).date()
-
-# storage.bucket("embodied-carbon.appspot.com").blob(
-#     "{}+{}.json".format(collection, document)
-# ).upload_from_filename(filename="data2.json", content_type="application/json")
-
-# df = pd.read_json(data, orient="split")
-
-# to_send = df_.to_json(orient="columns")
-# # Aggregated data
-# db.collection("aggregated").document(document).set()
-# # Main Data Collection
-# db.collection(collection).document(document).set(json.loads(to_send))
-
-
-# code for retreiving data from firestore
-"""
-    print(
-        bucket.blob("{}+{}.json".format(collection, document)).generate_signed_url(
-            datetime.timedelta(seconds=300), method="GET"
-        )
-    )
-
-"""
