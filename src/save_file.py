@@ -7,9 +7,10 @@ import pandas as pd
 from dash import Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
-from firebase_admin import auth, credentials, firestore, storage
+from firebase_admin import credentials, firestore, storage
 
 new_project = dmc.Tab(
+    id="new-project",
     label="New Project",
     children=[
         dmc.Text(
@@ -37,6 +38,7 @@ new_project = dmc.Tab(
     ],
 )
 existing_project = dmc.Tab(
+    id="existing-project",
     label="Existing Project",
     children=[
         dmc.Text(
@@ -212,6 +214,7 @@ def new_project_(project_name, variation_name):
         {
             "project_name": project_name,
             "variation_name": [variation_name],
+            "datetime": [str(datetime.datetime.now(tz=datetime.timezone.utc).date())],
         }
     )
 
@@ -225,6 +228,8 @@ def append_to_project(project_name, variation_name):
     """
     doc_ref = db.collection("projects").document(project_name)
     doc_ref.update({"variation_name": firestore.ArrayUnion([variation_name])})
+    datetime_string = str(datetime.datetime.now(tz=datetime.timezone.utc).date())
+    doc_ref.update({"datetime": firestore.ArrayUnion([datetime_string])})
 
 
 # saving project with NEW PROJECT NAME
@@ -265,7 +270,7 @@ def save_to_firebase(n_clicks, project_name, variation_name, data):
     State("analysis_store", "data"),
     prevent_initial_call=True,
 )
-def save_to_firebase(n_clicks, project_name, variation_name, data):
+def append_to_firebase(n_clicks, project_name, variation_name, data):
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
         append_to_project(project_name, variation_name)
         send_data(data, project_name, variation_name)
@@ -286,25 +291,6 @@ def save_to_firebase(n_clicks, project_name, variation_name, data):
         raise PreventUpdate
 
 
-# ----- error handling for Project Name text input -----
-def disable_btn(dictionary, key, value):
-    """Disable the save button if the project name is not unique.
-
-    Args:
-        dictionary (_dict_): Dictionary of firestore data.
-        key (_str_): project name
-        value (_str_): variation name stored under project name
-
-    Returns:
-        _bool_: returns if project contains the variation name
-    """
-    if key in dictionary:
-        if value in dictionary[key]:
-            return True
-    else:
-        return False
-
-
 # ----- error handling for Variation Name text input -----
 @callback(
     Output("project_name_input", "error"),
@@ -318,7 +304,10 @@ def project_name_error(project_name, variation_name, fb_storage):
     if variation_name == "" or project_name == "":
         return "Project Name should NOT be empty", "variation name should NOT be empty"
     elif disable_btn(fb_storage, project_name, variation_name):
-        return False, "Variation name already exists for this project"
+        return (
+            "Project name already exists for this project",
+            True,
+        )
     else:
         return False, False
 
@@ -338,20 +327,51 @@ def check_input_(input):
     return input_dict.get(input, False)
 
 
+# ----- error handling for Project Name text input -----
+def disable_btn(dictionary, key, value):
+    """Disable the save button if the project name is not unique.
+
+    Args:
+        dictionary (_dict_): Dictionary of firestore data.
+        key (_str_): project name
+        value (_str_): variation name stored under project name
+
+    Returns:
+        _bool_: returns if project contains the variation name
+    """
+    if key in dictionary:
+        # if value in dictionary[key]: # if variation name is already in project
+        return True
+    else:
+        return False
+
+
+def project_check(data, project_name):
+    if project_name in data:
+        return False
+    else:
+        return True
+
+
+def variation_check(data, project_name, variation_name):
+    if variation_name in data[project_name]:
+        return False
+    else:
+        return True
+
+
+# # disables btn callback
+# TODO: add check for existing project.
 @callback(
     Output("save_to_firebase_btn", "disabled"),
-    Input("variation_name_input", "value"),
-    Input("project_name_input", "value"),
-    State("save_to_firebase_btn", "n_clicks"),
-    State("firebase_storage", "data"),
-    prevent_initial_call=True,
+    Input("variation_name_input", "error"),
+    Input("project_name_input", "error"),
 )
-def check_input(variation_value, project_value, n_clicks, data):
-    if check_input_(variation_value) or check_input_(project_value):
+def update_disable_btn(variation_name_error, project_name_error):
+    print(variation_name_error, project_name_error)
+    if variation_name_error is None or project_name_error is None:
         return True
-    elif n_clicks is not None and n_clicks % 2 == 0:
-        return True
-    elif disable_btn(data, project_value, variation_value):
+    if variation_name_error or project_name_error:
         return True
     else:
         return False
@@ -414,6 +434,7 @@ def send_project_data(project_name, variation_name):
     )
 """
 
+# datetime.datetime.now(tz=datetime.timezone.utc).date()
 
 # storage.bucket("embodied-carbon.appspot.com").blob(
 #     "{}+{}.json".format(collection, document)
