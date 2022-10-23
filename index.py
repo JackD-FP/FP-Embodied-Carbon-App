@@ -1,9 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-from dash import Input, Output, State, dcc, html
+import firebase_admin
+from dash import Input, Output, State, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
+from firebase_admin import credentials, firestore, storage
 from flask import Flask
 
 from pages import analysis, dashboard, documentation
@@ -336,11 +338,22 @@ def save_2_main(data):
     Output("proc_store", "data"),
     Input("temp_proc_store", "data"),
 )
-def proc_store_update(data):
+def proc_store_update(data, load_data):
     if data is not None:
         return data
     else:
-        PreventUpdate
+        raise PreventUpdate
+
+
+@app.callback(
+    Output("load_data", "data"),
+    Input("load-data-store", "data "),
+)
+def load_data_update(data):
+    if data is not None:
+        return data
+    else:
+        raise PreventUpdate
 
 
 # passes the upload from card 2 for later access.
@@ -521,23 +534,20 @@ app.layout = dmc.NotificationsProvider(
         header_ui,
         dcc.Store(id="analysis_store", storage_type="session"),
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
+        dcc.Store(id="load_data", storage_type="session"),
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
         dcc.Store(id="nla_store", storage_type="session"),
         dcc.Store(id="gb_bld_type_store", storage_type="session"),
         dcc.Store(id="gia_store", storage_type="session"),
         dcc.Store(id="project_name", storage_type="session"),
-        # dcc.Store(id="firebase_store_projectNames", storage_type="session"),
-        # dcc.Store(id="firebase_store_variationNames", storage_type="session"),
         dcc.Store(id="firebase_storage", storage_type="session"),
-        dcc.Store(
-            id="card02_store", storage_type="session"
-        ),  # Stores card 2 upload data
-        dcc.Store(
-            id="card03_store", storage_type="session"
-        ),  # Stores card 3 upload data
+        dcc.Store(id="temp-load-store", storage_type="session"),
+        dcc.Store(id="card02_store", storage_type="session"),
+        # Stores card 2 upload data
+        dcc.Store(id="card03_store", storage_type="session"),
+        # Stores card 3 upload data
         dcc.Location(id="url", refresh=False),
         sidebar_ui,
-        # sidebar,
         main_ui,
     ]
 )

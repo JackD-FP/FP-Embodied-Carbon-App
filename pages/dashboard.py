@@ -83,14 +83,6 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
-def percent_check_return(lo, hi):
-    if hi == lo:
-        return "Lowest total EC"
-    else:
-        sub = (hi - lo) * 100
-        return "+{}% more than lowest".format(np.around(sub / hi, 2))
-
-
 @callback(
     Output("dashboard_graph", "children"),
     [

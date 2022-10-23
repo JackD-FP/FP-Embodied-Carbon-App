@@ -8,6 +8,9 @@ from dash import Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 from firebase_admin import credentials, firestore, storage
+from src import firebase_init
+
+# from src import load_file  # need this for load_btn callback
 
 new_project = dmc.Tab(
     id="new-project",
@@ -103,40 +106,32 @@ save_modal = html.Div(
     ]
 )
 
-
-cred = credentials.Certificate("creds/creds.json")
-fp_app = firebase_admin.initialize_app(
-    cred,
-    {
-        "storageBucket": "embodied-carbon.appspot.com",
-    },
-)
-db = firestore.client()
-bucket = storage.bucket(app=fp_app)
-
-
-# ----- disables save btn if no analysis -----
+# ----- disables save btn and load btn if no analysis -----
 @callback(
     Output("save-button", "disabled"),
+    Output("load-button", "disabled"),
     Input("proc_store", "data"),
     prevent_initial_call=True,
 )
 def disable_save_btn(data):
     if data is None:
-        return True
+        return True, True
     else:
-        return False
+        return False, False
 
 
 # ----- get projects -----
+# get data from firestore when
+# save-button or load-button is clicked
 @callback(
     Output("firebase_storage", "data"),
     Input("save-button", "n_clicks"),
+    Input("load-button", "n_clicks"),
     prevent_initial_call=True,
 )
-def load_firestore_data(n_clicks):
+def load_firestore_data(save, load):
     projects = {}
-    docs = db.collection("projects").stream()
+    docs = firebase_init.db.collection("projects").stream()
     for doc in docs:
         projects[doc.to_dict().get("project_name")] = doc.to_dict().get(
             "variation_name"
@@ -145,7 +140,7 @@ def load_firestore_data(n_clicks):
 
 
 # ----- ui handling for project_select -----
-def data_to_options(data):
+def data_to_key_options(data):
     """Converts data to options for Select component.
 
     Args:
@@ -170,7 +165,7 @@ def update_project_select(n_clicks, data):
     if data is None:
         raise PreventUpdate
     else:
-        options = data_to_options(data)
+        options = data_to_key_options(data)
         return options
 
 
@@ -197,7 +192,9 @@ def send_data(data, collection, document):
     ).sum()
     to_send = df_.to_json(orient="split")
     # storing main json database in firebase storage
-    bucket.blob("{}+{}.json".format(collection, document)).upload_from_string(
+    firebase_init.bucket.blob(
+        "{}+{}.json".format(collection, document)
+    ).upload_from_string(
         data=to_send,
         content_type="application/json",
     )
@@ -210,7 +207,7 @@ def new_project_(project_name, variation_name):
         project_name ( String ): Name of the project
         variation_name ( String ): Name of the variation
     """
-    db.collection("projects").document(project_name).set(
+    firebase_init.db.collection("projects").document(project_name).set(
         {
             "project_name": project_name,
             "variation_name": [variation_name],
@@ -226,7 +223,7 @@ def append_to_project(project_name, variation_name):
         project_name ( String ): Name of project
         variation_name ( String ): Name of variation
     """
-    doc_ref = db.collection("projects").document(project_name)
+    doc_ref = firebase_init.db.collection("projects").document(project_name)
     doc_ref.update({"variation_name": firestore.ArrayUnion([variation_name])})
     datetime_string = str(datetime.datetime.now(tz=datetime.timezone.utc).date())
     doc_ref.update({"datetime": firestore.ArrayUnion([datetime_string])})
