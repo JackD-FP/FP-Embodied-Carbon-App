@@ -8,7 +8,7 @@ from dash_iconify import DashIconify
 from firebase_admin import credentials, firestore, storage
 from flask import Flask
 
-from pages import analysis, dashboard, documentation
+from pages import analysis, benchmark, dashboard, documentation
 from pages.analysis import analysis
 from src import drawer, load_file, save_file
 
@@ -224,7 +224,7 @@ sidebar_ui_element = html.Div(
                     children=[
                         create_nav_link("Dashboard", "/pages/dashboard"),
                         create_nav_link("Analysis", "/pages/analysis"),
-                        create_nav_link("Benchmark", "/pages/Benchmark"),
+                        create_nav_link("Benchmark", "/pages/benchmark"),
                     ],
                 ),
                 dividers("fa:folder-open-o", "Data"),
@@ -338,22 +338,22 @@ def save_2_main(data):
     Output("proc_store", "data"),
     Input("temp_proc_store", "data"),
 )
-def proc_store_update(data, load_data):
+def proc_store_update(data):
     if data is not None:
         return data
     else:
         raise PreventUpdate
 
 
-@app.callback(
-    Output("load_data", "data"),
-    Input("load-data-store", "data "),
-)
-def load_data_update(data):
-    if data is not None:
-        return data
-    else:
-        raise PreventUpdate
+# @app.callback(
+#     Output("load_data", "data"),
+#     Input("load-data-store", "data "),
+# )
+# def load_data_update(data):
+#     if data is not None:
+#         return data
+#     else:
+#         raise PreventUpdate
 
 
 # passes the upload from card 2 for later access.
@@ -495,21 +495,20 @@ def render_page_content(pathname):
         return dashboard.layout
     elif pathname == "/pages/analysis":
         return analysis.analysis_layout
-    # elif pathname == "/pages/comparison":
-    #     return comparison.layout
-
+    elif pathname == "/pages/benchmark":
+        return benchmark.layout
     elif pathname == "/pages/documentation":
         return documentation.layout
 
     # If the user tries to reach a different page, return a 404 message
     return dbc.Container(
         [
-            html.H1(f"404: {pathname} Not found", className="text-danger display-5"),
+            html.H1(f"404: Page not found", className="text-danger display-5"),
             html.Hr(),
             html.Img(
-                src="https://media0.giphy.com/media/Ta3v3I4GI1gH7Rqek6/giphy.gif?cid=790b76112944eebcc185f3eb1d07e97f8a5ec3bc078fd858&rid=giphy.gif&ct=g",
-                alt="the weeknd lost gif",
-                style={"margin": "auto", "display": "block"},
+                src="https://blush.design/api/download?shareUri=Itj_HmyiadrUTfGf&c=Hair_0%7Ef9a34e_Skin_0%7Ed8936c&w=800&h=800&fm=png",
+                alt="shocked avatar by Diana Aguilar Ortiz",
+                style={"margin": "auto", "display": "block", "height": "500px"},
             ),
             html.H3(
                 "Are you lost? No worries, click the button below",
