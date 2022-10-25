@@ -10,4 +10,3 @@ fp_app = firebase_admin.initialize_app(
 )
 db = firestore.client()
 bucket = storage.bucket(app=fp_app)
-

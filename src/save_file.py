@@ -140,15 +140,15 @@ save_modal = html.Div(
 # ----- disables save btn and load btn if no analysis -----
 @callback(
     Output("save-button", "disabled"),
-    Output("load-button", "disabled"),
+    # Output("load-button", "disabled"),
     Input("proc_store", "data"),
     prevent_initial_call=True,
 )
 def disable_save_btn(data):
     if data is None:
-        return True, True
+        return True
     else:
-        return False, False
+        return False
 
 
 # ----- get projects -----
@@ -211,17 +211,7 @@ def send_data(data, collection, document):
         document ( String ): Document name
     """
     df = pd.read_json(data, orient="split")
-    df_ = df.groupby(
-        [
-            "Floor Level",
-            "Element",
-            "Green Book Material",
-            "EPiC Material",
-            "ICE Material",
-        ],
-        as_index=False,
-    ).sum()
-    to_send = df_.to_json(orient="split")
+    to_send = df.to_json(orient="split")
     # storing main json database in firebase storage
     firebase_init.bucket.blob(
         "{}+{}.json".format(collection, document)
@@ -293,16 +283,17 @@ def ec_totals(data):
     Input("project_name_input", "value"),
     Input("new_project_variation", "value"),
     State("analysis_store", "data"),
+    State("main_store", "data"),  # TODO: change to main_store || analysis_store
     prevent_initial_call=True,
 )
-def save_to_firebase(n_clicks, project_name, variation_name, data):
+def save_to_firebase(n_clicks, project_name, variation_name, data, main_store):
     # send_data(data)
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
 
         ec = ec_totals(data)
 
         new_project_(project_name, variation_name, ec["gb"], ec["epic"], ec["ice"])
-        send_data(data, project_name, variation_name)
+        send_data(main_store, project_name, variation_name)
         return (
             dmc.Notification(
                 title="Save Successful",
@@ -325,15 +316,16 @@ def save_to_firebase(n_clicks, project_name, variation_name, data):
     Input("project_select", "value"),
     Input("append_project_variation", "value"),
     State("analysis_store", "data"),
+    State("main_store", "data"),
     prevent_initial_call=True,
 )
-def append_to_firebase(n_clicks, project_name, variation_name, data):
+def append_to_firebase(n_clicks, project_name, variation_name, data, main_store):
     if "append_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
 
         ec = ec_totals(data)
 
         append_to_project(project_name, variation_name, ec["gb"], ec["epic"], ec["ice"])
-        send_data(data, project_name, variation_name)
+        send_data(main_store, project_name, variation_name)
         return (
             dmc.Notification(
                 title="Save Successful",

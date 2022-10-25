@@ -1,3 +1,7 @@
+import json
+import datetime
+import requests
+
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -10,7 +14,7 @@ from flask import Flask
 
 from pages import analysis, benchmark, dashboard, documentation
 from pages.analysis import analysis
-from src import drawer, load_file, save_file
+from src import drawer, load_file, save_file, firebase_init
 
 # server shit
 external_stylesheets = [
@@ -245,7 +249,20 @@ sidebar_ui_element = html.Div(
                             ],
                             id="load-button",
                             color="blue",
-                            # style={"marginBottom": "3rem"},
+                        ),
+                        html.A(
+                            children=[
+                                dmc.Button(
+                                    "reset",
+                                    variant="outline",
+                                    leftIcon=[
+                                        DashIconify(icon="fluent:arrow-reset-20-filled")
+                                    ],
+                                    id="reset-button",
+                                    color="blue",
+                                )
+                            ],
+                            id="reset-link",
                         ),
                     ],
                     direction="column",
@@ -313,6 +330,9 @@ sidebar_ui = dmc.MediaQuery(
     styles={"display": "none"},
 )
 
+test_ui = html.Div(id="test-ui")
+
+
 # ----- Main UI -----
 # media query for the main content... expands and contracts depending on the width of the screen
 
@@ -324,13 +344,35 @@ main_ui = dmc.MediaQuery(
 
 # ---------------------------- callback functions ----------------------------
 
+
+def load_data(project_name: str, variation_name: str):
+    blob = firebase_init.bucket.blob("{}+{}.json".format(project_name, variation_name))
+    link = blob.generate_signed_url(datetime.timedelta(seconds=300), method="GET")
+    data = requests.get(link).json()
+    return data
+
+
 # passes store to main_store
-@app.callback(Output("main_store", "data"), Input("temp-df-store", "data"))
-def save_2_main(data):
-    if data is not None:
+@app.callback(
+    Output("main_store", "data"),
+    Input("load-data-button", "n_clicks"),
+    State("pre_main_store", "data"),
+    State("load-project-name", "value"),
+    State("load-variation-name", "value"),
+    prevent_initial_call=True,
+)
+def save_2_main(n, data, project_name, variation_name):
+    if ctx.triggered_id == "temp-df-store":
         return data
+    elif ctx.triggered_id == "load-data-button":
+        return load_data(project_name, variation_name)
     else:
-        PreventUpdate
+        raise PreventUpdate
+
+
+@app.callback(Output("pre_main_store", "data"), Input("temp-df-store", "data"))
+def dumb_callback(data):
+    return data
 
 
 # passes temp_proc_store to proc_store
@@ -346,14 +388,30 @@ def proc_store_update(data):
 
 
 # @app.callback(
-#     Output("load_data", "data"),
-#     Input("load-data-store", "data "),
+#     Output("main_store", "clear_data"),
+#     Output("reset-link", "href"),
+#     Input("reset-button", "n_clicks"),
+#     State("url", "pathname"),
+#     prevent_initial_call=True,
 # )
-# def load_data_update(data):
-#     if data is not None:
-#         return data
+# def reset_data(n_clicks, pathname):
+#     if n_clicks is not None:
+#         return True, pathname
 #     else:
 #         raise PreventUpdate
+
+# TEST CALLBACK
+@app.callback(
+    Output("test_ui", "children"),  # TODO:
+    Input("reset-button", "n_clicks"),
+    State("main_store", "data"),
+    prevent_initial_call=True,
+)
+def load_data_update(n, data):
+    if data is not None:
+        return str(data)
+    else:
+        raise PreventUpdate
 
 
 # passes the upload from card 2 for later access.
@@ -535,6 +593,7 @@ app.layout = dmc.NotificationsProvider(
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
         dcc.Store(id="load_data", storage_type="session"),
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
+        dcc.Store(id="pre_main_store"),
         dcc.Store(id="nla_store", storage_type="session"),
         dcc.Store(id="gb_bld_type_store", storage_type="session"),
         dcc.Store(id="gia_store", storage_type="session"),
@@ -548,6 +607,7 @@ app.layout = dmc.NotificationsProvider(
         dcc.Location(id="url", refresh=False),
         sidebar_ui,
         main_ui,
+        test_ui,
     ]
 )
 
