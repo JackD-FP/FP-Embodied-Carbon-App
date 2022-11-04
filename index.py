@@ -1,11 +1,12 @@
-import json
 import datetime
-import requests
+import json
 
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 import firebase_admin
+import pandas as pd
+import requests
 from dash import Input, Output, State, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
@@ -14,7 +15,7 @@ from flask import Flask
 
 from pages import analysis, benchmark, dashboard, documentation
 from pages.analysis import analysis
-from src import drawer, load_file, save_file, firebase_init
+from src import drawer, firebase_init, load_file, save_file
 
 # server shit
 external_stylesheets = [
@@ -241,14 +242,27 @@ sidebar_ui_element = html.Div(
                             id="save-button",
                             color="green",
                         ),
-                        dmc.Button(
-                            "Load",
-                            variant="outline",
-                            leftIcon=[
-                                DashIconify(icon="fluent:open-folder-24-regular")
+                        dmc.Tooltip(
+                            label="😬 Soz! still in development",
+                            position="right",
+                            placement="center",
+                            color="red",
+                            gutter=3,
+                            closeDelay=10,
+                            children=[
+                                dmc.Button(
+                                    "Load",
+                                    variant="outline",
+                                    leftIcon=[
+                                        DashIconify(
+                                            icon="fluent:open-folder-24-regular"
+                                        )
+                                    ],
+                                    id="load-button",
+                                    color="blue",
+                                    disabled=True,
+                                ),
                             ],
-                            id="load-button",
-                            color="blue",
                         ),
                         html.A(
                             children=[
@@ -270,11 +284,20 @@ sidebar_ui_element = html.Div(
                 dividers("akar-icons:gear", "settings"),
                 dmc.Group(
                     [
-                        dmc.Button(
-                            "Print",
-                            variant="outline",
-                            leftIcon=[DashIconify(icon="bytesize:print")],
-                            id="print-button",
+                        dmc.Tooltip(
+                            children=[
+                                dmc.Button(
+                                    "Print",
+                                    variant="outline",
+                                    leftIcon=[DashIconify(icon="bytesize:print")],
+                                    id="print-button",
+                                    disabled=True,
+                                )
+                            ],
+                            withArrow=True,
+                            label="😬 Soz! still in development",
+                            position="right",
+                            placement="center",
                         ),
                         dmc.Button(
                             "Settings",
@@ -345,27 +368,30 @@ main_ui = dmc.MediaQuery(
 # ---------------------------- callback functions ----------------------------
 
 
-def load_data(project_name: str, variation_name: str):
+def load_data_def(project_name: str, variation_name: str):
     blob = firebase_init.bucket.blob("{}+{}.json".format(project_name, variation_name))
     link = blob.generate_signed_url(datetime.timedelta(seconds=300), method="GET")
-    data = requests.get(link).json()
-    return data
+    data = requests.get(link)
+    content = json.loads(data)
+    return content
 
 
 # passes store to main_store
 @app.callback(
     Output("main_store", "data"),
-    Input("load-data-button", "n_clicks"),
-    State("pre_main_store", "data"),
-    State("load-project-name", "value"),
+    # Input("load-data-button", "n_clicks"),
+    Input("pre_main_store", "data"),
+    Input("load-project-name", "value"),
     State("load-variation-name", "value"),
     prevent_initial_call=True,
 )
-def save_2_main(n, data, project_name, variation_name):
-    if ctx.triggered_id == "temp-df-store":
+def save_2_main(data, project_name, variation_name):
+    if ctx.triggered_id == "pre_main_store":
         return data
     elif ctx.triggered_id == "load-data-button":
-        return load_data(project_name, variation_name)
+        new_data = load_data_def(project_name, variation_name)
+        df_return = pd.read_json(new_data)
+        return df_return
     else:
         raise PreventUpdate
 

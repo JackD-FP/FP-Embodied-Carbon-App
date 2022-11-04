@@ -55,7 +55,7 @@ def parse_contents(contents, filename, date, id, id_name):
 
     return html.Div(
         [
-            dcc.Store(id=id, data=df.to_json(date_format="iso", orient="split")),
+            dcc.Store(id=id, data=df.to_json(orient="split")),
             dcc.Store(id=id_name, data=filename),
             dbc.Alert(
                 [

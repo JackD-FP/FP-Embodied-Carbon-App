@@ -241,6 +241,20 @@ def gb_benchmarks_update(gb_nla, gb_value, data):
         )
 
 
+@callback(
+    Output("epic_benchmark", "children"),
+    Input("epic_area", "value"),
+    State("proc_store", "data"),
+)
+def epic_benchmarks_update(area_val, data):
+    if area_val is None or area_val == "" or area_val == 0:
+        raise "Area cannot be empty or 0"
+    else:
+        df = pd.read_json(data, orient="split")
+        epic_sum = df["EPiC EC"].sum()
+        return "{:.2f}".format(epic_sum / area_val)
+
+
 # ICE callback
 @callback(
     Output("ice_gia", "error"),

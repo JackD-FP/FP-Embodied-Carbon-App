@@ -83,6 +83,16 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
+def check_type(data):
+    if isinstance(data, dict):
+        # return pd.read_json(data, orient="split")
+        return pd.DataFrame.from_dict(
+            data
+        )  # sort this out "ValueError: only recognize index or columns for orient"
+    else:
+        return pd.read_json(data, orient="split")
+
+
 @callback(
     Output("dashboard_graph", "children"),
     [
@@ -101,6 +111,9 @@ def make_graphs(
         raise PreventUpdate
     elif data is not None:
         df_ = pd.read_json(data, orient="split")
+        # df_ = data
+
+        # df_ = pd.read_json(data)
         df_o = df_.reset_index()
 
         df = df_.groupby(by=["Building Materials (All)"], as_index=False).sum()

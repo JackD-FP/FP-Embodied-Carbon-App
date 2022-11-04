@@ -92,7 +92,10 @@ def update_load_button_disable(val1, val2):
     prevent_initial_call=True,
 )
 def update_project_name_select_data(n_clicks, data):
-    return save_file.data_to_key_options(data)
+    if n_clicks is None:
+        raise PreventUpdate
+    else:
+        return save_file.data_to_key_options(data)
 
 
 # ----- variation name select data update -----
@@ -114,7 +117,7 @@ def update_variation_name_select_data(val, data):
 
 # # ----- loading logic -----
 # @callback(
-#     Output("main_store", "data"),
+#     Output("load_data", "data"),
 #     Input("load-data-button", "n_clicks"),
 #     State("load-project-name", "value"),
 #     State("load-variation-name", "value"),
