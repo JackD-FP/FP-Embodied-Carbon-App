@@ -12,5 +12,6 @@
         "titleBar.activeBackground": "#00ed14",
         "titleBar.activeForeground": "#000000",
         "terminal.background": "#002403"
-    }
+    },
+    "python.analysis.autoImportCompletions": false
 }

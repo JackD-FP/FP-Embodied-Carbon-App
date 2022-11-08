@@ -160,7 +160,7 @@ layout = html.Div(
             The application is only as good as the model itself. A cleaner and well-maintained \
             model would make the experience seamless and better in general. \
             The most common problem is that the application ",
-                        html.Strong('hates empty cells in "Building Materials (All)"'),
+                        html.Strong('hates empty cells in "Materials"'),
                         ". The best way to ensure that this does not happen is to have ",
                         html.Strong("materials assigned to all elements"),
                         ". You can also filter it out in the Components Schedule or delete it on Excel. \

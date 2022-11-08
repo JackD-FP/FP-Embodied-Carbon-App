@@ -1,5 +1,6 @@
 # saving this because of the ^3 (m³)
 import re
+from collections import Counter
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
@@ -60,6 +61,7 @@ layout = html.Div(
             # Allow multiple files to be uploaded
             multiple=True,
         ),
+        html.Div(id="error-display"),
         html.Div(id="display-table"),
         html.Div(
             id="dashboard_graph"
@@ -83,14 +85,12 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
-def check_type(data):
-    if isinstance(data, dict):
-        # return pd.read_json(data, orient="split")
-        return pd.DataFrame.from_dict(
-            data
-        )  # sort this out "ValueError: only recognize index or columns for orient"
+def header_check(header_list: list):
+    correct_headers = ["Levels", "Layer", "Materials", "Mass", "Volume"]
+    if sorted(header_list) != sorted(correct_headers):
+        return True
     else:
-        return pd.read_json(data, orient="split")
+        return False
 
 
 @callback(
@@ -103,21 +103,39 @@ def check_type(data):
         Input("wall_slider", "value"),
         Input("stair_slider", "value"),
     ],
+    prevent_initial_call=True,
 )
 def make_graphs(
     data, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
 ):
+    df_ = pd.read_json(data, orient="split")
+    item_ = df_.columns.to_list()
+    print(item_)
+    print(header_check(df_.columns.tolist()))
     if data is None:
         raise PreventUpdate
-    elif data is not None:
-        df_ = pd.read_json(data, orient="split")
+    elif header_check(df_.columns.tolist()):
+        return dmc.Alert(
+            title="Column Header Error",
+            children=[
+                dmc.Text(
+                    "The header name is not correct. Please check the header name and try again. Column names should be: ",
+                ),
+                dmc.Text(
+                    "Levels, Layer, Materials, Mass, Volume", weight=700, size="lg"
+                ),
+            ],
+            color="red",
+        )
+
+    else:
+
         # df_ = data
 
         # df_ = pd.read_json(data)
         df_o = df_.reset_index()
 
-        df = df_.groupby(by=["Building Materials (All)"], as_index=False).sum()
-
+        df = df_.groupby(by=["Materials"], as_index=False).sum()
         # new calculations for carbon intensity
         mat, vol, mass, floor, element, gbec, epicec, iceec = funcs.mat_interpreter(
             df_, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
@@ -252,7 +270,7 @@ def make_graphs(
                     "Review your uploaded file with the table below. See if there are any errors or missing data.",
                     className="my-3",
                 ),
-                html.Div(id="error_check"),
+                # html.Div(id="error_check"),
                 dash_table.DataTable(
                     df_o.to_dict("records"),
                     [{"name": i, "id": i} for i in df_o.columns],
@@ -299,3 +317,72 @@ def make_graphs(
 )
 def filename_update(data):
     return data
+
+
+# ----- check for errors in the uploaded file -----
+
+
+# def header_check(df):
+#     # check if the header is correct
+#     for col in df.columns:
+#         if col in ["Levels", "Layer", "Materials", "Mass", "Volume"]:
+#             return False, None
+#         else:
+#             return True, col
+
+
+def material_check(df):
+    # check if the materials are in the database
+    error_index = []
+    for i, mat in enumerate(df["Materials"].items()):
+        if re.search(
+            r"(concrete)|(conc)|(steel)|(Reinforcement Bar)|(rebar)|(reo)|(timber)",
+            str(mat),
+            re.IGNORECASE,
+        ):
+            error_index.append(i)
+    if len(error_index) > 0:
+        return False, None
+    else:
+        return True, error_index
+
+
+# @callback(
+#     Output("error_check", "children"),
+#     Input("main_store", "data"),
+# )
+# def display_error(data):
+#     df = pd.read_json(data, orient="split")
+
+#     head_error, col = header_check(df)
+#     material_error, error_index = material_check(df)
+#     if head_error is True:
+#         return dmc.Alert(
+#             children=[
+#                 "There is an error in the header of the uploaded file. Please check the column name of {}.".format(
+#                     col
+#                 ),
+#                 "Header should be: Levels, Layer, Materials, Mass, Volume",
+#             ],
+#             title="{} is not a correct header".format(col),
+#             color="red",
+#         )  # missing header
+#     elif material_error is True:
+#         return dmc.Alert(
+#             children=[
+#                 "Please check these index for material errors: {}".format(
+#                     str(error_index)
+#                 ),
+#                 "materials should contain: concrete, steel, timber, reinformation bar",
+#             ],
+#             title="There are incorrect materials",
+#             color="red",
+#         )
+#     elif df.isnull().values.any() is True:
+#         return dmc.Alert(
+#             children="There are missing data in the uploaded file. Please check the table below.",
+#             title="Missing data",
+#             color="red",
+#         )
+#     else:
+#         return None
