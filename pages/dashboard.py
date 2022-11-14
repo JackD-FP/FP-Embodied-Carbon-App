@@ -9,10 +9,11 @@ import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from config import config
 from dash import Input, Output, State, callback, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
+
+from config import config
 from src import dashboard_cards, funcs, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
@@ -80,7 +81,7 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         children = [
             uploader.parse_contents(c, n, d, "temp-df-store", "name_1")
-            for c, n, d in zip(list_of_contents, list_of_names, list_of_dates)
+            for c, n, d in zip(list_of_contents, list_of_names, list_of_dates)  # type: ignore
         ]
         return children
 
@@ -103,15 +104,13 @@ def header_check(header_list: list):
         Input("wall_slider", "value"),
         Input("stair_slider", "value"),
     ],
-    prevent_initial_call=True,
+    # prevent_initial_call=True,
 )
 def make_graphs(
     data, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
 ):
     df_ = pd.read_json(data, orient="split")
     item_ = df_.columns.to_list()
-    print(item_)
-    print(header_check(df_.columns.tolist()))
     if data is None:
         raise PreventUpdate
     elif header_check(df_.columns.tolist()):
@@ -245,7 +244,7 @@ def make_graphs(
                     showarrow=False,
                 ),
             ],
-        ),
+        ),  # type: ignore
         fig.update_traces(
             hoverinfo="label+value",
             textinfo="percent",

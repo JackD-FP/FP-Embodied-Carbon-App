@@ -302,13 +302,13 @@ def analysis_update(
                         beam_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                gb_ec.append(material_dict.get(row["Materials"])[0])  # type: ignore
+                gb_sub_materials.append(material_dict.get(row["Materials"])[1])  # type: ignore
+                epic_ec.append(material_dict.get(row["Materials"])[2])  # type: ignore
+                epic_sub_materials.append(material_dict.get(row["Materials"])[3])  # type: ignore
+                ice_ec.append(material_dict.get(row["Materials"])[4])  # type: ignore
+                ice_sub_materials.append(material_dict.get(row["Materials"])[5])  # type: ignore
+                colors.append(material_dict.get(row["Materials"])[6])  # type: ignore
 
             if row["Element"] == "Column":
                 material_dict = {
@@ -319,13 +319,13 @@ def analysis_update(
                         col_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                gb_ec.append(material_dict.get(row["Materials"])[0])  # type: ignore
+                gb_sub_materials.append(material_dict.get(row["Materials"])[1])  # type: ignore
+                epic_ec.append(material_dict.get(row["Materials"])[2])  # type: ignore
+                epic_sub_materials.append(material_dict.get(row["Materials"])[3])  # type: ignore
+                ice_ec.append(material_dict.get(row["Materials"])[4])  # type: ignore
+                ice_sub_materials.append(material_dict.get(row["Materials"])[5])  # type: ignore
+                colors.append(material_dict.get(row["Materials"])[6])  # type: ignore
 
             if row["Element"] == "Slab":
                 material_dict = {
@@ -336,13 +336,13 @@ def analysis_update(
                         slab_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                gb_ec.append(material_dict.get(row["Materials"])[0])  # type: ignore
+                gb_sub_materials.append(material_dict.get(row["Materials"])[1])  # type: ignore
+                epic_ec.append(material_dict.get(row["Materials"])[2])  # type: ignore
+                epic_sub_materials.append(material_dict.get(row["Materials"])[3])  # type: ignore
+                ice_ec.append(material_dict.get(row["Materials"])[4])  # type: ignore
+                ice_sub_materials.append(material_dict.get(row["Materials"])[5])  # type: ignore
+                colors.append(material_dict.get(row["Materials"])[6])  # type: ignore
 
             if row["Element"] == "Wall":
                 material_dict = {
@@ -353,13 +353,13 @@ def analysis_update(
                         wall_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                gb_ec.append(material_dict.get(row["Materials"])[0])  # type: ignore
+                gb_sub_materials.append(material_dict.get(row["Materials"])[1])  # type: ignore
+                epic_ec.append(material_dict.get(row["Materials"])[2])  # type: ignore
+                epic_sub_materials.append(material_dict.get(row["Materials"])[3])  # type: ignore
+                ice_ec.append(material_dict.get(row["Materials"])[4])  # type: ignore
+                ice_sub_materials.append(material_dict.get(row["Materials"])[5])  # type: ignore
+                colors.append(material_dict.get(row["Materials"])[6])  # type: ignore
 
             if row["Element"] == "Stairs":
                 material_dict = {
@@ -370,13 +370,13 @@ def analysis_update(
                         stair_timber, row["Mass"], row["Volume"]
                     ),
                 }
-                gb_ec.append(material_dict.get(row["Materials"])[0])
-                gb_sub_materials.append(material_dict.get(row["Materials"])[1])
-                epic_ec.append(material_dict.get(row["Materials"])[2])
-                epic_sub_materials.append(material_dict.get(row["Materials"])[3])
-                ice_ec.append(material_dict.get(row["Materials"])[4])
-                ice_sub_materials.append(material_dict.get(row["Materials"])[5])
-                colors.append(material_dict.get(row["Materials"])[6])
+                gb_ec.append(material_dict.get(row["Materials"])[0])  # type: ignore
+                gb_sub_materials.append(material_dict.get(row["Materials"])[1])  # type: ignore
+                epic_ec.append(material_dict.get(row["Materials"])[2])  # type: ignore
+                epic_sub_materials.append(material_dict.get(row["Materials"])[3])  # type: ignore
+                ice_ec.append(material_dict.get(row["Materials"])[4])  # type: ignore
+                ice_sub_materials.append(material_dict.get(row["Materials"])[5])  # type: ignore
+                colors.append(material_dict.get(row["Materials"])[6])  # type: ignore
 
         df.insert(loc=0, column="Green Book Material", value=gb_sub_materials)
         df.insert(loc=1, column="EPiC Material", value=epic_sub_materials)

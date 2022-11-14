@@ -8,6 +8,7 @@ from dash import Input, Output, State, callback, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 from firebase_admin import credentials, firestore, storage
+from google.cloud.firestore import ArrayUnion
 
 from src import firebase_init
 
@@ -71,9 +72,7 @@ new_project = dmc.Tab(
             direction="column",
             align="center",
         ),
-        variation_input(
-            "new_project_variation", "new_project_variation_error"
-        ),  # TODO:
+        variation_input("new_project_variation", "new_project_variation_error"),
         dmc.Space(h="xs"),
         dmc.Button(
             "Save",
@@ -87,6 +86,7 @@ new_project = dmc.Tab(
 existing_project = dmc.Tab(
     id="existing-project",
     label="Existing Project",
+    disabled=True,
     children=[
         html.Div(id="save_new_variation"),
         dmc.Text(
@@ -110,9 +110,7 @@ existing_project = dmc.Tab(
             direction="column",
             align="center",
         ),
-        variation_input(
-            "append_project_variation", "append_project_variation_error"
-        ),  # TODO:
+        variation_input("append_project_variation", "append_project_variation_error"),
         dmc.Space(h="xs"),
         dmc.Button(
             "Save",
@@ -201,7 +199,6 @@ def update_project_select(n_clicks, data):
 
 
 # ----- Save Logic -----
-# pd.groupby is used to reduce the size of the data that is saved to firestore
 def send_data(data, collection, document):
     """Send data to firebase storage.
 
@@ -221,30 +218,58 @@ def send_data(data, collection, document):
     )
 
 
-def new_project_(
-    project_name: str, variation_name: str, greenbook: float, epic: float, ice: float
-):
+# def new_project_(
+#     project_name: str, variation_name: str, greenbook: float, epic: float, ice: float
+# ):
+#     """Create new project in firestore.
+
+#     Args:
+#         project_name ( String ): Name of the project
+#         variation_name ( String ): Name of the variation
+#     """
+#     firebase_init.db.collection("projects").document(project_name).set(
+#         {
+#             "project_name": project_name,
+#             "variation_name": [variation_name],
+#             "datetime": [str(datetime.datetime.now(tz=datetime.timezone.utc).date())],
+#             "greenbook": [greenbook],
+#             "epic": [epic],
+#             "ice": [ice],
+#         }
+#     )
+
+
+def new_project_(project_name: str, variation_name: str, data: dict):
     """Create new project in firestore.
 
     Args:
         project_name ( String ): Name of the project
         variation_name ( String ): Name of the variation
+        data ( dict ): Dictionary of data
     """
     firebase_init.db.collection("projects").document(project_name).set(
         {
             "project_name": project_name,
-            "variation_name": [variation_name],
-            "datetime": [str(datetime.datetime.now(tz=datetime.timezone.utc).date())],
-            "greenbook": [greenbook],
-            "epic": [epic],
-            "ice": [ice],
+            "variation_name": variation_name,
+            "datetime": str(datetime.datetime.now(tz=datetime.timezone.utc).date()),
+            "greenbook": data[0]["gb"],
+            "epic": data[0]["epic"],
+            "ice": data[0]["ice"],
+            "substructure": {
+                "greenbook": data[1]["gb"],  # TODO:
+                "epic": data[1]["epic"],  # TODO:
+                "ice": data[1]["ice"],  # TODO:
+            },
+            "superstructure": {
+                "greenbook": data[2]["gb"],  # TODO:
+                "epic": data[2]["epic"],  # TODO:
+                "ice": data[2]["ice"],  # TODO:
+            },
         }
     )
 
 
-def append_to_project(
-    project_name: str, variation_name: str, greenbook: float, epic: float, ice: float
-):
+def append_to_project(project_name: str, variation_name: str, data: dict):
     """Append variation name to project.
 
     Args:
@@ -252,15 +277,15 @@ def append_to_project(
         variation_name ( String ): Name of variation
     """
     doc_ref = firebase_init.db.collection("projects").document(project_name)
-    doc_ref.update({"variation_name": firestore.ArrayUnion([variation_name])})
+    doc_ref.update({"variation_name": ArrayUnion([variation_name])})
     datetime_string = str(datetime.datetime.now(tz=datetime.timezone.utc).date())
-    doc_ref.update({"datetime": firestore.ArrayUnion([datetime_string])})
-    doc_ref.update({"greenbook": firestore.ArrayUnion([greenbook])})
-    doc_ref.update({"epic": firestore.ArrayUnion([epic])})
-    doc_ref.update({"ice": firestore.ArrayUnion([ice])})
+    doc_ref.update({"datetime": ArrayUnion([datetime_string])})
+    doc_ref.update({"greenbook": ArrayUnion(data[0]["gb"])})
+    doc_ref.update({"epic": ArrayUnion(data[0]["epic"])})
+    doc_ref.update({"ice": ArrayUnion(data[0]["ice"])})
 
 
-def ec_totals(data):
+def ec_totals(data) -> tuple:
     """Calculate the total of each material type.
 
     Args:
@@ -273,7 +298,17 @@ def ec_totals(data):
     gb = df["Green Book EC"].sum()
     epic = df["EPiC EC"].sum()
     ice = df["ICE EC"].sum()
-    return {"gb": gb, "epic": epic, "ice": ice}
+
+    df_lvl = df[df["Floor Level"].str.contains("basement", case=False)]
+    sub_gb = df_lvl["Green Book EC"].sum()
+    sub_epic = df_lvl["EPiC EC"].sum()
+    sub_ice = df_lvl["ICE EC"].sum()
+
+    total = {"gb": gb, "epic": epic, "ice": ice}
+    superstructure = {"gb": gb - sub_gb, "epic": epic - sub_epic, "ice": ice - sub_ice}
+    substructure = {"gb": sub_gb, "epic": sub_epic, "ice": sub_ice}
+
+    return (total, superstructure, substructure)
 
 
 # saving project with NEW PROJECT NAME
@@ -292,7 +327,7 @@ def save_to_firebase(n_clicks, project_name, variation_name, data, main_store):
 
         ec = ec_totals(data)
 
-        new_project_(project_name, variation_name, ec["gb"], ec["epic"], ec["ice"])
+        new_project_(project_name, variation_name, ec)  # type: ignore
         send_data(main_store, project_name, variation_name)
         return (
             dmc.Notification(
@@ -324,7 +359,7 @@ def append_to_firebase(n_clicks, project_name, variation_name, data, main_store)
 
         ec = ec_totals(data)
 
-        append_to_project(project_name, variation_name, ec["gb"], ec["epic"], ec["ice"])
+        append_to_project(project_name, variation_name, ec)  # type: ignore
         send_data(main_store, project_name, variation_name)
         return (
             dmc.Notification(

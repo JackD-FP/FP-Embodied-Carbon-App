@@ -13,7 +13,7 @@ from dash_iconify import DashIconify
 from firebase_admin import credentials, firestore, storage
 from flask import Flask
 
-from pages import analysis, benchmark, dashboard, documentation
+from pages import benchmark, dashboard, documentation
 from pages.analysis import analysis
 from src import drawer, firebase_init, load_file, save_file
 
@@ -27,7 +27,7 @@ external_stylesheets = [
 server = Flask(__name__)
 app = dash.Dash(
     __name__,
-    server=server,
+    # server=Flask(__name__),
     external_stylesheets=external_stylesheets,
     suppress_callback_exceptions=True,
     meta_tags=[
@@ -274,6 +274,7 @@ sidebar_ui_element = html.Div(
                                     ],
                                     id="reset-button",
                                     color="blue",
+                                    disabled=True,
                                 )
                             ],
                             id="reset-link",
@@ -372,33 +373,36 @@ def load_data_def(project_name: str, variation_name: str):
     blob = firebase_init.bucket.blob("{}+{}.json".format(project_name, variation_name))
     link = blob.generate_signed_url(datetime.timedelta(seconds=300), method="GET")
     data = requests.get(link)
-    content = json.loads(data)
+    content = json.loads(str(data))
     return content
 
 
-# passes store to main_store
-@app.callback(
-    Output("main_store", "data"),
-    # Input("load-data-button", "n_clicks"),
-    Input("pre_main_store", "data"),
-    Input("load-project-name", "value"),
-    State("load-variation-name", "value"),
-    prevent_initial_call=True,
-)
-def save_2_main(data, project_name, variation_name):
-    if ctx.triggered_id == "pre_main_store":
-        return data
-    elif ctx.triggered_id == "load-data-button":
-        new_data = load_data_def(project_name, variation_name)
-        df_return = pd.read_json(new_data)
-        return df_return
-    else:
-        raise PreventUpdate
+# # passes store to main_store
+# @app.callback(
+#     Output("main_store", "data"),
+#     # Input("load-data-button", "n_clicks"),
+#     Input("pre_main_store", "data"),
+#     Input("load-project-name", "value"),
+#     State("load-variation-name", "value"),
+#     prevent_initial_call=True,
+# )
+# def save_2_main(data, project_name, variation_name):
+#     if ctx.triggered_id == "pre_main_store":
+#         return data
+#     elif ctx.triggered_id == "load-data-button":
+#         new_data = load_data_def(project_name, variation_name)
+#         df_return = pd.read_json(new_data)
+#         return df_return
+#     else:
+#         raise PreventUpdate
 
 
-@app.callback(Output("pre_main_store", "data"), Input("temp-df-store", "data"))
+@app.callback(Output("main_store", "data"), Input("temp-df-store", "data"))
 def dumb_callback(data):
-    return data
+    if data is None:
+        raise PreventUpdate
+    else:
+        return data
 
 
 # passes temp_proc_store to proc_store
@@ -427,17 +431,17 @@ def proc_store_update(data):
 #         raise PreventUpdate
 
 # TEST CALLBACK
-@app.callback(
-    Output("test_ui", "children"),  # TODO:
-    Input("reset-button", "n_clicks"),
-    State("main_store", "data"),
-    prevent_initial_call=True,
-)
-def load_data_update(n, data):
-    if data is not None:
-        return str(data)
-    else:
-        raise PreventUpdate
+# @app.callback(
+#     Output("test_ui", "children"),  # TODO:
+#     Input("reset-button", "n_clicks"),
+#     State("main_store", "data"),
+#     prevent_initial_call=True,
+# )
+# def load_data_update(n, data):
+#     if data is not None:
+#         return str(data)
+#     else:
+#         raise PreventUpdate
 
 
 # passes the upload from card 2 for later access.
@@ -446,7 +450,7 @@ def save_2_card02(data):
     if data is not None:
         return data
     else:
-        PreventUpdate
+        raise PreventUpdate
 
 
 # passes the upload from card 3 for later access.
@@ -455,7 +459,7 @@ def save_2_card03(data):
     if data is not None:
         return data
     else:
-        PreventUpdate
+        raise PreventUpdate
 
 
 # saves project name
@@ -619,7 +623,7 @@ app.layout = dmc.NotificationsProvider(
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
         dcc.Store(id="load_data", storage_type="session"),
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
-        dcc.Store(id="pre_main_store"),
+        # dcc.Store(id="pre_main_store"),
         dcc.Store(id="nla_store", storage_type="session"),
         dcc.Store(id="gb_bld_type_store", storage_type="session"),
         dcc.Store(id="gia_store", storage_type="session"),

@@ -13,5 +13,6 @@
         "titleBar.activeForeground": "#000000",
         "terminal.background": "#002403"
     },
-    "python.analysis.autoImportCompletions": false
+    "python.analysis.autoImportCompletions": false,
+    "python.analysis.typeCheckingMode": "basic"
 }
