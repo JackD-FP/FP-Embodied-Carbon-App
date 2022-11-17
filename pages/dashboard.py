@@ -104,7 +104,7 @@ def header_check(header_list: list):
         Input("wall_slider", "value"),
         Input("stair_slider", "value"),
     ],
-    # prevent_initial_call=True,
+    prevent_initial_call=True,
 )
 def make_graphs(
     data, beam_slider, column_slider, slab_slider, wall_slider, stair_slider

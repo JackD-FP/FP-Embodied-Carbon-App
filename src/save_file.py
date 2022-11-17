@@ -25,7 +25,6 @@ def variation_input(id: str, text_error: str):
     """
     input = html.Div(
         children=[
-            dmc.Space(h="xs"),
             dmc.TextInput(
                 label="Variation Name",
                 id=id,
@@ -39,6 +38,24 @@ def variation_input(id: str, text_error: str):
                 id=text_error,
                 color="red",
                 style={"textAlign": "center"},
+            ),
+            dmc.Space(h="md"),
+            dmc.TextInput(
+                label="Net Lettable Area (NLA)",
+                id="{}_nla".format(id),
+                style={"width": 200, "margin": "auto"},
+                description="NLA of the project",
+                placeholder="10000 m²",
+                required=True,
+            ),
+            dmc.Space(h="xs"),
+            dmc.TextInput(
+                label="Gross Building Area (GBA)",
+                id="{}_gba".format(id),
+                style={"width": 200, "margin": "auto"},
+                description="GBA of the project",
+                placeholder="10000 m²",
+                required=True,
             ),
         ]
     )
@@ -134,6 +151,31 @@ save_modal = html.Div(
         ),
     ]
 )
+
+# ----- Callback for nla/gba inputs -----
+@callback(
+    Output("new_project_variation_nla", "value"),
+    Output("new_project_variation_gba", "value"),
+    Input("save-button", "n_clicks"),
+    State("nla_store", "data"),
+    State("gia_store", "data"),
+    prevent_initial_call=True,
+)
+def update_areas_modal(n, nla, gba):
+    """Update nla/gba inputs when save button is clicked.
+
+    Args:
+        n (int): number of clicks
+        nla (int): nla value
+        gba (int): gba value
+
+    Returns:
+        int, int: returns nla and gba values
+    """
+    if n is None:
+        raise PreventUpdate
+    return nla, gba
+
 
 # ----- disables save btn and load btn if no analysis -----
 @callback(
