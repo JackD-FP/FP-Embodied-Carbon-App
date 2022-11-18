@@ -23,11 +23,8 @@ def parse_contents(contents, filename, date, id, id_name):
             "There was an error processing this file.",
         )
 
-    df = df.rename(
-        columns=df.iloc[0],
-    )
+    df = df.rename(columns=df.iloc[0])
     df = df.drop([0, 0])
-    # df = df.drop(columns=["3D Length"])
     df = df.replace("---", 0)
     return html.Div(
         [

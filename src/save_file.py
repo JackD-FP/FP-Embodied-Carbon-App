@@ -281,22 +281,26 @@ def send_data(data, collection, document):
 #     )
 
 
-def new_project_(project_name: str, variation_name: str, data: dict):
+def new_project_(
+    project_name: str, variation_name: str, data: dict, nla: int, gba: int
+):
     """Create new project in firestore.
 
     Args:
         project_name ( String ): Name of the project
         variation_name ( String ): Name of the variation
         data ( dict ): Dictionary of data
+        nla ( float ): Net Lettable Area
+        gba ( float ): Gross Building Area
     """
     firebase_init.db.collection("projects").document(project_name).set(
         {
             "project_name": project_name,
             "variation_name": variation_name,
             "datetime": str(datetime.datetime.now(tz=datetime.timezone.utc).date()),
-            "greenbook": data[0]["gb"],
-            "epic": data[0]["epic"],
-            "ice": data[0]["ice"],
+            "greenbook": data[0]["gb"] / nla,
+            "epic": data[0]["epic"] / nla,
+            "ice": data[0]["ice"] / gba,
             "substructure": {
                 "greenbook": data[1]["gb"],  # TODO:
                 "epic": data[1]["epic"],  # TODO:
@@ -361,15 +365,19 @@ def ec_totals(data) -> tuple:
     Input("new_project_variation", "value"),
     State("analysis_store", "data"),
     State("main_store", "data"),  # TODO: change to main_store || analysis_store
+    State("nla_store", "data"),
+    State("gia_store", "data"),
     prevent_initial_call=True,
 )
-def save_to_firebase(n_clicks, project_name, variation_name, data, main_store):
+def save_to_firebase(
+    n_clicks, project_name, variation_name, data, main_store, nla, gba
+):
     # send_data(data)
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
 
         ec = ec_totals(data)
 
-        new_project_(project_name, variation_name, ec)  # type: ignore
+        new_project_(project_name, variation_name, ec, nla, gba)  # type: ignore
         send_data(main_store, project_name, variation_name)
         return (
             dmc.Notification(
