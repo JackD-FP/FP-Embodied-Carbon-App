@@ -110,14 +110,15 @@ def header_check(header_list: list):
 def make_graphs(
     url, beam_slider, column_slider, slab_slider, wall_slider, stair_slider, data
 ):
-    df_ = pd.read_json(data, orient="split")
-    item_ = df_.columns.to_list()  # why is this not used? FIXME:
+    # item_ = df_.columns.to_list()  # why is this not used? FIXME:
 
     if data is None:
         print("main_store is empty")
         raise PreventUpdate
 
-    elif header_check(df_.columns.tolist()):  # error checking for xlsx/csv
+    elif header_check(
+        pd.read_json(data, orient="split").columns.tolist()
+    ):  # error checking for xlsx/csv
         return dmc.Alert(
             title="Column Header Error",
             children=[
@@ -132,7 +133,7 @@ def make_graphs(
         )
 
     elif url == "/pages/dashboard":
-
+        df_ = pd.read_json(data, orient="split")
         # df_ = data
 
         # df_ = pd.read_json(data)

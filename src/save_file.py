@@ -240,6 +240,8 @@ def update_project_select(n_clicks, data):
         return options
 
 
+# ----- handles options for project_select -----
+
 # ----- Save Logic -----
 def send_data(data, collection, document):
     """Send data to firebase storage.

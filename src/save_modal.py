@@ -64,7 +64,7 @@ save_modal = dbc.Modal(
     Output("save_main", "hidden"),
     Input("save_btn", "n_clicks"),
 )
-def success_or_fail(n):
+def success_or_fail_(n):
     if n is not None:
         return True
 
@@ -92,4 +92,4 @@ def success_or_fail(n):
         ]
         return children
     else:
-        PreventUpdate
+        raise PreventUpdate
