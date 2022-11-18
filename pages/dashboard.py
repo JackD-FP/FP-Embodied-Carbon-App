@@ -9,7 +9,7 @@ import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from dash import Input, Output, State, callback, dash_table, dcc, html
+from dash import Input, Output, State, callback, ctx, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 
@@ -97,23 +97,27 @@ def header_check(header_list: list):
 @callback(
     Output("dashboard_graph", "children"),
     [
-        Input("main_store", "data"),
+        Input("url", "pathname"),
         Input("beam_slider", "value"),
         Input("column_slider", "value"),
         Input("slab_slider", "value"),
         Input("wall_slider", "value"),
         Input("stair_slider", "value"),
+        Input("main_store", "data"),
     ],
-    prevent_initial_call=True,
+    # prevent_initial_call=True,
 )
 def make_graphs(
-    data, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
+    url, beam_slider, column_slider, slab_slider, wall_slider, stair_slider, data
 ):
     df_ = pd.read_json(data, orient="split")
-    item_ = df_.columns.to_list()
+    item_ = df_.columns.to_list()  # why is this not used? FIXME:
+
     if data is None:
+        print("main_store is empty")
         raise PreventUpdate
-    elif header_check(df_.columns.tolist()):
+
+    elif header_check(df_.columns.tolist()):  # error checking for xlsx/csv
         return dmc.Alert(
             title="Column Header Error",
             children=[
@@ -127,7 +131,7 @@ def make_graphs(
             color="red",
         )
 
-    else:
+    elif url == "/pages/dashboard":
 
         # df_ = data
 
