@@ -4,7 +4,8 @@ from collections import Counter
 
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import numpy as np
+
+# import numpy as np
 import openpyxl  # just so excel upload works
 import pandas as pd
 import plotly.express as px
@@ -86,9 +87,38 @@ def update_output(list_of_contents, list_of_names, list_of_dates):
         return children
 
 
-def header_check(header_list: list):
+def layer_check(layer_list: list):
+    for item in layer_list:
+        if re.search(r"beam|slab|column|wall|stair", item, re.IGNORECASE):
+            yield None
+        else:
+            yield item
+
+
+def header_checker(dataColumn):
+    for item in dataColumn:
+        if re.search(r"Levels|Layer|Materials|Mass|Volume", item, re.IGNORECASE):
+            yield None
+        else:
+            yield item
+
+
+def error_handler(error_list: list) -> str:
+    # print(layer_list)
+    if not error_list:
+        return "None"
+    else:
+        return ", ".join(error_list)
+
+
+def data_check(df):
     correct_headers = ["Levels", "Layer", "Materials", "Mass", "Volume"]
-    if sorted(header_list) != sorted(correct_headers):
+    header_list = df.columns.tolist()
+
+    layer_value = pd.unique(df["Layer"])
+    layer_error = list(layer_check(list(layer_value)))
+    res = list(filter(lambda item: item is not None, layer_error))
+    if sorted(header_list) != sorted(correct_headers) or res:
         return True
     else:
         return False
@@ -110,23 +140,47 @@ def header_check(header_list: list):
 def make_graphs(
     url, beam_slider, column_slider, slab_slider, wall_slider, stair_slider, data
 ):
-    # item_ = df_.columns.to_list()  # why is this not used? FIXME:
-
+    df = pd.read_json(data, orient="split")
     if data is None:
-        print("main_store is empty")
         raise PreventUpdate
 
-    elif header_check(
-        pd.read_json(data, orient="split").columns.tolist()
-    ):  # error checking for xlsx/csv
+    elif data_check(df):
+
+        header_error = list(header_checker(df.columns.to_list()))
+        layer_value = df.loc[:, "Layer"].values
+
+        layer_error = list(layer_check(list(layer_value)))
+        res_header = list(set(filter(lambda item: item is not None, header_error)))
+        res_layer = list(set(filter(lambda item: item is not None, layer_error)))
         return dmc.Alert(
-            title="Column Header Error",
+            title="SCHEDULE DATA ERROR",
             children=[
-                dmc.Text(
-                    "The header name is not correct. Please check the header name and try again. Column names should be: ",
+                dmc.Group(
+                    children=[
+                        "Check following headers for errors:",
+                        dmc.Text(error_handler(res_header), weight=700, color="red"),
+                    ],
+                    direction="row",
+                    spacing="md",
                 ),
                 dmc.Text(
-                    "Levels, Layer, Materials, Mass, Volume", weight=700, size="lg"
+                    "Column names should be: Levels, Layer, Materials, Mass, Volume",
+                    size="sm",
+                    color="gray",
+                ),
+                dmc.Space(h="md"),
+                dmc.Group(
+                    children=[
+                        "Check following Layers for errors:",
+                        dmc.Text(error_handler(res_layer), weight=700, color="red"),
+                    ],
+                    direction="row",
+                    spacing="md",
+                ),
+                dmc.Text(
+                    "Layer should contain at least: beam, slab, column, wall, stair",
+                    size="sm",
+                    color="gray",
                 ),
             ],
             color="red",
@@ -134,13 +188,8 @@ def make_graphs(
 
     elif url == "/pages/dashboard":
         df_ = pd.read_json(data, orient="split")
-        # df_ = data
-
-        # df_ = pd.read_json(data)
         df_o = df_.reset_index()
 
-        df = df_.groupby(by=["Materials"], as_index=False).sum()
-        # new calculations for carbon intensity
         mat, vol, mass, floor, element, gbec, epicec, iceec = funcs.mat_interpreter(
             df_, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
         )
@@ -349,44 +398,3 @@ def material_check(df):
         return False, None
     else:
         return True, error_index
-
-
-# @callback(
-#     Output("error_check", "children"),
-#     Input("main_store", "data"),
-# )
-# def display_error(data):
-#     df = pd.read_json(data, orient="split")
-
-#     head_error, col = header_check(df)
-#     material_error, error_index = material_check(df)
-#     if head_error is True:
-#         return dmc.Alert(
-#             children=[
-#                 "There is an error in the header of the uploaded file. Please check the column name of {}.".format(
-#                     col
-#                 ),
-#                 "Header should be: Levels, Layer, Materials, Mass, Volume",
-#             ],
-#             title="{} is not a correct header".format(col),
-#             color="red",
-#         )  # missing header
-#     elif material_error is True:
-#         return dmc.Alert(
-#             children=[
-#                 "Please check these index for material errors: {}".format(
-#                     str(error_index)
-#                 ),
-#                 "materials should contain: concrete, steel, timber, reinformation bar",
-#             ],
-#             title="There are incorrect materials",
-#             color="red",
-#         )
-#     elif df.isnull().values.any() is True:
-#         return dmc.Alert(
-#             children="There are missing data in the uploaded file. Please check the table below.",
-#             title="Missing data",
-#             color="red",
-#         )
-#     else:
-#         return None
