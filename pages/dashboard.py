@@ -104,7 +104,6 @@ def header_checker(dataColumn):
 
 
 def error_handler(error_list: list) -> str:
-    # print(layer_list)
     if not error_list:
         return "None"
     else:
