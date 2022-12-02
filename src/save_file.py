@@ -303,16 +303,12 @@ def new_project_(
             "greenbook": data[0]["gb"] / nla,
             "epic": data[0]["epic"] / nla,
             "ice": data[0]["ice"] / gba,
-            "substructure": {
-                "greenbook": data[1]["gb"],  # TODO:
-                "epic": data[1]["epic"],  # TODO:
-                "ice": data[1]["ice"],  # TODO:
-            },
-            "superstructure": {
-                "greenbook": data[2]["gb"],  # TODO:
-                "epic": data[2]["epic"],  # TODO:
-                "ice": data[2]["ice"],  # TODO:
-            },
+            "sub_greenbook": data[1]["gb"],
+            "sub_epic": data[1]["epic"],
+            "sub_ice": data[1]["ice"],
+            "super_greenbook": data[2]["gb"],
+            "super_epic": data[2]["epic"],
+            "super_ice": data[2]["ice"],
         }
     )
 

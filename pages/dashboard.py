@@ -134,17 +134,17 @@ def data_check(df):
         Input("stair_slider", "value"),
         Input("main_store", "data"),
     ],
-    # prevent_initial_call=True,
+    #    prevent_initial_call=True,
 )
 def make_graphs(
     url, beam_slider, column_slider, slab_slider, wall_slider, stair_slider, data
 ):
-    df = pd.read_json(data, orient="split")
-    if data is None:
+    try:
+        df = pd.read_json(data, orient="split")
+    except:
         raise PreventUpdate
 
-    elif data_check(df):
-
+    if data_check(df):
         header_error = list(header_checker(df.columns.to_list()))
         layer_value = df.loc[:, "Layer"].values
 
@@ -187,10 +187,10 @@ def make_graphs(
 
     elif url == "/pages/dashboard":
         df_ = pd.read_json(data, orient="split")
-        df_o = df_.reset_index()
+        df_o = df_.sort_values(by=["Levels"]).reset_index()
 
         mat, vol, mass, floor, element, gbec, epicec, iceec = funcs.mat_interpreter(
-            df_, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
+            df_o, beam_slider, column_slider, slab_slider, wall_slider, stair_slider
         )
         df_new = pd.DataFrame(
             {
