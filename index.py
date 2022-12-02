@@ -142,7 +142,7 @@ header_ui = dmc.Header(
                                 label="Discord",
                                 position="bottom",
                             ),
-                            href="https://discord.gg/CEt4jbqV",
+                            href="https://discord.gg/GWFE59HSzB",
                         ),
                     ],
                 ),
