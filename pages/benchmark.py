@@ -44,7 +44,7 @@ layout = html.Div(
         html.Div(children=benchmarks),
         html.Div(id="for_refresh"),
         html.Div(id="bmark_test"),
-        dcc.Store(id="benchmark_storage", storage_type="session"),
+        dcc.Store(id="benchmark_storage", storage_type="local"),
     ]
 )
 
