@@ -5,11 +5,11 @@ import dash_mantine_components as dmc
 import numpy as np
 import pandas as pd
 import plotly.express as px
-from config import config
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 
+from config import config
 from src import greenbook_options
 
 
@@ -146,6 +146,7 @@ def definition(data):
         Output("gb_analysis_comp_total", "children"),
         Output("gb_analysis_comp_benchmark", "children"),
         Output("epic_analysis_comp_total", "children"),
+        Output("epic_analysis_comp_benchmark", "children"),  # TODO: add benchmark
         Output("ice_analysis_comp_total", "children"),
         Output("ice_analysis_comp_benchmark", "children"),
     ],
@@ -166,7 +167,8 @@ def totals_benchmark_update(data, nla, gia):
         return (
             "{:,.2f}".format(gb_total := df["Green Book EC"].sum()),
             "{:,.2f}".format(gb_total / nla),
-            "{:,.2f}".format(df["EPiC EC"].sum()),
+            "{:,.2f}".format(epic_total := df["EPiC EC"].sum()),
+            "{:,.2f}".format(epic_total / nla),
             "{:,.2f}".format(ice_total := df["ICE EC"].sum()),
             "{:,.2f}".format(ice_total / gia),
         )
@@ -239,21 +241,41 @@ comparison = html.Div(
                         dbc.Col(
                             [
                                 html.H3("EPiC DB", className="mt-3 mb-5"),
-                                html.Div(
+                                dbc.Row(
                                     [
-                                        html.Div(
+                                        dbc.Col(
                                             [
-                                                html.H4(
-                                                    "Calculating...",
-                                                    id="epic_analysis_comp_total",
-                                                    className="m-0",
+                                                html.Div(
+                                                    [
+                                                        html.H4(
+                                                            "Calculating...",
+                                                            id="epic_analysis_comp_total",
+                                                            className="m-0",
+                                                        ),
+                                                        html.Strong("kgCO₂e"),
+                                                        html.P("Total EC"),
+                                                    ]
                                                 ),
-                                                html.Strong("kgCO₂e"),
-                                                html.P("Total EC"),
-                                            ]
+                                            ],
+                                            className="text-center",
                                         ),
-                                    ],
-                                    className="text-center",
+                                        dbc.Col(
+                                            [
+                                                html.Div(
+                                                    [
+                                                        html.H4(
+                                                            "Calculating...",
+                                                            id="epic_analysis_comp_benchmark",
+                                                            className="m-0",
+                                                        ),
+                                                        html.Strong(" kgCO₂e/m²"),
+                                                        html.P("Benchmark per GIA"),
+                                                    ]
+                                                ),
+                                            ],
+                                            class_name="text-center",
+                                        ),
+                                    ]
                                 ),
                                 dmc.LoadingOverlay(
                                     dcc.Graph(
