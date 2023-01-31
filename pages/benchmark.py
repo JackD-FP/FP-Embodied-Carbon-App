@@ -4,6 +4,7 @@ import dash
 import dash_mantine_components as dmc
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from dash import Input, Output, State, callback, dcc, html
 from dash_iconify import DashIconify
 
@@ -26,9 +27,10 @@ benchmarks = [
         style={"margin": "0 0 0 1rem"},
         color="dark",
     ),
-    dcc.Graph(
-        id="gb-benchmark-graph",
+    html.Div(
+        dcc.Graph(id="gb-benchmark-graph", style={"height": "50vh"}),
     ),
+    dmc.Text("* Data taken from Footprint Company Greenbook DB"),
     dcc.Graph(
         id="epic-benchmark-graph",
     ),
@@ -122,14 +124,100 @@ graphing = {
     Input("bmark_segment", "value"),
     Input("benchmark_storage", "data"),
 )
-def update_gb_bmark(segment, data):
+def update_gb_bmark(segment, data):  # TODO: fix this
     if data is None:
         raise dash.exceptions.PreventUpdate
     else:
         df = pd.read_json(data, orient="split")
-        return graphing_output(
-            df, "{}greenbook".format(graphing.get(segment)), segment
-        )[0]
+        fig = go.Figure()
+        fig.add_trace(
+            go.Scatter(
+                name="Greenbook",
+                mode="markers",
+                x=df["project_name"],
+                y=df["{}greenbook".format(graphing.get(segment))],
+                text=df["variation_name"],
+                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e",
+                marker=dict(
+                    color="#BDC667",
+                    size=12,
+                    symbol="circle",
+                ),
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                name="EPIC",
+                mode="markers",
+                x=df["project_name"],
+                y=df["{}epic".format(graphing.get(segment))],
+                text=df["variation_name"],
+                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e",
+                marker=dict(
+                    color="#7F6A93",
+                    size=12,
+                    symbol="square",
+                ),
+            )
+        )
+        fig.add_trace(
+            go.Scatter(
+                name="ICE",
+                mode="markers",
+                x=df["project_name"],
+                y=df["{}ice".format(graphing.get(segment))],
+                text=df["variation_name"],
+                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e",
+                marker=dict(
+                    color="#52A9D1",
+                    size=12,
+                    symbol="cross",
+                ),
+            )
+        )
+        fig.add_hline(
+            y=350,
+            line_dash="dash",
+            annotation_text="LETI 2030 Design Targe Office",
+            annotation_position="bottom right",
+            annotation_font_size=10,
+            line_width=1,
+        )
+
+        fig.add_hline(
+            y=300,
+            line_dash="dash",
+            annotation_text="LETI 2030 Design Targe Residential, Education, & Retail*",
+            annotation_position="bottom right",
+            annotation_font_size=10,
+            line_width=1,
+        )
+
+        fig.add_hline(
+            y=600,
+            line_dash="dash",
+            annotation_text="Class 5 Office - Premium*",
+            annotation_position="bottom right",
+            annotation_font_size=10,
+            line_width=1,
+        )
+
+        fig.add_hline(
+            y=900,
+            line_dash="dash",
+            annotation_text="Class 5 Office - A Grade*",
+            annotation_position="bottom right",
+            annotation_font_size=10,
+            line_width=1,
+            # line_color = "#BDC667"
+        )
+
+        fig.update_layout(
+            title="Embodied Carbon Benchmark",
+            xaxis_title="Projects",
+            yaxis_title="kgCO2e",
+        )
+        return fig
 
 
 @callback(
