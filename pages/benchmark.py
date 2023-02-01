@@ -30,13 +30,38 @@ benchmarks = [
     html.Div(
         dcc.Graph(id="gb-benchmark-graph", style={"height": "50vh"}),
     ),
-    dmc.Text("* Data taken from Footprint Company Greenbook DB"),
-    dcc.Graph(
-        id="epic-benchmark-graph",
+    dmc.Text(
+        "* Data taken from Footprint Company Greenbook database",
+        size="sm",
+        color="gray",
     ),
-    dcc.Graph(
-        id="ice-benchmark-graph",
+    dmc.Text(
+        "** Data taken from ICE database",
+        size="sm",
+        color="gray",
+        style={"marginBottom": "2rem"},
     ),
+    dmc.MultiSelect(
+        label="Select a project",
+        description="Select projects to view the benchmark.",
+        placeholder="One Shelley Street",
+        searchable=True,
+        nothingFound="No project found",
+        maxSelectedValues=5,
+        style={"width": 400},
+        id="multiselect_project",
+    ),
+    dmc.Table(
+        striped=False,
+        highlightOnHover=True,
+        id="bmark_table",
+    ),
+    # dcc.Graph(
+    #     id="epic-benchmark-graph",
+    # ),
+    # dcc.Graph(
+    #     id="ice-benchmark-graph",
+    # ),
 ]
 
 layout = html.Div(
@@ -49,6 +74,54 @@ layout = html.Div(
         dcc.Store(id="benchmark_storage", storage_type="local"),
     ]
 )
+
+
+@callback(
+    Output("multiselect_project", "data"),
+    Input("benchmark_storage", "data"),
+)
+def update_multiselect(data):
+    if data is None:
+        raise dash.exceptions.PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        return [{"label": i, "value": i} for i in df["project_name"].unique()]
+
+
+def create_table(df):
+    columns, values = df.columns, df.values
+    header = [html.Tr([html.Th(col) for col in columns])]
+    rows = [html.Tr([html.Td(cell) for cell in row]) for row in values]
+    table = [html.Thead(header), html.Tbody(rows)]
+    return table
+
+
+@callback(
+    Output("bmark_table", "children"),
+    Input("multiselect_project", "value"),
+    Input("benchmark_storage", "data"),
+)
+def update_bmark_table(value, data):
+    if data is None:
+        raise dash.exceptions.PreventUpdate
+    else:
+        df = pd.read_json(data, orient="split")
+        df = df[
+            [
+                "project_name",
+                "variation_name",
+                "greenbook",
+                "epic",
+                "ice",
+            ]
+        ]
+        df = df.rename(
+            {"Project": "project_name", "Varaition": "variation_name"}, axis=1
+        )
+        if value is None or value == []:
+            return create_table(df.head(10))
+        else:
+            return create_table(df[df["project_name"].isin(value)])
 
 
 def db_yield():
@@ -178,7 +251,7 @@ def update_gb_bmark(segment, data):  # TODO: fix this
         fig.add_hline(
             y=350,
             line_dash="dash",
-            annotation_text="LETI 2030 Design Targe Office",
+            annotation_text="LETI 2030 Design Targe Office**",
             annotation_position="bottom right",
             annotation_font_size=10,
             line_width=1,
@@ -187,7 +260,7 @@ def update_gb_bmark(segment, data):  # TODO: fix this
         fig.add_hline(
             y=300,
             line_dash="dash",
-            annotation_text="LETI 2030 Design Targe Residential, Education, & Retail*",
+            annotation_text="LETI 2030 Design Targe Residential, Education, & Retail**",
             annotation_position="bottom right",
             annotation_font_size=10,
             line_width=1,
@@ -220,27 +293,27 @@ def update_gb_bmark(segment, data):  # TODO: fix this
         return fig
 
 
-@callback(
-    Output("epic-benchmark-graph", "figure"),
-    Input("bmark_segment", "value"),
-    Input("benchmark_storage", "data"),
-)
-def update_epic_bmark(segment, data):
-    if data is None:
-        raise dash.exceptions.PreventUpdate
-    else:
-        df = pd.read_json(data, orient="split")
-        return graphing_output(df, "{}epic".format(graphing.get(segment)), segment)[1]
+# @callback(
+#     Output("epic-benchmark-graph", "figure"),
+#     Input("bmark_segment", "value"),
+#     Input("benchmark_storage", "data"),
+# )
+# def update_epic_bmark(segment, data):
+#     if data is None:
+#         raise dash.exceptions.PreventUpdate
+#     else:
+#         df = pd.read_json(data, orient="split")
+#         return graphing_output(df, "{}epic".format(graphing.get(segment)), segment)[1]
 
 
-@callback(
-    Output("ice-benchmark-graph", "figure"),
-    Input("bmark_segment", "value"),
-    Input("benchmark_storage", "data"),
-)
-def update_ice_bmark(segment, data):
-    if data is None:
-        raise dash.exceptions.PreventUpdate
-    else:
-        df = pd.read_json(data, orient="split")
-        return graphing_output(df, "{}ice".format(graphing.get(segment)), segment)[2]
+# @callback(
+#     Output("ice-benchmark-graph", "figure"),
+#     Input("bmark_segment", "value"),
+#     Input("benchmark_storage", "data"),
+# )
+# def update_ice_bmark(segment, data):
+#     if data is None:
+#         raise dash.exceptions.PreventUpdate
+#     else:
+#         df = pd.read_json(data, orient="split")
+#         return graphing_output(df, "{}ice".format(graphing.get(segment)), segment)[2]
