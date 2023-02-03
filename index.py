@@ -15,7 +15,7 @@ from flask import Flask
 
 from pages import benchmark, dashboard, documentation
 from pages.analysis import analysis
-from src import drawer, firebase_init, load_file, save_file
+from src import delete_file, drawer, firebase_init, save_file
 
 # server shit
 external_stylesheets = [
@@ -242,42 +242,11 @@ sidebar_ui_element = html.Div(
                             id="save-button",
                             color="green",
                         ),
-                        dmc.Tooltip(
-                            label="😬 Soz! still in development",
-                            position="right",
-                            placement="center",
-                            color="red",
-                            gutter=3,
-                            closeDelay=10,
-                            children=[
-                                dmc.Button(
-                                    "Load",
-                                    variant="outline",
-                                    leftIcon=[
-                                        DashIconify(
-                                            icon="fluent:open-folder-24-regular"
-                                        )
-                                    ],
-                                    id="load-button",
-                                    color="blue",
-                                    disabled=True,
-                                ),
-                            ],
-                        ),
-                        html.A(
-                            children=[
-                                dmc.Button(
-                                    "reset",
-                                    variant="outline",
-                                    leftIcon=[
-                                        DashIconify(icon="fluent:arrow-reset-20-filled")
-                                    ],
-                                    id="reset-button",
-                                    color="blue",
-                                    disabled=True,
-                                )
-                            ],
-                            id="reset-link",
+                        dmc.Button(
+                            "Delete",
+                            variant="outline",
+                            leftIcon=[DashIconify(icon="mdi:trash-can-outline")],
+                            id="delete-button",
                         ),
                     ],
                     direction="column",
@@ -285,21 +254,21 @@ sidebar_ui_element = html.Div(
                 dividers("akar-icons:gear", "settings"),
                 dmc.Group(
                     [
-                        dmc.Tooltip(
-                            children=[
-                                dmc.Button(
-                                    "Print",
-                                    variant="outline",
-                                    leftIcon=[DashIconify(icon="bytesize:print")],
-                                    id="print-button",
-                                    disabled=True,
-                                )
-                            ],
-                            withArrow=True,
-                            label="😬 Soz! still in development",
-                            position="right",
-                            placement="center",
-                        ),
+                        # dmc.Tooltip(
+                        #     children=[
+                        #         dmc.Button(
+                        #             "Print",
+                        #             variant="outline",
+                        #             leftIcon=[DashIconify(icon="bytesize:print")],
+                        #             id="print-button",
+                        #             disabled=True,
+                        #         )
+                        #     ],
+                        #     withArrow=True,
+                        #     label="😬 Soz! still in development",
+                        #     position="right",
+                        #     placement="center",
+                        # ),
                         dmc.Button(
                             "Settings",
                             variant="outline",
@@ -309,7 +278,7 @@ sidebar_ui_element = html.Div(
                     ],
                     direction="column",
                 ),
-                load_file.load_modal,
+                delete_file.delete_modal,
                 save_file.save_modal,
                 drawer.drawer_print,
                 drawer.drawer_layout,
@@ -555,8 +524,8 @@ def open_save_modal(n, opened):
 
 # OPEN LOAD MODAL
 @app.callback(
-    Output("load-modal", "opened"),
-    Input("load-button", "n_clicks"),
+    Output("delete-modal", "opened"),
+    Input("delete-button", "n_clicks"),
     State("save-modal", "opened"),
     prevent_initial_call=True,
 )
