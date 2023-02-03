@@ -180,7 +180,6 @@ def update_areas_modal(n, nla, gba):
 # ----- disables save btn and load btn if no analysis -----
 @callback(
     Output("save-button", "disabled"),
-    # Output("load-button", "disabled"),
     Input("proc_store", "data"),
     prevent_initial_call=True,
 )
@@ -193,21 +192,20 @@ def disable_save_btn(data):
 
 # ----- get projects -----
 # get data from firestore when
-# save-button or load-button is clicked
-@callback(
-    Output("firebase_storage", "data"),
-    Input("save-button", "n_clicks"),
-    Input("load-button", "n_clicks"),
-    prevent_initial_call=True,
-)
-def load_firestore_data(save, load):
-    projects = {}
-    docs = firebase_init.db.collection("projects").stream()
-    for doc in docs:
-        projects[doc.to_dict().get("project_name")] = doc.to_dict().get(
-            "variation_name"
-        )
-    return projects
+# save-button or is clicked
+# @callback(
+#     Output("firebase_storage", "data"),
+#     Input("save-button", "n_clicks"),
+#     prevent_initial_call=True,
+# )
+# def load_firestore_data(save, load):
+#     projects = {}
+#     docs = firebase_init.db.collection("projects").stream()
+#     for doc in docs:
+#         projects[doc.to_dict().get("project_name")] = doc.to_dict().get(
+#             "variation_name"
+#         )
+#     return projects
 
 
 # ----- ui handling for project_select -----
@@ -348,8 +346,12 @@ def ec_totals(data) -> tuple:
     sub_epic = df_lvl["EPiC EC"].sum()
     sub_ice = df_lvl["ICE EC"].sum()
 
-    total = {"gb": gb, "epic": epic, "ice": ice}
-    superstructure = {"gb": gb - sub_gb, "epic": epic - sub_epic, "ice": ice - sub_ice}
+    total = {"gb": int(gb), "epic": int(epic), "ice": int(ice)}
+    superstructure = {
+        "gb": int(gb - sub_gb),
+        "epic": int(epic - sub_epic),
+        "ice": int(ice - sub_ice),
+    }
     substructure = {"gb": sub_gb, "epic": sub_epic, "ice": sub_ice}
 
     return (total, superstructure, substructure)
@@ -372,7 +374,7 @@ def save_to_firebase(
 ):
     # send_data(data)
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
-
+        print(data)
         ec = ec_totals(data)
 
         new_project_(project_name, variation_name, ec, nla, gba)  # type: ignore
