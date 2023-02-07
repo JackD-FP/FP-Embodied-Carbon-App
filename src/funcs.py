@@ -79,7 +79,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             if re.search(
                 r"(beam)|(BEAM)|(Beam)", row["Layer"], re.IGNORECASE
             ) or re.search(r"(beam)|(BEAM)|(Beam)", row["Materials"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row["Volume"], beam_slider / 1000)
+                vol_conc, vol_rebar = find_vols(
+                    row["Volume"], (beam_slider / 1000) * 7850
+                )
 
                 # add concrete volume
                 mat.append("Concrete")
@@ -113,7 +115,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 row["Materials"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(row["Volume"], column_slider / 1000)
+                vol_conc, vol_rebar = find_vols(
+                    row["Volume"], (column_slider / 1000) * 7850
+                )
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
@@ -138,7 +142,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             elif re.search(
                 r"(slab)|(Slab)|(SLAB)", row["Layer"], re.IGNORECASE
             ) or re.search(r"(slab)|(Slab)|(SLAB)", row["Materials"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(row["Volume"], slab_slider / 1000)
+                vol_conc, vol_rebar = find_vols(
+                    row["Volume"], (slab_slider / 1000) * 7850
+                )
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
@@ -163,7 +169,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             elif re.match(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.match(
                 "concrete", row["Materials"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(row["Volume"], wall_slider / 1000)
+                vol_conc, vol_rebar = find_vols(
+                    row["Volume"], (wall_slider / 1000) * 7850
+                )
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
@@ -192,7 +200,9 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 row["Materials"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(row["Volume"], stair_slider / 1000)
+                vol_conc, vol_rebar = find_vols(
+                    row["Volume"], (stair_slider / 1000) * 7850
+                )
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
