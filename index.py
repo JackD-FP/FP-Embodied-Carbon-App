@@ -92,7 +92,7 @@ header_ui = dmc.Header(
                     dcc.Link(
                         [
                             dmc.MediaQuery(
-                                create_home_link("Embodied Carbon Tool"),
+                                create_home_link("Upfront Carbon Tool"),
                                 smallerThan="sm",
                                 styles={"display": "none"},
                             ),
@@ -503,11 +503,11 @@ def drawer_update(
 ):
     return (
         True,
-        "Beam: {}".format(beam),
-        "Column: {}".format(column),
-        "Slab: {}".format(slab),
-        "Wall: {}".format(wall),
-        "Stair: {}".format(stair),
+        "Beam: {} kg/m³".format(beam),
+        "Column: {} kg/m³".format(column),
+        "Slab: {} kg/m³".format(slab),
+        "Wall: {} kg/m³".format(wall),
+        "Stair: {} kg/m³".format(stair),
     )
 
 
