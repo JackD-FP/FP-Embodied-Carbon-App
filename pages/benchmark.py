@@ -10,6 +10,13 @@ from dash_iconify import DashIconify
 
 from src.firebase_init import bucket, db
 
+radio_option = [
+    ["all", "ALL"],
+    ["ftp", "Footprint Co. Benchmarks"],
+    ["leti", "LETI 2030 Benchmark"],
+]
+
+
 benchmarks = [
     dmc.SegmentedControl(
         id="bmark_segment",
@@ -30,20 +37,37 @@ benchmarks = [
     html.Div(
         dcc.Graph(id="gb-benchmark-graph", style={"height": "50vh"}),
     ),
+    dmc.Text("Select benchmark", size="sm", weight=500),
     dmc.Text(
-        "* Data taken from Footprint Company Greenbook database",
+        "Select benchmark guidelines to show or hide",
         size="sm",
+        color="gray",
+    ),
+    dmc.SegmentedControl(
+        data=[
+            {"value": "all", "label": "All"},
+            {"value": "ftp", "label": "Footprint Co."},
+            {"value": "leti", "label": "LETI 2030"},
+            {"value": "none", "label": "None"},
+        ],
+        id="segment_bmark",
+        value="all",
+        size="sm",
+    ),
+    dmc.Text(
+        "* Data taken from Footprint Company Green Book database. Based off 5 Star ratings",
+        size="xs",
         color="gray",
     ),
     dmc.Text(
         "** Data taken from ICE database",
-        size="sm",
+        size="xs",
         color="gray",
         style={"marginBottom": "2rem"},
     ),
     dmc.MultiSelect(
         label="Select a project",
-        description="Select projects to view the benchmark.",
+        description="Select projects to view the benchmark. Press refresh to update selection",
         placeholder="One Shelley Street",
         searchable=True,
         nothingFound="No project found",
@@ -124,6 +148,10 @@ def update_bmark_table(value, data):
             return create_table(df[df["project_name"].isin(value)])
 
 
+# This is for the refresh button to update the data
+# and get the latest data from the firebase
+
+
 def db_yield():
     docs = db.collection("projects").stream()
     for doc in docs:
@@ -146,6 +174,10 @@ def update_benchmark_graphs(url, n, data):
         return df.to_json(orient="split"), dcc.Location("/pages/documentation")
     else:
         raise dash.exceptions.PreventUpdate
+
+
+# This part is purely for the benchmark graph ui.
+# all interactions and ui elements related to the graph
 
 
 def scatter_plot(df, db: str, desc: str):
@@ -192,12 +224,72 @@ graphing = {
 }
 
 
+def hline(
+    fig,
+    val,
+    annot_text,
+    annot_font_size,
+    line_width,
+    annot_pos="top right",
+    line_color="gray",
+):
+    return fig.add_hline(
+        y=val,
+        line_dash="dash",
+        annotation_text=annot_text,
+        annotation_position=annot_pos,
+        annotation_font_size=annot_font_size,
+        line_width=line_width,
+    )
+
+
+def graph_lines(segment, fig, bmark):
+    """add lines to the graph if segment == total. If not then do nothing
+
+    Args:
+        segment (__str__): dmc.segment data
+        fig ( plotly graph): plotly graph.
+        bmark (__str__): dmc.bmark data
+    """
+    if segment == "Total" and bmark == "all":
+
+        hline(fig, 350, "LETI 2030 Design Targe Office**", 10, 1)
+        hline(
+            fig,
+            300,
+            "LETI 2030 Design Targe Residential, Education, & Retail**",
+            # "bottom left",
+            10,
+            1,
+        )
+        hline(fig, 900, "Class 5 Office - Premium*", 10, 1)
+        hline(fig, 600, "Class 5 Office - A Grade*", 10, 1)
+
+    elif segment == "Total" and bmark == "ftp":
+        hline(fig, 900, "Class 5 Office - Premium*", 10, 1)
+        hline(fig, 600, "Class 5 Office - A Grade*", 10, 1)
+        hline(fig, 590, "Class 2 Multi-Residential*", 10, 1, "bottom right")
+    elif segment == "Total" and bmark == "leti":
+        hline(fig, 350, "LETI 2030 Design Targe Office**", 10, 1)
+        hline(
+            fig,
+            300,
+            "LETI 2030 Design Targe Residential, Education, & Retail**",
+            10,
+            1,
+        )
+
+    else:
+        pass
+
+
 @callback(
     Output("gb-benchmark-graph", "figure"),
     Input("bmark_segment", "value"),
     Input("benchmark_storage", "data"),
+    Input("segment_bmark", "value"),
 )
-def update_gb_bmark(segment, data):  # TODO: fix this
+def update_gb_bmark(segment, data, bmark_segment):  # TODO: fix this
     if data is None:
         raise dash.exceptions.PreventUpdate
     else:
@@ -205,12 +297,12 @@ def update_gb_bmark(segment, data):  # TODO: fix this
         fig = go.Figure()
         fig.add_trace(
             go.Scatter(
-                name="Greenbook",
+                name="Green Book",
                 mode="markers",
                 x=df["project_name"],
                 y=df["{}greenbook".format(graphing.get(segment))],
                 text=df["variation_name"],
-                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e",
+                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e/m²",
                 marker=dict(
                     color="#BDC667",
                     size=12,
@@ -225,7 +317,7 @@ def update_gb_bmark(segment, data):  # TODO: fix this
                 x=df["project_name"],
                 y=df["{}epic".format(graphing.get(segment))],
                 text=df["variation_name"],
-                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e",
+                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e/m²",
                 marker=dict(
                     color="#7F6A93",
                     size=12,
@@ -240,7 +332,7 @@ def update_gb_bmark(segment, data):  # TODO: fix this
                 x=df["project_name"],
                 y=df["{}ice".format(graphing.get(segment))],
                 text=df["variation_name"],
-                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e",
+                hovertemplate="<b>Project: %{x}</b><br>Variation: %{text}<br>%{y:,2f} kgCO2e/m²",
                 marker=dict(
                     color="#52A9D1",
                     size=12,
@@ -248,72 +340,12 @@ def update_gb_bmark(segment, data):  # TODO: fix this
                 ),
             )
         )
-        fig.add_hline(
-            y=350,
-            line_dash="dash",
-            annotation_text="LETI 2030 Design Targe Office**",
-            annotation_position="bottom right",
-            annotation_font_size=10,
-            line_width=1,
-        )
 
-        fig.add_hline(
-            y=300,
-            line_dash="dash",
-            annotation_text="LETI 2030 Design Targe Residential, Education, & Retail**",
-            annotation_position="bottom right",
-            annotation_font_size=10,
-            line_width=1,
-        )
-
-        fig.add_hline(
-            y=600,
-            line_dash="dash",
-            annotation_text="Class 5 Office - Premium*",
-            annotation_position="bottom right",
-            annotation_font_size=10,
-            line_width=1,
-        )
-
-        fig.add_hline(
-            y=900,
-            line_dash="dash",
-            annotation_text="Class 5 Office - A Grade*",
-            annotation_position="bottom right",
-            annotation_font_size=10,
-            line_width=1,
-            # line_color = "#BDC667"
-        )
+        graph_lines(segment, fig, bmark_segment)
 
         fig.update_layout(
-            title="Embodied Carbon Benchmark",
+            title="Upfront Carbon Benchmark",
             xaxis_title="Projects",
             yaxis_title="kgCO2e",
         )
         return fig
-
-
-# @callback(
-#     Output("epic-benchmark-graph", "figure"),
-#     Input("bmark_segment", "value"),
-#     Input("benchmark_storage", "data"),
-# )
-# def update_epic_bmark(segment, data):
-#     if data is None:
-#         raise dash.exceptions.PreventUpdate
-#     else:
-#         df = pd.read_json(data, orient="split")
-#         return graphing_output(df, "{}epic".format(graphing.get(segment)), segment)[1]
-
-
-# @callback(
-#     Output("ice-benchmark-graph", "figure"),
-#     Input("bmark_segment", "value"),
-#     Input("benchmark_storage", "data"),
-# )
-# def update_ice_bmark(segment, data):
-#     if data is None:
-#         raise dash.exceptions.PreventUpdate
-#     else:
-#         df = pd.read_json(data, orient="split")
-#         return graphing_output(df, "{}ice".format(graphing.get(segment)), segment)[2]
