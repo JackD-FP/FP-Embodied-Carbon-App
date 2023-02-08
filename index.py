@@ -27,14 +27,16 @@ external_stylesheets = [
 server = Flask(__name__)
 app = dash.Dash(
     __name__,
+    title="Upfront Carbon Tool",
     # server=Flask(__name__),
     external_stylesheets=external_stylesheets,
     suppress_callback_exceptions=True,
     meta_tags=[
         {  # for mobile bs
-            "name": "viewport",
-            "content": "width=device-width, intial-scale=1.0",  # initial-scale don't work why? idk!
-        }
+            "name": "Upfront Carbon Tool",
+            "content": "This is a design tool to estimate the upfrom carbon of a building based of the databases of the Greenbook, EPIC and ICE.",
+        },
+        {"http-equiv": "X-UA-Compatible", "content": "IE=edge"},
     ],
 )
 
@@ -280,7 +282,6 @@ sidebar_ui_element = html.Div(
                 ),
                 delete_file.delete_modal,
                 save_file.save_modal,
-                drawer.drawer_print,
                 drawer.drawer_layout,
                 dmc.Affix(
                     dmc.Tooltip(
@@ -592,7 +593,6 @@ app.layout = dmc.NotificationsProvider(
         dcc.Store(id="proc_store", storage_type="session"),  # PROCessed data
         dcc.Store(id="load_data", storage_type="session"),
         dcc.Store(id="main_store", storage_type="session"),  # unedited data
-        # dcc.Store(id="pre_main_store"),
         dcc.Store(id="nla_store", storage_type="session"),
         dcc.Store(id="gb_bld_type_store", storage_type="session"),
         dcc.Store(id="gia_store", storage_type="session"),
@@ -600,9 +600,8 @@ app.layout = dmc.NotificationsProvider(
         dcc.Store(id="firebase_storage", storage_type="session"),
         dcc.Store(id="temp-load-store", storage_type="session"),
         dcc.Store(id="card02_store", storage_type="session"),
-        # Stores card 2 upload data
         dcc.Store(id="card03_store", storage_type="session"),
-        # Stores card 3 upload data
+        dcc.Store(id="config_id", storage_type="session"),
         dcc.Location(id="url", refresh=False),
         sidebar_ui,
         main_ui,
@@ -613,3 +612,9 @@ app.layout = dmc.NotificationsProvider(
 if __name__ == "__main__":
     # app.run_server(port=8888, debug=True)
     app.run_server(host="0.0.0.0", port=5555, debug=True)
+    # dash.register_page(
+    #     module=__name__,
+    #     title="Upfront Carbon Tool",
+    #     description="Upfront Carbon Calculator",
+    #     url_base_pathname="/",
+    # )
