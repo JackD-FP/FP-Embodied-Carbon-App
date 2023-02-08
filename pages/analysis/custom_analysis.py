@@ -7,7 +7,6 @@ from flask import g
 import numpy as np
 import pandas as pd
 import plotly.express as px
-from config import config
 from dash import Input, Output, State, callback, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
