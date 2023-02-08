@@ -285,11 +285,13 @@ def graph_lines(segment, fig, bmark):
 
 @callback(
     Output("gb-benchmark-graph", "figure"),
+    Output("gb-benchmark-graph", "config"),
     Input("bmark_segment", "value"),
     Input("benchmark_storage", "data"),
     Input("segment_bmark", "value"),
+    Input("config_id", "data"),
 )
-def update_gb_bmark(segment, data, bmark_segment):  # TODO: fix this
+def update_gb_bmark(segment, data, bmark_segment, config):  # TODO: fix this
     if data is None:
         raise dash.exceptions.PreventUpdate
     else:
@@ -348,4 +350,4 @@ def update_gb_bmark(segment, data, bmark_segment):  # TODO: fix this
             xaxis_title="Projects",
             yaxis_title="kgCO2e",
         )
-        return fig
+        return fig, config
