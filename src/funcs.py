@@ -473,9 +473,9 @@ class table:
         timber_options,
         db_name,
         concrete=0,
-        rebar=0,
-        steel=0,
-        timber=0,
+        rebar=0.0,
+        steel=0.0,
+        timber=0.0,
     ):
         self.id = id
         self.concrete_options = concrete_options
