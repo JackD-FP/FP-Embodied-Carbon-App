@@ -33,7 +33,7 @@ settings_ui = html.Div(
                     step=1,
                 ),
             ],
-            className="my-3",
+            className="mb-3",
         ),
         html.Div(
             children=[
@@ -63,17 +63,18 @@ settings_ui = html.Div(
                     step=1,
                 ),
             ],
-            className="my-3",
+            className="mt-3",
         ),
         dmc.Text(
-            "1 way slabs range between 75-125 kg/m³.",
+            "1 way slabs: 75-125 kg/m³.",
             color="gray",
             size="xs",
         ),
         dmc.Text(
-            "2 way slabs range between 67-135 kg/m³.",
+            "2 way slabs: 67-135 kg/m³.",
             color="gray",
             size="xs",
+            class_name="mb-3",
         ),
         html.Div(
             children=[
@@ -105,6 +106,23 @@ settings_ui = html.Div(
             ],
             className="my-3",
         ),
+        dmc.Text("Graphing Configuration", weight=700, size="lg", class_name="mt-3"),
+        dmc.Select(
+            label="Export Graphs As",
+            id="graph_export_type",
+            data=["png", "svg", "jpeg", "webp"],
+            value="svg",
+            dropdownPosition="flip",
+            description="Select the type of file to export graphs as.",
+            class_name="mb-3",
+            persistence_type="session",
+        ),
+        dmc.TextInput(
+            label="File Name",
+            id="graph_export_name",
+            value="custom_image",
+            description="Enter the name of the file to export graphs as.",
+        ),
     ],
     className="px-5",
 )
@@ -121,28 +139,23 @@ drawer_layout = html.Div(
     ]
 )
 
-print_layout = html.Div(children=[], id="print-layout")
-
-drawer_print = html.Div(
-    children=[
-        dmc.Drawer(
-            id="print-drawer",
-            padding="md",
-            size="full",
-            withCloseButton=False,
-            children=print_layout,
-        )
-    ]
-)
-
 
 @callback(
-    Output("print-layout", "children"),
-    Input("print-button", "n_clicks"),
-    State("proc_store", "data"),
-    prevent_initial_call=True,
+    Output("config_id", "data"),
+    Input("url", "pathname"),
+    Input("graph_export_type", "value"),
+    Input("graph_export_name", "value"),
 )
-def update_print_layout(n_clicks, proc_store):
-    layout = [dcc.Graph(id="gb_analysis_comp_pie_2")]
-
-    return layout
+def update_config(pathname, graph_export_type: str, graph_export_name: str):
+    config = {  # just tells plotly to save as svg rather than jpeg
+        "toImageButtonOptions": {
+            "format": graph_export_type,  # one of png, svg, jpeg, webp
+            "filename": graph_export_name,
+            "height": 500,
+            "width": 700,
+            "scale": 2,  # Multiply title/legend/axis/canvas sizes by this factor
+        },
+        "displaylogo": False,
+        "scrollZoom": True,
+    }
+    return config
