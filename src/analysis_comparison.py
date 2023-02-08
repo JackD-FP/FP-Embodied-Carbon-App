@@ -26,10 +26,17 @@ from src import greenbook_options
         Output("epic_analysis_comp_bar", "figure"),
         Output("ice_analysis_comp_pie", "figure"),
         Output("ice_analysis_comp_bar", "figure"),
+        Output("gb_analysis_comp_pie", "config"),
+        Output("gb_analysis_comp_bar", "config"),
+        Output("epic_analysis_comp_pie", "config"),
+        Output("epic_analysis_comp_bar", "config"),
+        Output("ice_analysis_comp_pie", "config"),
+        Output("ice_analysis_comp_bar", "config"),
     ],
     Input("analysis_store", "data"),
+    Input("config_id", "data"),
 )
-def definition(data):
+def definition(data, config_data):
     if data is None:
         raise PreventUpdate
     else:
@@ -138,6 +145,12 @@ def definition(data):
             epic_fig_bar,
             ice_fig_pie,
             ice_fig_bar,
+            config_data,
+            config_data,
+            config_data,
+            config_data,
+            config_data,
+            config_data,
         )
 
 
@@ -183,7 +196,11 @@ comparison = html.Div(
                     [
                         dbc.Col(
                             [
-                                html.H3("Green Book DB", className="mt-3 mb-5"),
+                                html.H3(
+                                    "Green Book DB",
+                                    className="mt-3 mb-5",
+                                    style={"text-align": "center"},
+                                ),
                                 dbc.Row(
                                     children=[
                                         dbc.Col(
@@ -240,7 +257,11 @@ comparison = html.Div(
                         ),
                         dbc.Col(
                             [
-                                html.H3("EPiC DB", className="mt-3 mb-5"),
+                                html.H3(
+                                    "EPiC DB",
+                                    className="mt-3 mb-5",
+                                    style={"text-align": "center"},
+                                ),
                                 dbc.Row(
                                     [
                                         dbc.Col(
@@ -301,7 +322,11 @@ comparison = html.Div(
                         ),
                         dbc.Col(
                             [
-                                html.H3("ICE DB", className="mt-3 mb-5"),
+                                html.H3(
+                                    "ICE DB",
+                                    className="mt-3 mb-5",
+                                    style={"text-align": "center"},
+                                ),
                                 dbc.Row(
                                     children=[
                                         dbc.Col(
