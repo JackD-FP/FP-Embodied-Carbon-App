@@ -14,7 +14,7 @@ from dash import Input, Output, State, callback, ctx, dash_table, dcc, html
 from dash.exceptions import PreventUpdate
 from plotly.subplots import make_subplots
 
-from config import config
+# from config import config
 from src import dashboard_cards, funcs, uploader
 
 gb_df = pd.read_csv("src/Greenbook _reduced.csv")
@@ -133,11 +133,19 @@ def data_check(df):
         Input("wall_slider", "value"),
         Input("stair_slider", "value"),
         Input("main_store", "data"),
+        State("config_id", "data"),
     ],
     #    prevent_initial_call=True,
 )
 def make_graphs(
-    url, beam_slider, column_slider, slab_slider, wall_slider, stair_slider, data
+    url,
+    beam_slider,
+    column_slider,
+    slab_slider,
+    wall_slider,
+    stair_slider,
+    data,
+    config,
 ):
     try:
         df = pd.read_json(data, orient="split")
