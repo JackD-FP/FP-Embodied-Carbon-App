@@ -1,13 +1,17 @@
-import dash_bootstrap_components as dbc
-import pandas as pd
-import numpy as np
-import dash_mantine_components as dmc
-from dash import Input, Output, callback, dcc, html, State
-from dash.exceptions import PreventUpdate
-import plotly.express as px
-from src import epic_options, analysis_comparison, funcs
+import json
 import re
-from config import config
+
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+import numpy as np
+import pandas as pd
+import plotly.express as px
+from dash import Input, Output, State, callback, dcc, html
+from dash.exceptions import PreventUpdate
+
+from src import analysis_comparison, epic_options, funcs
+
+# from config import config
 
 
 # class table:
@@ -542,6 +546,15 @@ def cards_update(
         )
 
 
+@callback(
+    Output("epic_analysis_pie", "config"),
+    Output("epic_analysis_bar", "config"),
+    Input("config_id", "data"),
+)
+def update_epic_config(config_id):
+    return config_id, config_id
+
+
 # ---- layout of the website ----
 epic_layout = html.Div(
     children=[
@@ -672,7 +685,6 @@ epic_layout = html.Div(
                                     dcc.Graph(
                                         id="epic_analysis_pie",
                                         className="h-50",
-                                        config=config,
                                     ),
                                     loaderProps={
                                         "color": "blue",
@@ -683,7 +695,6 @@ epic_layout = html.Div(
                                     dcc.Graph(
                                         id="epic_analysis_bar",
                                         className="h-50",
-                                        config=config,
                                     ),
                                     loaderProps={
                                         "color": "blue",
