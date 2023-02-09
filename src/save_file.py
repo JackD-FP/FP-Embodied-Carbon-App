@@ -181,10 +181,11 @@ def update_areas_modal(n, nla, gba):
 @callback(
     Output("save-button", "disabled"),
     Input("proc_store", "data"),
+    Input("url", "pathname"),
     prevent_initial_call=True,
 )
-def disable_save_btn(data):
-    if data is None:
+def disable_save_btn(data, url):
+    if data is None or url != "/pages/analysis":
         return True
     else:
         return False
@@ -370,12 +371,12 @@ def ec_totals(data) -> tuple:
     prevent_initial_call=True,
 )
 def save_to_firebase(
-    n_clicks, project_name, variation_name, data, main_store, nla, gba
+    n_clicks, project_name, variation_name, analysis_data, main_store, nla, gba
 ):
     # send_data(data)
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
-        print(data)
-        ec = ec_totals(data)
+        # print(data)
+        ec = ec_totals(analysis_data)
 
         new_project_(project_name, variation_name, ec, nla, gba)  # type: ignore
         send_data(main_store, project_name, variation_name)
