@@ -237,6 +237,11 @@ sidebar_ui_element = html.Div(
                 dividers("fa:folder-open-o", "Data"),
                 dmc.Group(
                     [
+                        dmc.Text(
+                            "To save your projects upload a project then go to the Analysis page and click on the save button",
+                            size="xs",
+                            color="gray",
+                        ),
                         dmc.Button(
                             "Save",
                             variant="outline",
