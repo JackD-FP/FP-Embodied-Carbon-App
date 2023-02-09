@@ -105,7 +105,7 @@ def header_checker(dataColumn):
 
 def error_handler(error_list: list) -> str:
     if not error_list:
-        return "None"
+        return "-"
     else:
         return ", ".join(error_list)
 

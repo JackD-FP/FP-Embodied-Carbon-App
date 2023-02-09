@@ -9,20 +9,19 @@ from dash import html
 from src import epic_options, greenbook_options, ice_options, material_options
 
 
-def find_vols(vol, ratio):
+def find_vols(vol, rebar_slider):
     """Finds the volume of concrete and rebar of a beams element.
     equation is: vol_concrete = vol_total / (1 + (1 / ratio))
 
     Args:
         vol ( float ): Volume of the element
-        ratio ( float ): ratio of vol of rebar : vol of concrete
-
+        rebar_slider ( float ): kg of rebar per m3 of concrete
     Returns:
         Tuple: (vol_conc, vol_rebar) volume of concrete and rebar respectively
     """
-    x = 1 + (1 / ratio)
-    vol_rebar = vol / x
-    vol_conc = vol - vol_rebar
+    # vol_rebar_ratio = rebar_slider / 7850
+    vol_conc = (7850 * vol) / (7850 + rebar_slider)
+    vol_rebar = vol - vol_conc
     return vol_conc, vol_rebar
 
 
@@ -79,15 +78,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             if re.search(
                 r"(beam)|(BEAM)|(Beam)", row["Layer"], re.IGNORECASE
             ) or re.search(r"(beam)|(BEAM)|(Beam)", row["Materials"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(
-                    row["Volume"], (beam_slider / 1000) * 7850
-                )
+                vol_conc, vol_rebar = find_vols(row["Volume"], beam_slider)
 
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
                 # mass.append( 2360 * vol_conc )  # 2360 is the density of average concrete density from EPiC
-                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (vol_rebar * 7850))
                 floor.append(row["Levels"])
                 element.append("Beam")
                 gb_ec.append(vol_conc * gb_conc)
@@ -97,10 +94,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row["Mass"] - mass_conc)
-                # mass.append(
-                #     7740 * vol_rebar
-                # )  # 7740 is the density of average rebar density from EPiC
+                mass.append(mass_rebar := vol_rebar * 7850)
                 floor.append(row["Levels"])
                 element.append("Beam")
                 gb_ec.append(mass_rebar * gb_rebar)
@@ -115,13 +109,11 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 row["Materials"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(
-                    row["Volume"], (column_slider / 1000) * 7850
-                )
+                vol_conc, vol_rebar = find_vols(row["Volume"], column_slider)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                mass.append(mass_conc := row["Mass"] - (vol_rebar * 7850))
                 floor.append(row["Levels"])
                 element.append("Column")
                 gb_ec.append(vol_conc * gb_conc)
@@ -131,7 +123,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                mass.append(mass_rebar := (vol_rebar * 7850))
                 floor.append(row["Levels"])
                 element.append("Column")
                 gb_ec.append(mass_rebar * gb_rebar)
@@ -142,13 +134,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             elif re.search(
                 r"(slab)|(Slab)|(SLAB)", row["Layer"], re.IGNORECASE
             ) or re.search(r"(slab)|(Slab)|(SLAB)", row["Materials"], re.IGNORECASE):
-                vol_conc, vol_rebar = find_vols(
-                    row["Volume"], (slab_slider / 1000) * 7850
-                )
+                vol_conc, vol_rebar = find_vols(row["Volume"], slab_slider)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                mass.append(
+                    mass_conc := row["Mass"] - (vol_rebar * 7850)
+                )  # (7850 * vol_rebar))
                 floor.append(row["Levels"])
                 element.append("Slab")
                 gb_ec.append(vol_conc * gb_conc)
@@ -158,7 +150,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                mass.append(mass_rebar := (vol_rebar * 7850))
                 floor.append(row["Levels"])
                 element.append("Slab")
                 gb_ec.append(mass_rebar * gb_rebar)
@@ -169,13 +161,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
             elif re.match(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.match(
                 "concrete", row["Materials"], re.IGNORECASE
             ):
-                vol_conc, vol_rebar = find_vols(
-                    row["Volume"], (wall_slider / 1000) * 7850
-                )
+                vol_conc, vol_rebar = find_vols(row["Volume"], wall_slider)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                mass.append(
+                    mass_conc := row["Mass"] - (vol_rebar * 7850)
+                )  # (7850 * vol_rebar))
                 floor.append(row["Levels"])
                 element.append("Wall")
                 gb_ec.append(vol_conc * gb_conc)
@@ -185,7 +177,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                mass.append(mass_rebar := (vol_rebar * 7850))
                 floor.append(row["Levels"])
                 element.append("Wall")
                 gb_ec.append(mass_rebar * gb_rebar)
@@ -200,13 +192,13 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 row["Materials"],
                 re.IGNORECASE,
             ):
-                vol_conc, vol_rebar = find_vols(
-                    row["Volume"], (stair_slider / 1000) * 7850
-                )
+                vol_conc, vol_rebar = find_vols(row["Volume"], stair_slider)
                 # add concrete volume
                 mat.append("Concrete")
                 vol.append(vol_conc)
-                mass.append(mass_conc := row["Mass"] - (7850 * vol_rebar))
+                mass.append(
+                    mass_conc := row["Mass"] - (vol_rebar * 7850)
+                )  # (7850 * vol_rebar))
                 floor.append(row["Levels"])
                 element.append("Stairs")
                 gb_ec.append(vol_conc * gb_conc)
@@ -216,7 +208,7 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 # add rebar volume
                 mat.append("Reinforcement Bar")
                 vol.append(vol_rebar)
-                mass.append(mass_rebar := row["Mass"] - mass_conc)
+                mass.append(mass_rebar := (vol_rebar * 7850))
                 floor.append(row["Levels"])
                 element.append("Stairs")
                 gb_ec.append(mass_rebar * gb_rebar)
