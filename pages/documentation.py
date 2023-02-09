@@ -7,7 +7,7 @@ header = [
     html.Thead(
         html.Tr(
             [
-                html.Th("Level"),
+                html.Th("Levels"),
                 html.Th("Layer"),
                 html.Th("Mass"),
                 html.Th("Volume"),
