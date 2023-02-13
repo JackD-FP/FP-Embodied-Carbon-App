@@ -302,12 +302,12 @@ def new_project_(
             "greenbook": int(data[0]["gb"] / nla),
             "epic": int(data[0]["epic"] / nla),
             "ice": int(data[0]["ice"] / gba),
-            "sub_greenbook": int(data[1]["gb"]),
-            "sub_epic": int(data[1]["epic"]),
-            "sub_ice": int(data[1]["ice"]),
-            "super_greenbook": int(data[2]["gb"]),
-            "super_epic": int(data[2]["epic"]),
-            "super_ice": int(data[2]["ice"]),
+            "sub_greenbook": int(data[2]["gb"]),
+            "sub_epic": int(data[2]["epic"]),
+            "sub_ice": int(data[2]["ice"]),
+            "super_greenbook": int(data[1]["gb"]),
+            "super_epic": int(data[1]["epic"]),
+            "super_ice": int(data[1]["ice"]),
         }
     )
 
@@ -373,9 +373,7 @@ def ec_totals(data) -> tuple:
 def save_to_firebase(
     n_clicks, project_name, variation_name, analysis_data, main_store, nla, gba
 ):
-    # send_data(data)
     if "save_to_firebase_btn" == ctx.triggered[0]["prop_id"].split(".")[0]:
-        # print(data)
         ec = ec_totals(analysis_data)
 
         new_project_(project_name, variation_name, ec, nla, gba)  # type: ignore
