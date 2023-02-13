@@ -249,11 +249,29 @@ sidebar_ui_element = html.Div(
                             id="save-button",
                             color="green",
                         ),
-                        dmc.Button(
-                            "Delete",
-                            variant="outline",
-                            leftIcon=[DashIconify(icon="mdi:trash-can-outline")],
-                            id="delete-button",
+                        dmc.Tooltip(
+                            children=[
+                                html.Div(
+                                    dmc.Button(
+                                        "Delete",
+                                        variant="outline",
+                                        leftIcon=[
+                                            DashIconify(icon="mdi:trash-can-outline")
+                                        ],
+                                        id="delete-button",
+                                        disabled=True,
+                                    ),
+                                )
+                            ],
+                            label=[
+                                "Delete button has beed disabled for now. Please contact us by joining discord button ",
+                                DashIconify(icon="ic:baseline-discord", width=16),
+                                "or email us on the lower left feedback button",
+                            ],
+                            closeDelay=500,
+                            width=220,
+                            wrapLines=True,
+                            position="left",
                         ),
                     ],
                     direction="column",
