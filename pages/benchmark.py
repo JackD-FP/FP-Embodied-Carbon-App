@@ -25,17 +25,21 @@ benchmarks = [
         style={"position": "sticky", "top": "0"},
         disabled=False,
     ),
+    dmc.Text(
+        "Substructure is determined if there is 'Basement' in the Levels field",
+        size="xs",
+    ),
     dmc.Button(
         id="db_refresh",
         children="Refresh",
         variant="outline",
         leftIcon=[DashIconify(icon="ic:round-refresh")],
         size="xs",
-        style={"margin": "0 0 0 1rem"},
+        style={"margin": "0.5 0 0 0em"},
         color="dark",
     ),
     html.Div(
-        dcc.Graph(id="gb-benchmark-graph", style={"height": "50vh"}),
+        dcc.Graph(id="gb-benchmark-graph", style={"height": "75vh"}),
     ),
     dmc.Text("Select benchmark", size="sm", weight=500),
     dmc.Text(
