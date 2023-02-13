@@ -214,7 +214,7 @@ def gb_benchmarks_update(gb_nla, gb_value, data):
                     " to be less than",
                     html.Strong(
                         " < {} kgCO₂e per m²".format(
-                            building_type_option.gb_benchmark(gb_value)["5 star"]
+                            building_type_option.gb_benchmark(gb_value)["5 star"]  # type: ignore
                         ),
                     ),
                     " for 5 stars",
@@ -248,7 +248,7 @@ def gb_benchmarks_update(gb_nla, gb_value, data):
 )
 def epic_benchmarks_update(area_val, data):
     if area_val is None or area_val == "" or area_val == 0:
-        raise "Area cannot be empty or 0"
+        raise "Area cannot be empty or 0"  # type: ignore
     else:
         df = pd.read_json(data, orient="split")
         epic_sum = df["EPiC EC"].sum()
@@ -264,7 +264,7 @@ def epic_benchmarks_update(area_val, data):
     Input("ice_building_type", "value"),
     State("proc_store", "data"),
 )
-def gb_benchmarks_update(val, val_bld, data):
+def ice_benchmarks_update(val, val_bld, data):
     if val is None or val == "" or val == 0:
         return (
             "NLA cannot be empty or 0",
