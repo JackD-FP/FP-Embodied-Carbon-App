@@ -151,11 +151,11 @@ def update_config(pathname, graph_export_type: str, graph_export_name: str):
         "toImageButtonOptions": {
             "format": graph_export_type,  # one of png, svg, jpeg, webp
             "filename": graph_export_name,
-            "height": 500,
-            "width": 700,
-            "scale": 2,  # Multiply title/legend/axis/canvas sizes by this factor
+            "height": None,
+            "width": None,
+            # "scale": 2,  # Multiply title/legend/axis/canvas sizes by this factor
         },
         "displaylogo": False,
-        "scrollZoom": True,
+        # "scrollZoom": True,
     }
     return config
