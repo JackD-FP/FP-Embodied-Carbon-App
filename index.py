@@ -322,7 +322,7 @@ sidebar_ui_element = html.Div(
                                     radius="xl",
                                     size="lg",
                                 ),
-                                href="mailto:jackd@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
+                                href="mailto:enquire@fitzpatrickpartners.com?subject=Feedback for Embodied Carbon App!",
                             ),
                         ],
                     ),
