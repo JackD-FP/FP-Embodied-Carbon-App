@@ -306,7 +306,7 @@ def make_graphs(
                     yref="paper",
                     x=0.50,
                     y=0.50,
-                    font_size="16",
+                    font_size=16,
                     showarrow=False,
                     align="center",
                 ),

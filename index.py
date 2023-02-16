@@ -4,13 +4,11 @@ import json
 import dash
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
-import firebase_admin
 import pandas as pd
 import requests
 from dash import Input, Output, State, ctx, dcc, html
 from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
-from firebase_admin import credentials, firestore, storage
 from flask import Flask
 
 from pages import benchmark, dashboard, documentation
@@ -368,26 +366,6 @@ def load_data_def(project_name: str, variation_name: str):
     data = requests.get(link)
     content = json.loads(str(data))
     return content
-
-
-# # passes store to main_store
-# @app.callback(
-#     Output("main_store", "data"),
-#     # Input("load-data-button", "n_clicks"),
-#     Input("pre_main_store", "data"),
-#     Input("load-project-name", "value"),
-#     State("load-variation-name", "value"),
-#     prevent_initial_call=True,
-# )
-# def save_2_main(data, project_name, variation_name):
-#     if ctx.triggered_id == "pre_main_store":
-#         return data
-#     elif ctx.triggered_id == "load-data-button":
-#         new_data = load_data_def(project_name, variation_name)
-#         df_return = pd.read_json(new_data)
-#         return df_return
-#     else:
-#         raise PreventUpdate
 
 
 @app.callback(Output("main_store", "data"), Input("temp-df-store", "data"))
