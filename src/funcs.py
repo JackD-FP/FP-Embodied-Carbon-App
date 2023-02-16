@@ -158,8 +158,8 @@ def mat_interpreter(  # TODO: PLEASE REFACTOR THIS TO DICTIONARY TO SHORTEN THE 
                 ice_ec.append(mass_rebar * ice_rebar)
 
             # --------- Check if the layer is WALLS
-            elif re.match(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.match(
-                "concrete", row["Materials"], re.IGNORECASE
+            elif re.search(r"(wall)|(walls)", row["Layer"], re.IGNORECASE) or re.search(
+                r"(wall)|(walls)", row["Materials"], re.IGNORECASE
             ):
                 vol_conc, vol_rebar = find_vols(row["Volume"], wall_slider)
                 # add concrete volume
